@@ -3,9 +3,10 @@ using UnityEngine;
 public class BikerTheyThemController : MonoBehaviour
 {
     public StateMachine<BikerTheyThemController> stateMachine;
+
+    public Inventory inventory;
     
     private float maxSpeed = 11f; // tweak as needed
-
     public Rigidbody rb;
 
     public BikerTheyThemController()
@@ -13,21 +14,32 @@ public class BikerTheyThemController : MonoBehaviour
         stateMachine = new StateMachine<BikerTheyThemController> ();
         // set initial state
         stateMachine.ChangeState(new IdleState(this, stateMachine));
+        inventory = new Inventory();
     }
 
     void OnEnable()
     {
         EventBus.Subscribe<PlayerDamageEvent>(TakeDamage);
+        EventBus.Subscribe<PlayerAddInventoryEvent>(GetCollectible);
     }
 
     void OnDisable()
     {
         EventBus.Unsubscribe<PlayerDamageEvent>(TakeDamage);
+        EventBus.Unsubscribe<PlayerAddInventoryEvent>(GetCollectible);
+
     }
 
 
     void TakeDamage(PlayerDamageEvent e) {
         Debug.Log("Took damage: " + e.playerDamage.ToString());
+    }
+
+    void GetCollectible(PlayerAddInventoryEvent e)
+    {
+        Debug.Log("Adding to inventory: " + e.item.type.ToString());
+        this.inventory.AddToInventory(e.item);
+        // TODO: on death clear inventory
     }
 
     private void Start()
