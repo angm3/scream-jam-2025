@@ -3,6 +3,8 @@ using UnityEngine;
 public class BikerTheyThemController : MonoBehaviour
 {
     public StateMachine<BikerTheyThemController> stateMachine;
+    
+    private float maxSpeed = 11f; // tweak as needed
 
     public Rigidbody rb;
 
@@ -54,34 +56,45 @@ public class BikerTheyThemController : MonoBehaviour
         if (Input.GetKey(KeyCode.A))
         {
             rb.AddForce(-transform.right * 10f, ForceMode.Acceleration);
+            // rotate bike left visually 
+            transform.Rotate(0, 0, 2f);
         }
 
         // if D is pressed, turn right
         if (Input.GetKey(KeyCode.D))
         {
             rb.AddForce(transform.right * 10f, ForceMode.Acceleration);
+            transform.Rotate(0, 0, -2f);
+        }
 
+        if (rb.linearVelocity.magnitude > maxSpeed)
+        {
+            rb.linearVelocity = rb.linearVelocity.normalized * maxSpeed;
         }
         
         // Rotate the biker to face the direction of movement
         Vector3 velocity = rb.linearVelocity;
 
-    // Only rotate if we're actually moving
-    if (velocity.sqrMagnitude > 0.1f)
-    {
-        // Flatten the velocity to prevent tilting up/down
-        Vector3 flatVel = new Vector3(velocity.x, 0f, velocity.z);
-
-        if (flatVel.sqrMagnitude > 0.001f)
+        // Only rotate if we're actually moving
+        if (velocity.sqrMagnitude > 0.1f)
         {
-            // Calculate desired rotation based on velocity direction
-            Quaternion targetRot = Quaternion.LookRotation(flatVel.normalized, Vector3.up);
+            // Flatten the velocity to prevent tilting up/down
+            Vector3 flatVel = new Vector3(velocity.x, 0f, velocity.z);
 
-            // Smoothly rotate toward that direction
-            float rotationSpeed = 8f; // tweak this value for snappier/slower turn
-            transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, rotationSpeed * Time.deltaTime);
+            if (flatVel.sqrMagnitude > 0.001f)
+            {
+                    // Calculate desired rotation based on velocity direction
+                    Quaternion targetRot = Quaternion.LookRotation(flatVel.normalized, Vector3.up);
+                
+                // still point foward if velocity is negative
+                if (Vector3.Dot(transform.forward, flatVel) < 0)
+                    targetRot = Quaternion.LookRotation(-flatVel.normalized, Vector3.up);
+
+                // Smoothly rotate toward that direction
+                float rotationSpeed = 6f;
+                transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, rotationSpeed * Time.deltaTime);
+            }
         }
-    }
     }
         
 
