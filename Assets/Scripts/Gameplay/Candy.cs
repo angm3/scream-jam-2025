@@ -10,8 +10,10 @@ public class Candy : Collectible
 
     public override void OnTriggerEnter(Collider other)
     {
-        // validate other is the player using 'player' tag
-        Debug.Log("Candy trigger");
-        stateMachine.ChangeState(new CollectibleCollectedState(this, stateMachine));
+        if (other.gameObject.tag == "Player")
+        {
+            Debug.Log("Candy trigger");
+            stateMachine.ChangeState(new CollectibleCollectedState(this, stateMachine));
+        }
     }
 }
