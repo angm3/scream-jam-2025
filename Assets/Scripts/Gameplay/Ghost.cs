@@ -5,7 +5,7 @@ public class Ghost : Monster
     
     public override void Chase()
     {
-        Debug.Log("Ghost is chasing the player!");
+        //Debug.Log("Ghost is chasing the player!");
         // Implement ghost-specific chasing behavior here
         
         gameObject.transform.position = Vector3.MoveTowards(
