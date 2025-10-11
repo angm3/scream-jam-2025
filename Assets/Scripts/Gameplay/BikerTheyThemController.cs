@@ -35,9 +35,8 @@ public class BikerTheyThemController : MonoBehaviour
 
     private void Start()
     {
-
         speed = 0f;
-
+        GameManager.Instance?.RegisterPlayer(transform);
     }
 
     // Update is called once per frame

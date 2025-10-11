@@ -3,9 +3,11 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
 
-    public GameObject player_ref;
-    public GameObject camera_ref;
+    //public GameObject player_ref;
+    //public GameObject camera_ref;
     public static GameManager Instance { get; private set; }
+
+    private Transform playerTransform;
 
     private void Awake()
     {
@@ -32,4 +34,12 @@ public class GameManager : MonoBehaviour
         Debug.Log("Game Over!");
         // ...
     }
+
+    // Called by player when scene loads
+    public void RegisterPlayer(Transform player)
+    {
+        playerTransform = player;
+    }
+
+    public Transform GetPlayerTransform() => playerTransform;
 }
