@@ -21,13 +21,14 @@ public class BikerTheyThemController : MonoBehaviour
     {
         EventBus.Subscribe<PlayerDamageEvent>(TakeDamage);
         EventBus.Subscribe<PlayerAddInventoryEvent>(GetCollectible);
+        EventBus.Subscribe<PlayerDeathEvent>(PlayerDeath);
     }
 
     void OnDisable()
     {
         EventBus.Unsubscribe<PlayerDamageEvent>(TakeDamage);
         EventBus.Unsubscribe<PlayerAddInventoryEvent>(GetCollectible);
-
+        EventBus.Unsubscribe<PlayerDeathEvent>(PlayerDeath);
     }
 
 
@@ -38,8 +39,13 @@ public class BikerTheyThemController : MonoBehaviour
     void GetCollectible(PlayerAddInventoryEvent e)
     {
         Debug.Log("Adding to inventory: " + e.item.type.ToString());
-        this.inventory.AddToInventory(e.item);
-        // TODO: on death clear inventory
+        inventory.AddToInventory(e.item);
+    }
+
+    void PlayerDeath(PlayerDeathEvent e)
+    {
+        Object.Instantiate(new Tombstone(inventory));
+        inventory.DropInventory();
     }
 
     private void Start()
@@ -49,6 +55,7 @@ public class BikerTheyThemController : MonoBehaviour
 
         //speed = 0f;
         GameManager.Instance?.RegisterPlayer(this.gameObject);
+        this.gameObject.tag = "Player";
     }
 
 

@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using static UnityEditor.Progress;
 
 public class Inventory
 {
@@ -51,11 +50,18 @@ public class Inventory
         }
     }
 
-    public void ClearInventory()
+    public void DropInventory()
     {
         this.candyCount = 0;
         this.blueprints.Clear();
         this.potionIngredients.Clear();
+    }
+
+    public void PickUpInventory(Inventory droppedInventory)
+    {
+        this.candyCount += droppedInventory.candyCount;
+        this.blueprints.AddRange(droppedInventory.blueprints);
+        this.potionIngredients.AddRange(droppedInventory.potionIngredients);
     }
 
 }
