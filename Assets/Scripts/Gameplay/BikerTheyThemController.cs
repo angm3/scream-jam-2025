@@ -47,6 +47,8 @@ public class BikerTheyThemController : MonoBehaviour
 
         rb = GetComponent<Rigidbody>();
 
+        speed = 0f;
+        GameManager.Instance?.RegisterPlayer(transform);
     }
 
 
