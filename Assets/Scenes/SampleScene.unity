@@ -2243,11 +2243,12 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 14613b8bf35881747bd98c126fc75b6d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BikeTheyThemController
+  m_EditorClassIdentifier: Assembly-CSharp::BikerTheyThemController
   speed: 0
-  linear_acceleration: 6.9
-  linear_deceleration: 8
-  max_velocity: 30
+  theta: 0
+  linear_acceleration: 6
+  linear_deceleration: 3
+  max_velocity: 15
 --- !u!4 &2021424730
 Transform:
   m_ObjectHideFlags: 0
