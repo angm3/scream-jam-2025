@@ -3,11 +3,11 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
 
-    //public GameObject player_ref;
+    private GameObject player_ref;
     //public GameObject camera_ref;
     public static GameManager Instance { get; private set; }
 
-    private Transform playerTransform;
+    //private Transform playerTransform;
 
     private void Awake()
     {
@@ -36,10 +36,10 @@ public class GameManager : MonoBehaviour
     }
 
     // Called by player when scene loads
-    public void RegisterPlayer(Transform player)
+    public void RegisterPlayer(GameObject player)
     {
-        playerTransform = player;
+        player_ref = player;
     }
 
-    public Transform GetPlayerTransform() => playerTransform;
+    public GameObject GetPlayer() => player_ref;
 }
