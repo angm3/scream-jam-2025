@@ -57,7 +57,7 @@ public class BikerTheyThemController : MonoBehaviour
         // if W is pressed, accelerate
         if (Input.GetKey(KeyCode.W))
         {
-            rb.AddForce(transform.forward * 25f, ForceMode.Acceleration);
+            rb.AddForce(transform.forward * 22f, ForceMode.Acceleration);
         }
 
         // if S is pressed, deccelerate
@@ -85,7 +85,7 @@ public class BikerTheyThemController : MonoBehaviour
         {
             rb.linearVelocity = rb.linearVelocity.normalized * maxSpeed;
         }
-        
+
         // Rotate the biker to face the direction of movement
         Vector3 velocity = rb.linearVelocity;
 
@@ -97,9 +97,9 @@ public class BikerTheyThemController : MonoBehaviour
 
             if (flatVel.sqrMagnitude > 0.001f)
             {
-                    // Calculate desired rotation based on velocity direction
-                    Quaternion targetRot = Quaternion.LookRotation(flatVel.normalized, Vector3.up);
-                
+                // Calculate desired rotation based on velocity direction
+                Quaternion targetRot = Quaternion.LookRotation(flatVel.normalized, Vector3.up);
+
                 // still point foward if velocity is negative
                 if (Vector3.Dot(transform.forward, flatVel) < 0)
                     targetRot = Quaternion.LookRotation(-flatVel.normalized, Vector3.up);
@@ -110,11 +110,22 @@ public class BikerTheyThemController : MonoBehaviour
             }
         }
     }
+    
+    public void HandleMovementPerFrame()
+    {
+         if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.Log("Jump!");
+            rb.AddForce(-Physics.gravity * 40f, ForceMode.Acceleration);
+        }
+    }
+    
         
 
     // Update is called once per frame
     void Update()
     {
+        HandleMovementPerFrame();
         stateMachine.Update();
     }
     
