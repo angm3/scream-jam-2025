@@ -14,16 +14,16 @@ public class CameraTracking : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
-        Vector3 player_velocity = GameManager.Instance.GetPlayerTransform().GetComponent<Rigidbody>().linearVelocity;
+        Vector3 player_velocity = GameManager.Instance.GetPlayer().GetComponent<Rigidbody>().linearVelocity;
 
         if (player_velocity.sqrMagnitude < 0.01f)
-            player_velocity = GameManager.Instance.GetPlayerTransform().transform.forward;
+            player_velocity = GameManager.Instance.GetPlayer().transform.forward;
 
         Vector3 dir = player_velocity.normalized;
 
-        Vector3 desiredPos = GameManager.Instance.GetPlayerTransform().transform.position - dir * 7f + Vector3.up * 2.8f;
+        Vector3 desiredPos = GameManager.Instance.GetPlayer().transform.position - dir * 7f + Vector3.up * 2.8f;
 
         gameObject.transform.position = desiredPos;
-        transform.LookAt(GameManager.Instance.GetPlayerTransform().transform.position + Vector3.up * 1.5f);        
+        transform.LookAt(GameManager.Instance.GetPlayer().transform.position + Vector3.up * 1.5f);        
     }
 }
