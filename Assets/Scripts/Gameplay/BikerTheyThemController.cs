@@ -4,11 +4,12 @@ public class BikerTheyThemController : MonoBehaviour
 {
     public StateMachine<BikerTheyThemController> stateMachine;
 
+    public Inventory inventory;
+
     public float speed;
     public float theta;
     public float linear_acceleration = 6f;
     public float linear_deceleration = 3f;
-
     public float max_velocity = 15f;
 
     public BikerTheyThemController()
@@ -16,21 +17,32 @@ public class BikerTheyThemController : MonoBehaviour
         stateMachine = new StateMachine<BikerTheyThemController> ();
         // set initial state
         stateMachine.ChangeState(new IdleState(this, stateMachine));
+        this.inventory = new Inventory();
     }
 
     void OnEnable()
     {
         EventBus.Subscribe<PlayerDamageEvent>(TakeDamage);
+        EventBus.Subscribe<PlayerAddInventoryEvent>(GetCollectible);
     }
 
     void OnDisable()
     {
         EventBus.Unsubscribe<PlayerDamageEvent>(TakeDamage);
+        EventBus.Unsubscribe<PlayerAddInventoryEvent>(GetCollectible);
+
     }
 
 
     void TakeDamage(PlayerDamageEvent e) {
         Debug.Log("Took damage: " + e.playerDamage.ToString());
+    }
+
+    void GetCollectible(PlayerAddInventoryEvent e)
+    {
+        Debug.Log("Adding to inventory: " + e.item.type.ToString());
+        this.inventory.AddToInventory(e.item);
+        // TODO: on death clear inventory
     }
 
     private void Start()
