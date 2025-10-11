@@ -2,17 +2,16 @@ using UnityEngine;
 
 public class Ghost : Monster
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    
+    public override void Chase()
     {
+        Debug.Log("Ghost is chasing the player!");
+        // Implement ghost-specific chasing behavior here
         
+        gameObject.transform.position = Vector3.MoveTowards(
+            gameObject.transform.position, 
+            GameManager.Instance.player_ref.transform.position, 
+            0.01f);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
 
 }
