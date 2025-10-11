@@ -15,4 +15,9 @@ public class StateMachine<T>
     {
         CurrentState?.Update();
     }
+    
+    public void FixedUpdate()
+    {
+        CurrentState?.FixedUpdate();
+    }
 }
