@@ -2,15 +2,34 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+
+    public GameObject player_ref;
+    public GameObject camera_ref;
+    public static GameManager Instance { get; private set; }
+
+    private void Awake()
     {
-        
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject); // Destroy duplicate instances
+        }
+        else
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject); // Persist across scenes
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    // Add your game management logic here
+    public void StartGame()
     {
-        
+        Debug.Log("Game Started!");
+        // ...
+    }
+
+    public void EndGame()
+    {
+        Debug.Log("Game Over!");
+        // ...
     }
 }
