@@ -10,8 +10,11 @@ public class BikerTheyThemController : MonoBehaviour
     public Rigidbody rb;
 
     public float jump_timer;
+    public float jump_cooldown_timer;
+    public float jump_cooldown = 1f;
     private float max_jump_multiplier = 40f;
     private float max_jump_timer = 1.5f;
+    public bool jump_started = false;
     
     
     
@@ -58,11 +61,14 @@ public class BikerTheyThemController : MonoBehaviour
         GameManager.Instance?.RegisterPlayer(this.gameObject);
 
         jump_timer = 0;
+        jump_cooldown_timer = jump_cooldown;
     }
 
 
     public void HandleMovement()
     {
+        jump_cooldown_timer += Time.fixedDeltaTime;
+        
         // if W is pressed, accelerate
         if (Input.GetKey(KeyCode.W))
         {
@@ -130,16 +136,25 @@ public class BikerTheyThemController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Debug.Log("Jump Start");
-            //rb.AddForce(-Physics.gravity * 30f, ForceMode.Acceleration);
-            jump_timer = 0;
+            if (jump_cooldown_timer > jump_cooldown)
+            {
+                Debug.Log("Jump Start");
+                //rb.AddForce(-Physics.gravity * 30f, ForceMode.Acceleration);
+                jump_timer = 0;
+                jump_started = true;
+            }
         }
         
         if (Input.GetKeyUp(KeyCode.Space))
         {
-            Debug.Log("Jump End!");
-            rb.AddForce(-Physics.gravity * Mathf.Min(Mathf.Max(jump_timer, 0.4f * max_jump_timer) / max_jump_timer, 1f) * max_jump_multiplier, ForceMode.Acceleration);
-            //jump_timer = 0;
+            if (jump_started)
+            {
+                Debug.Log("Jump End!");
+                rb.AddForce(-Physics.gravity * Mathf.Min(Mathf.Max(jump_timer, 0.4f * max_jump_timer) / max_jump_timer, 1f) * max_jump_multiplier, ForceMode.Acceleration);
+                //jump_timer = 0;
+                jump_started = false;
+                jump_cooldown_timer = 0;
+            }
         }
     }
     
