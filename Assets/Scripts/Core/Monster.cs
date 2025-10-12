@@ -16,6 +16,11 @@ public abstract class Monster<T> : MonoBehaviour where T : Monster<T>
     {
         stateMachine.Update();
     }
+    
+    protected virtual void FixedUpdate()
+    {
+        stateMachine.FixedUpdate();
+    }
 }
 
 
@@ -27,4 +32,10 @@ public class MonsterIdleState<T> : State<T> where T : Monster<T>
 public class MonsterChasingState<T> : State<T> where T : Monster<T>
 {
     public MonsterChasingState(T owner, StateMachine<T> sm) : base(owner, sm) { }
+}
+
+
+public class MonsterAttackingState<T> : State<T> where T : Monster<T>
+{
+    public MonsterAttackingState(T owner, StateMachine<T> sm) : base(owner, sm) { }
 }
