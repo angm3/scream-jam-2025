@@ -38,7 +38,7 @@ public class MonsterIdleState : State<Monster>
 
     public override void Update()
     {
-        if ((GameManager.Instance.player_ref.transform.position - this.owner.gameObject.transform.position).magnitude < 10f)
+        if ((GameManager.Instance.GetPlayer().transform.position - this.owner.gameObject.transform.position).magnitude < 10f)
         {
             stateMachine.ChangeState(new MonsterChasingState(owner, stateMachine));
         }
@@ -59,7 +59,7 @@ public class MonsterChasingState : State<Monster>
     {
         this.owner.Chase();
 
-        if ((GameManager.Instance.player_ref.transform.position - this.owner.gameObject.transform.position).magnitude > 10f)
+        if ((GameManager.Instance.GetPlayer().transform.position - this.owner.gameObject.transform.position).magnitude > 10f)
         {
             stateMachine.ChangeState(new MonsterIdleState(owner, stateMachine));
         }

@@ -10,7 +10,7 @@ public class Ghost : Monster
         
         gameObject.transform.position = Vector3.MoveTowards(
             gameObject.transform.position, 
-            GameManager.Instance.player_ref.transform.position, 
+            GameManager.Instance.GetPlayer().transform.position + GameManager.Instance.GetPlayer().GetComponent<Rigidbody>().linearVelocity * 2f, 
             0.01f);
     }
 
