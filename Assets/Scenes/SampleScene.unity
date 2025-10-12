@@ -5019,7 +5019,7 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 0
+  m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 80
@@ -5041,6 +5041,9 @@ MonoBehaviour:
   playerSugar: {fileID: 0}
   rb: {fileID: 0}
   jump_timer: 0
+  jump_cooldown_timer: 0
+  jump_cooldown: 1
+  jump_started: 0
 --- !u!4 &2021424730
 Transform:
   m_ObjectHideFlags: 0
