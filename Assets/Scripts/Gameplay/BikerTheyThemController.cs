@@ -62,7 +62,6 @@ public class BikerTheyThemController : MonoBehaviour
         inventory.AddToInventory(e.item);
     }
 
-
     void ConsumeCandy()
     {
         Debug.Log("in ConsumeCandy");
@@ -261,12 +260,14 @@ public class AcceleratingState : State<BikerTheyThemController>
 
     public override void Enter()
     {
-        // Debug.Log("Entered accelerating state");
+        Debug.Log("Entered accelerating state");
     }
 
     public override void Update()
     {
-        
+        Debug.Log("Draining sugar: " + owner.playerSugar.decayRate.ToString());
+        // drain sugar
+        owner.playerSugar.DrainSugar(owner.playerSugar.decayRate * Time.deltaTime);
     }
     
     public override void FixedUpdate()
