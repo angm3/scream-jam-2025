@@ -9,6 +9,13 @@ public class BikerTheyThemController : MonoBehaviour
     private float maxSpeed = 11f; // tweak as needed
     public Rigidbody rb;
 
+    public float jump_timer;
+    private float max_jump_multiplier = 40f;
+    private float max_jump_timer = 1.5f;
+    
+    
+    
+
     public BikerTheyThemController()
     { 
         stateMachine = new StateMachine<BikerTheyThemController> ();
@@ -49,6 +56,8 @@ public class BikerTheyThemController : MonoBehaviour
 
         //speed = 0f;
         GameManager.Instance?.RegisterPlayer(this.gameObject);
+
+        jump_timer = 0;
     }
 
 
@@ -79,6 +88,12 @@ public class BikerTheyThemController : MonoBehaviour
         {
             rb.AddForce(transform.right * 10f, ForceMode.Acceleration);
             transform.Rotate(0, 0, -2f);
+        }
+        
+
+        if (Input.GetKey(KeyCode.Space))
+        {
+            jump_timer += Time.fixedDeltaTime;
         }
 
         if (rb.linearVelocity.magnitude > maxSpeed)
@@ -113,10 +128,18 @@ public class BikerTheyThemController : MonoBehaviour
     
     public void HandleMovementPerFrame()
     {
-         if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            Debug.Log("Jump!");
-            rb.AddForce(-Physics.gravity * 40f, ForceMode.Acceleration);
+            Debug.Log("Jump Start");
+            //rb.AddForce(-Physics.gravity * 30f, ForceMode.Acceleration);
+            jump_timer = 0;
+        }
+        
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            Debug.Log("Jump End!");
+            rb.AddForce(-Physics.gravity * Mathf.Min(Mathf.Max(jump_timer, 0.4f * max_jump_timer) / max_jump_timer, 1f) * max_jump_multiplier, ForceMode.Acceleration);
+            //jump_timer = 0;
         }
     }
     
