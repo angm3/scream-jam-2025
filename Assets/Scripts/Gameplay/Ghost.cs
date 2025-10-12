@@ -19,14 +19,22 @@ public class Ghost : Monster<Ghost>
     void OnTriggerEnter(Collider other)
     {
         Debug.Log("Collison detected in ghost");
-        
-        if (other.gameObject.CompareTag("Player") && stateMachine.CurrentState is GhostAttackingState)
-        {
-            Debug.Log("Player hit by ghost");
-            EventBus.Publish(new PlayerDamageEvent(69));
-            // Optionally, you can transition to another state after the attack
-            //stateMachine.ChangeState(new GhostIdleState(this, stateMachine));
 
+        if (other.gameObject.CompareTag("Player"))
+        {
+            if (stateMachine.CurrentState is GhostAttackingState)
+            {
+                Debug.Log("Player hit by ghost");
+                EventBus.Publish(new PlayerDamageEvent(69));
+            }
+            else if (stateMachine.CurrentState is GhostChasingState || stateMachine.CurrentState is GhostIdleState)
+            {
+                Debug.Log("Ghost hit by player");
+                if (other.gameObject.GetComponent<BikerTheyThemController>().checkSpeedEffectThreshold())
+                {
+                    stateMachine.ChangeState(new GhostDyingState(this, stateMachine));
+                }
+            }
         }
     }
     
@@ -119,7 +127,7 @@ public class GhostAttackingState : MonsterAttackingState<Ghost>
     public GhostAttackingState(Ghost owner, StateMachine<Ghost> sm) : base(owner, sm) { }
     public Coroutine dashCoroutine;
     public bool is_projecting;
-    
+
     public override void Enter()
     {
         Debug.Log("Ghost is attacking");
@@ -149,7 +157,22 @@ public class GhostAttackingState : MonsterAttackingState<Ghost>
 
 
         //Debug.Log("Done dashong" + Time.time);
-    
+
         stateMachine.ChangeState(new GhostIdleState(owner, stateMachine));
     }
+}
+
+
+
+public class GhostDyingState : MonsterDyingState<Ghost>
+{
+    public GhostDyingState(Ghost owner, StateMachine<Ghost> sm) : base(owner, sm) { }
+
+    
+    public override void Enter()
+    {
+        Debug.Log("Ghost is dying");
+        UnityEngine.Object.Destroy(owner.gameObject);
+    }
+
 }
