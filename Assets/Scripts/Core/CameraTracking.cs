@@ -12,7 +12,8 @@ public class CameraTracking : MonoBehaviour
     }
 
     // Update is called once per frame
-    void LateUpdate()
+    //void LateUpdate()
+    void FixedUpdate()
     {
         Vector3 player_velocity = GameManager.Instance.GetPlayer().GetComponent<Rigidbody>().linearVelocity;
 
@@ -21,10 +22,10 @@ public class CameraTracking : MonoBehaviour
 
         Vector3 dir = player_velocity.normalized;
 
-        Vector3 desiredPos = GameManager.Instance.GetPlayer().transform.position - dir * 5f + Vector3.up * 2.4f;
+        Vector3 desiredPos = GameManager.Instance.GetPlayer().transform.position - dir * 3f + Vector3.up * 2.0f;
 
         // smooth camera movement
-        desiredPos = Vector3.Lerp(transform.position, desiredPos, 0.025f);
+        desiredPos = Vector3.Lerp(transform.position, desiredPos, 0.1f);
         
         gameObject.transform.position = desiredPos;
         transform.LookAt(GameManager.Instance.GetPlayer().transform.position + Vector3.up * 1.5f);        
