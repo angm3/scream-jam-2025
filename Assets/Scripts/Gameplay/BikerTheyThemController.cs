@@ -99,6 +99,7 @@ public class BikerTheyThemController : MonoBehaviour
     void TakeDamage(PlayerDamageEvent e)
     {
         Debug.Log("Took damage: " + e.playerDamage.ToString());
+        playerSugar.DrainSugar(e.playerDamage);
     }
     
     void BumpPlayer(PlayerBumpEvent e)
@@ -143,7 +144,9 @@ public class BikerTheyThemController : MonoBehaviour
         {
             Debug.Log("Reached speed effect threshold");
             // TODO: apply light effect here
-            // TODO: ramming monster damage -- check on Monster, can call checkSpeedEffectThreshold there
+        } else
+        {
+            Debug.Log("Player speed below threshold");
         }
 
     }
