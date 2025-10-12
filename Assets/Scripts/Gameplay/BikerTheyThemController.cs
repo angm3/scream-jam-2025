@@ -1,3 +1,4 @@
+
 using UnityEngine;
 
 public class BikerTheyThemController : MonoBehaviour
@@ -31,18 +32,27 @@ public class BikerTheyThemController : MonoBehaviour
     {
         EventBus.Subscribe<PlayerDamageEvent>(TakeDamage);
         EventBus.Subscribe<PlayerAddInventoryEvent>(GetCollectible);
+        EventBus.Subscribe<PlayerBumpEvent>(BumpPlayer);
     }
 
     void OnDisable()
     {
         EventBus.Unsubscribe<PlayerDamageEvent>(TakeDamage);
         EventBus.Unsubscribe<PlayerAddInventoryEvent>(GetCollectible);
+        EventBus.Unsubscribe<PlayerBumpEvent>(BumpPlayer);
 
     }
 
 
-    void TakeDamage(PlayerDamageEvent e) {
+    void TakeDamage(PlayerDamageEvent e)
+    {
         Debug.Log("Took damage: " + e.playerDamage.ToString());
+    }
+    
+    void BumpPlayer(PlayerBumpEvent e)
+    {
+        Debug.Log("Bumped baby!");
+        rb.AddForce(e.direction * e.mag, ForceMode.Acceleration);
     }
 
     void GetCollectible(PlayerAddInventoryEvent e)
