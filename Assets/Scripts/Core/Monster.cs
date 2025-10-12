@@ -39,3 +39,9 @@ public class MonsterAttackingState<T> : State<T> where T : Monster<T>
 {
     public MonsterAttackingState(T owner, StateMachine<T> sm) : base(owner, sm) { }
 }
+
+
+public class MonsterDyingState<T> : State<T> where T : Monster<T>
+{
+    public MonsterDyingState(T owner, StateMachine<T> sm) : base(owner, sm) { }
+}
