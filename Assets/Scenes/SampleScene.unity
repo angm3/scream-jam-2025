@@ -316,7 +316,7 @@ Transform:
   m_GameObject: {fileID: 103725782}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 9.14, y: 0.54, z: -7.07}
+  m_LocalPosition: {x: 28.45, y: 0.54, z: -7.07}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -334,7 +334,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 797db36fb2384cb48bed0db4f8a5e455, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Ghost
-  speed: 0.1
 --- !u!54 &103725785
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -747,7 +746,7 @@ Transform:
   m_GameObject: {fileID: 310448688}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 5.75, y: 0.54, z: 0.36}
+  m_LocalPosition: {x: 23.53, y: 0.54, z: 0.36}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -765,7 +764,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 797db36fb2384cb48bed0db4f8a5e455, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Ghost
-  speed: 0.1
 --- !u!54 &310448691
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1774,7 +1772,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 797db36fb2384cb48bed0db4f8a5e455, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Ghost
-  speed: 0.1
 --- !u!1 &562439509
 GameObject:
   m_ObjectHideFlags: 0
@@ -2497,7 +2494,7 @@ Transform:
   m_GameObject: {fileID: 796976484}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 26.04, y: 0.54, z: -2.27}
+  m_LocalPosition: {x: 56.5, y: 0.54, z: -2.27}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2515,7 +2512,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 797db36fb2384cb48bed0db4f8a5e455, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Ghost
-  speed: 0.1
 --- !u!54 &796976487
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3343,12 +3339,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8138679922472426433, guid: 0b8d6d07f06c1e44a8a3c1b4fb54a4f8, type: 3}
       insertIndex: -1
       addedObject: {fileID: 149629423}
-    - targetCorrespondingSourceObject: {fileID: 731588046320408222, guid: 0b8d6d07f06c1e44a8a3c1b4fb54a4f8, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1986624614}
-    - targetCorrespondingSourceObject: {fileID: 731588046320408222, guid: 0b8d6d07f06c1e44a8a3c1b4fb54a4f8, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1986624613}
     - targetCorrespondingSourceObject: {fileID: -3580811026417332625, guid: 0b8d6d07f06c1e44a8a3c1b4fb54a4f8, type: 3}
       insertIndex: -1
       addedObject: {fileID: 74648548}
@@ -4029,7 +4019,7 @@ Transform:
   m_GameObject: {fileID: 1499020603}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 15.33, y: 0.54, z: -8.38}
+  m_LocalPosition: {x: 37.09, y: 0.54, z: -8.38}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4047,7 +4037,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 797db36fb2384cb48bed0db4f8a5e455, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Ghost
-  speed: 0.1
 --- !u!54 &1499020606
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -5785,7 +5774,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4844929106899854254, guid: d0ec3306765ba7246aea498751776fda, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 259894218}
   m_SourcePrefab: {fileID: 100100000, guid: d0ec3306765ba7246aea498751776fda, type: 3}
 --- !u!1001 &3616673305535185510
 PrefabInstance:
@@ -5873,6 +5865,5 @@ SceneRoots:
   - {fileID: 1667085429}
   - {fileID: 766009546}
   - {fileID: 841477733}
-  - {fileID: 1759174775}
   - {fileID: 1395511515}
   - {fileID: 1120376692}
