@@ -1927,7 +1927,7 @@ Transform:
   m_GameObject: {fileID: 603758190}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.255, y: 0.741, z: 0.139}
+  m_LocalPosition: {x: 0.242, y: 0.774, z: 0.088}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1945,7 +1945,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5bd78ed1ef422e4c99d1ba1bbc16ace, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Slingshot
-  projectilePrefab: {fileID: 8384832651504283715, guid: 2350ad6e06fd8994fbdbc74558e4916c, type: 3}
+  projectilePrefab: {fileID: 8152012528407012584, guid: 698f40b656c2cf846ac2f15b3005871e, type: 3}
 --- !u!4 &630700732 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f62c453274e15a946be844c730e67de4, type: 3}

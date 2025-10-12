@@ -65,14 +65,21 @@ public class SlingshotShootingState : State<Slingshot>
             {
                 relativeMousePosition = ray.GetPoint(distance);
             }
-            Debug.Log("relativeMousePosition = " + (relativeMousePosition - GameManager.Instance.GetPlayer().transform.position));
+            //Debug.Log("relativeMousePosition = " + (relativeMousePosition - GameManager.Instance.GetPlayer().transform.position));
 
             Vector3 baes_projectile_dir = -(GameManager.Instance.GetPlayer().transform.position - relativeMousePosition).normalized;
             // Create projectile
             //GameObject projectilePrefab = Resources.Load<GameObject>("Prefabs/Projectile");
             GameObject projectile = GameObject.Instantiate(owner.projectilePrefab, owner.transform.position, Quaternion.identity);
             projectile.GetComponent<Rigidbody>().linearVelocity = baes_projectile_dir * Mathf.Min(30f, 5f + hold_for_timer * 20f);
-
+            
+            // give the projectile some spin randomized
+            projectile.GetComponent<Rigidbody>().angularVelocity = new Vector3(
+                Random.Range(-10f, 10f),
+                Random.Range(-10f, 10f),
+                Random.Range(-10f, 10f)
+            );
+            
             // Recoil player
             //EventBus.Publish(new PlayerBumpEvent(-baes_projectile_dir, Mathf.Min(20f, 5f + hold_for_timer * 15f)));
 
