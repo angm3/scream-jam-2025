@@ -3,7 +3,7 @@ using UnityEngine;
 public class BikerTheyThemController : MonoBehaviour
 {
     public StateMachine<BikerTheyThemController> stateMachine;
-
+    public GameObject tombstoneRef;
     public Inventory inventory;
     
     private float maxSpeed = 11f; // tweak as needed
@@ -44,7 +44,8 @@ public class BikerTheyThemController : MonoBehaviour
 
     void PlayerDeath(PlayerDeathEvent e)
     {
-        Object.Instantiate(new Tombstone(inventory));
+        Debug.Log("On PlayerDeath");
+        Instantiate(tombstoneRef.AddComponent<Tombstone>(), transform.position, transform.rotation);
         inventory.DropInventory();
     }
 

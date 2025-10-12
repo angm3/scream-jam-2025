@@ -13,8 +13,9 @@ public class Tombstone : MonoBehaviour
     {
         // player ran over tombstone
         // pick up their old inventory and delete tombstone
-        if (other.gameObject.tag == "Player")
+        if (other.gameObject.CompareTag("Player"))
         {
+            Debug.Log("Player entered Tombstone");
             other.gameObject.GetComponent<BikerTheyThemController>().inventory.PickUpInventory(deathInventory);
             Object.Destroy(this.gameObject);
         }
