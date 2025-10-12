@@ -48,7 +48,7 @@ public class Sugar : MonoBehaviour
     void UpdateBarColor()
     {
         float percentage = currentSugar / maxSugar;
-        Debug.Log("percentage " + percentage.ToString());
+        //Debug.Log("percentage " + percentage.ToString());
 
         // Color transitions:
         Color targetColor;
@@ -68,14 +68,14 @@ public class Sugar : MonoBehaviour
 
     public void AddSugar(float amount)
     {
-        Debug.Log("adding sugar " + amount.ToString());
+        //Debug.Log("adding sugar " + amount.ToString());
         currentSugar = Math.Min(currentSugar + amount, maxSugar);
         UpdateSugarBar();
     }
 
     public void DrainSugar(float amount)
     {
-        Debug.Log("subtracting sugar " + amount.ToString());
+        //Debug.Log("subtracting sugar " + amount.ToString());
         currentSugar = Math.Max(currentSugar - amount, 0f);
         UpdateSugarBar();
         if (currentSugar == 0)
