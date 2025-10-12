@@ -21,7 +21,6 @@ public class BikerTheyThemController : MonoBehaviour
         stateMachine = new StateMachine<BikerTheyThemController> ();
         // set initial state
         stateMachine.ChangeState(new IdleState(this, stateMachine));
-        inventory = new Inventory();
     }
 
     void OnEnable()
@@ -58,7 +57,8 @@ public class BikerTheyThemController : MonoBehaviour
 
     private void Start()
     {
-
+        // inventory = gameObject.AddComponent<Inventory>();
+        inventory = FindFirstObjectByType<Inventory>();
         rb = GetComponent<Rigidbody>();
 
         //speed = 0f;
