@@ -80,6 +80,12 @@ public class GhostChasingState : MonsterChasingState<Ghost>
     public override void Update()
     {
 
+        // Rotate -x towards player
+        Vector3 directionToPlayer = (GameManager.Instance.GetPlayer().transform.position - owner.transform.position).normalized;
+        Quaternion targetRotation = Quaternion.LookRotation(directionToPlayer);
+        owner.transform.rotation = targetRotation;
+        
+        
         if (owner.checkIfVelocityIsForward(GameManager.Instance.GetPlayer().GetComponent<Rigidbody>()))
         {
             owner.gameObject.transform.position = Vector3.MoveTowards(
