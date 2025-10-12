@@ -228,6 +228,12 @@ public class BikerTheyThemController : MonoBehaviour
         {
             ConsumeCandy();
         }
+        
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            // switch states to accelerating
+            stateMachine.ChangeState(new AcceleratingState(this, stateMachine));
+        }
     }
     
     void FixedUpdate()
@@ -244,7 +250,7 @@ public class IdleState : State<BikerTheyThemController>
 
     public override void Enter()
     {
-        // Debug.Log("Entered idle state");
+        Debug.Log("Entered idle state");
     }
 
     public override void Update()
@@ -268,11 +274,16 @@ public class AcceleratingState : State<BikerTheyThemController>
         Debug.Log("Draining sugar: " + owner.playerSugar.decayRate.ToString());
         // drain sugar
         owner.playerSugar.DrainSugar(owner.playerSugar.decayRate * Time.deltaTime);
+        if (Input.GetKeyUp(KeyCode.W))
+        {
+            // switch states to deccelerating
+            owner.stateMachine.ChangeState(new IdleState(owner, owner.stateMachine));
+        }
     }
     
     public override void FixedUpdate()
     {
-
+        
     }
 }
 

@@ -22,6 +22,22 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void HandleSuccessfulExtraction ()
+    {
+        Debug.Log("Extraction Successful");
+        // TODO: Transfer inventory items to "stash"
+        SceneController.Instance.LoadScene("Garage", includeUI: true);
+    }
+
+    // Called when starting a new run from garage
+    public void StartNewRun()
+    {
+        // For now, just reset inventory candy to 0
+        // Later: transfer candy from stash to inventory based on UI selection
+
+        Debug.Log("New run started!");
+    }
+
     // Add your game management logic here
     public void StartGame()
     {

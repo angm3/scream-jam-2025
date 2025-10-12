@@ -25,15 +25,13 @@ public abstract class Monster : MonoBehaviour
     }
 }
 
-
-
 public class MonsterIdleState : State<Monster>
 {
     public MonsterIdleState(Monster owner, StateMachine<Monster> sm) : base(owner, sm) { }
 
     public override void Enter()
     {
-        Debug.Log("Entered idle state");
+        // Debug.Log("Entered idle state");
     }
 
     public override void Update()
@@ -52,7 +50,7 @@ public class MonsterChasingState : State<Monster>
 
     public override void Enter()
     {
-        Debug.Log("Entered chasing state");
+        // Debug.Log("Entered chasing state");
     }
 
     public override void Update()
