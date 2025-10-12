@@ -44,6 +44,55 @@ public class BikerTheyThemController : MonoBehaviour
 
     }
 
+    private void Start()
+    {
+        inventory = FindFirstObjectByType<Inventory>();
+        playerSugar = FindFirstObjectByType<Sugar>();
+        rb = GetComponent<Rigidbody>();
+
+        //speed = 0f;
+        GameManager.Instance?.RegisterPlayer(this.gameObject);
+        this.gameObject.tag = "Player";
+
+        jump_timer = 0;
+        jump_cooldown_timer = jump_cooldown;
+
+        // Set Physical Material
+        PhysicsMaterial tireFriction = new PhysicsMaterial();
+        tireFriction.dynamicFriction = 0.12f;
+        tireFriction.staticFriction = 0.2f;
+        tireFriction.frictionCombine = PhysicsMaterialCombine.Multiply;
+
+        // Assign the material to the bike's collider
+        Collider collider = GetComponent<BoxCollider>();
+        if (collider != null) {
+            collider.material = tireFriction;
+        }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        HandleMovementPerFrame();
+        stateMachine.Update();
+
+        if (Input.GetKeyDown(KeyCode.E) && inventory.candyCount > 0)
+        {
+            ConsumeCandy();
+        }
+        
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            // switch states to accelerating
+            stateMachine.ChangeState(new AcceleratingState(this, stateMachine));
+        }
+    }
+    
+    void FixedUpdate()
+    {
+        HandleMovement();
+        stateMachine.FixedUpdate();
+    }
 
     void TakeDamage(PlayerDamageEvent e)
     {
@@ -77,26 +126,19 @@ public class BikerTheyThemController : MonoBehaviour
         inventory.DropInventory();
     }
 
-
-    private void Start()
-    {
-        inventory = FindFirstObjectByType<Inventory>();
-        playerSugar = FindFirstObjectByType<Sugar>();
-        rb = GetComponent<Rigidbody>();
-
-        //speed = 0f;
-        GameManager.Instance?.RegisterPlayer(this.gameObject);
-        this.gameObject.tag = "Player";
-
-        jump_timer = 0;
-        jump_cooldown_timer = jump_cooldown;
-    }
-
-
+    // FUNCTION FOR HANDLING BIKER MOVEMENT
     public void HandleMovement()
     {
-        jump_cooldown_timer += Time.fixedDeltaTime;
-        
+        LinearMotion();
+        LateralMotion();    
+        ClampSpeed();
+        RotateBiker();
+        JumpBiker();
+
+        //rb.AddForce(-transform.up * 3f, ForceMode.Acceleration);
+    }
+
+    private void LinearMotion() {      
         // if W is pressed, accelerate
         if (Input.GetKey(KeyCode.W))
         {
@@ -108,7 +150,9 @@ public class BikerTheyThemController : MonoBehaviour
         {
             rb.AddForce(-transform.forward * 15f, ForceMode.Acceleration);
         }
+    }
 
+    private void LateralMotion() {
         if (rb.linearVelocity.magnitude > minSpeedForTurn)
         {
             // if A is pressed, turn left
@@ -142,12 +186,9 @@ public class BikerTheyThemController : MonoBehaviour
                 }
             }
         }
+    }
 
-        if (Input.GetKey(KeyCode.Space))
-        {
-            jump_timer += Time.fixedDeltaTime;
-        }
-
+    private void ClampSpeed() {
         if (checkIfVelocityIsForward())
         { 
             if (rb.linearVelocity.magnitude > maxSpeed)
@@ -162,7 +203,9 @@ public class BikerTheyThemController : MonoBehaviour
                 rb.linearVelocity = rb.linearVelocity.normalized * 0.3f * maxSpeed;
             }
         }
+    }
 
+    private void RotateBiker() {
         // Rotate the biker to face the direction of movement
         Vector3 velocity = rb.linearVelocity;
 
@@ -185,6 +228,15 @@ public class BikerTheyThemController : MonoBehaviour
                 float rotationSpeed = 6f;
                 transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, rotationSpeed * Time.deltaTime);
             }
+        }
+    }
+
+    private void JumpBiker() {
+        jump_cooldown_timer += Time.fixedDeltaTime;
+
+        if (Input.GetKey(KeyCode.Space))
+        {
+            jump_timer += Time.fixedDeltaTime;
         }
     }
     
@@ -214,34 +266,11 @@ public class BikerTheyThemController : MonoBehaviour
         }
     }
     
-    public bool checkIfVelocityIsForward()
+    private bool checkIfVelocityIsForward()
     {
         return Vector3.Dot(rb.transform.forward, rb.linearVelocity) > 0;
     }  
 
-    // Update is called once per frame
-    void Update()
-    {
-        HandleMovementPerFrame();
-        stateMachine.Update();
-
-        if (Input.GetKeyDown(KeyCode.E) && inventory.candyCount > 0)
-        {
-            ConsumeCandy();
-        }
-        
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            // switch states to accelerating
-            stateMachine.ChangeState(new AcceleratingState(this, stateMachine));
-        }
-    }
-    
-    void FixedUpdate()
-    {
-        HandleMovement();
-        stateMachine.FixedUpdate();
-    }
 }
 
 
