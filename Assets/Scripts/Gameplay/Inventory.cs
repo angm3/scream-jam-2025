@@ -89,6 +89,7 @@ public class Inventory : MonoBehaviour
         blueprints.Clear();
         potionIngredients.Clear();
         UpdateCounterText();
+        Debug.Log("Dropped inventory");
     }
 
     public void PickUpInventory(Inventory droppedInventory)

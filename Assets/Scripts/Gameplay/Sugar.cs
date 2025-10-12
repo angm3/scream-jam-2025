@@ -1,4 +1,5 @@
 using System;
+using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -29,13 +30,11 @@ public class Sugar : MonoBehaviour
 
     void Update()
     {
-        // decay sugar at constant rate
-        currentSugar -= decayRate * Time.deltaTime;
-        // keep bar in sync
-        UpdateUI();
+        // keep sugar bar in sync (TBD If needed)
+        // UpdateSugarBar();
     }
 
-    void UpdateUI()
+    void UpdateSugarBar()
     {
         if (sugarSlider != null)
             sugarSlider.value = currentSugar;
@@ -49,7 +48,7 @@ public class Sugar : MonoBehaviour
     void UpdateBarColor()
     {
         float percentage = currentSugar / maxSugar;
-        // Debug.Log("percentage " + percentage.ToString());
+        Debug.Log("percentage " + percentage.ToString());
 
         // Color transitions:
         Color targetColor;
@@ -71,13 +70,17 @@ public class Sugar : MonoBehaviour
     {
         Debug.Log("adding sugar " + amount.ToString());
         currentSugar = Math.Min(currentSugar + amount, maxSugar);
-        UpdateUI();
+        UpdateSugarBar();
     }
 
     public void DrainSugar(float amount)
     {
         Debug.Log("subtracting sugar " + amount.ToString());
         currentSugar = Math.Max(currentSugar - amount, 0f);
-        UpdateUI();
+        UpdateSugarBar();
+        if (currentSugar == 0)
+        {
+            EventBus.Publish(new PlayerDeathEvent());
+        }
     }
 }
