@@ -9,13 +9,6 @@ public class SceneController : MonoBehaviour
     [Header("Loading Screen")]
     [SerializeField] private GameObject loadingCanvas;
 
-    private const string ROOT = "Root";
-    private const string UI = "UI";
-    private const string MAIN_MENU = "MainMenu";
-    private const string GARAGE = "Garage";
-    private const string NEIGHBORHOOD = "Neighborhood";
-    private const string TEST = "SampleScene";
-
     private void Awake()
     {
         if (Instance == null)
@@ -35,44 +28,49 @@ public class SceneController : MonoBehaviour
 
     private void Start()
     {
-        LoadScene(MAIN_MENU);
+        LoadScene("MainMenu");
     }
 
+    // Simple single scene load
     public void LoadScene(string sceneName, bool includeUI = false)
     {
-        StartCoroutine(LoadSceneAsync(sceneName, includeUI));
+        SceneManager.LoadScene(sceneName);
+        //StartCoroutine(LoadSceneAsync(sceneName, includeUI));
     }
 
     private IEnumerator LoadSceneAsync(string targetScene, bool loadUI)
     {
-        // Show loading screen
+        // Show loading
         if (loadingCanvas != null)
             loadingCanvas.SetActive(true);
 
-        // Unload all scenes except Root
-        for (int i = SceneManager.sceneCount - 1; i >= 0; i--)
+        // Just load the scene normally (replaces current scene)
+        AsyncOperation loadOp = SceneManager.LoadSceneAsync(targetScene);
+
+        while (!loadOp.isDone)
         {
-            Scene scene = SceneManager.GetSceneAt(i);
-            if (scene.name != ROOT && scene.isLoaded)
+            yield return null;
+        }
+
+        // If UI needed, load it additively
+        if (loadUI)
+        {
+            if (!SceneManager.GetSceneByName("UI").isLoaded)
             {
-                yield return SceneManager.UnloadSceneAsync(scene);
+                yield return SceneManager.LoadSceneAsync("UI", LoadSceneMode.Additive);
+            }
+        }
+        else
+        {
+            // Unload UI if not needed
+            if (SceneManager.GetSceneByName("UI").isLoaded)
+            {
+                yield return SceneManager.UnloadSceneAsync("UI");
             }
         }
 
-        // Load target scene
-        yield return SceneManager.LoadSceneAsync(targetScene, LoadSceneMode.Additive);
-        SceneManager.SetActiveScene(SceneManager.GetSceneByName(targetScene));
-
-        // Load UI if needed
-        if (loadUI && !SceneManager.GetSceneByName(UI).isLoaded)
-        {
-            yield return SceneManager.LoadSceneAsync(UI, LoadSceneMode.Additive);
-        }
-
-        // Brief pause
         yield return new WaitForSeconds(0.3f);
 
-        // Hide loading screen
         if (loadingCanvas != null)
             loadingCanvas.SetActive(false);
 

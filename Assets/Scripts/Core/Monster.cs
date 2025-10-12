@@ -1,3 +1,4 @@
+
 using UnityEngine;
 
 
@@ -27,4 +28,3 @@ public class MonsterChasingState<T> : State<T> where T : Monster<T>
 {
     public MonsterChasingState(T owner, StateMachine<T> sm) : base(owner, sm) { }
 }
-

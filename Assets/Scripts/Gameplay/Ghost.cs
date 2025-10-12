@@ -6,7 +6,6 @@ public class Ghost : Monster<Ghost>
 {
     private void Start()
     {
-
         stateMachine.ChangeState(new GhostIdleState(this, stateMachine));
     }
 
