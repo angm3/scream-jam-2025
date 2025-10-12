@@ -3297,12 +3297,6 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 6004618497999063606, guid: 0b8d6d07f06c1e44a8a3c1b4fb54a4f8, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2050458469}
-    - targetCorrespondingSourceObject: {fileID: 6004618497999063606, guid: 0b8d6d07f06c1e44a8a3c1b4fb54a4f8, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2050458468}
     - targetCorrespondingSourceObject: {fileID: 2305505818254571342, guid: 0b8d6d07f06c1e44a8a3c1b4fb54a4f8, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1711779907}
@@ -3315,12 +3309,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8138679922472426433, guid: 0b8d6d07f06c1e44a8a3c1b4fb54a4f8, type: 3}
       insertIndex: -1
       addedObject: {fileID: 149629423}
-    - targetCorrespondingSourceObject: {fileID: 731588046320408222, guid: 0b8d6d07f06c1e44a8a3c1b4fb54a4f8, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1986624614}
-    - targetCorrespondingSourceObject: {fileID: 731588046320408222, guid: 0b8d6d07f06c1e44a8a3c1b4fb54a4f8, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1986624613}
     - targetCorrespondingSourceObject: {fileID: -3580811026417332625, guid: 0b8d6d07f06c1e44a8a3c1b4fb54a4f8, type: 3}
       insertIndex: -1
       addedObject: {fileID: 74648548}
@@ -4414,6 +4402,11 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!1 &1725722368 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8905731349761846512, guid: d478fb7e1fab55c4883a088f2e949a2c, type: 3}
+  m_PrefabInstance: {fileID: 1395511515}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1729172212 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2412ffafd97e77d49a3c8448e541bcd0, type: 3}
@@ -5344,9 +5337,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14613b8bf35881747bd98c126fc75b6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BikerTheyThemController
-  tombstoneRef: {fileID: 0}
-  inventory: {fileID: 0}
-  playerSugar: {fileID: 0}
+  tombstoneRef: {fileID: 1725722368}
+  inventory: {fileID: 706946623}
+  playerSugar: {fileID: 1196029108}
   rb: {fileID: 0}
   jump_timer: 0
   jump_cooldown_timer: 0
@@ -5827,10 +5820,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4844929106899854254, guid: d0ec3306765ba7246aea498751776fda, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1264380973}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d0ec3306765ba7246aea498751776fda, type: 3}
 --- !u!1001 &3616673305535185510
 PrefabInstance:
@@ -5919,3 +5909,5 @@ SceneRoots:
   - {fileID: 766009546}
   - {fileID: 841477733}
   - {fileID: 1759174775}
+  - {fileID: 1395511515}
+  - {fileID: 1120376692}
