@@ -36,6 +36,13 @@ public class Ghost : Monster<Ghost>
                 }
             }
         }
+
+        if (other.gameObject.CompareTag("Projectile"))
+        {
+            Debug.Log("Ghost hit by projectile");
+            stateMachine.ChangeState(new GhostDyingState(this, stateMachine));
+            
+        }
     }
 
 
