@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BikerTheyThemController : MonoBehaviour
@@ -5,7 +6,8 @@ public class BikerTheyThemController : MonoBehaviour
     public StateMachine<BikerTheyThemController> stateMachine;
     public GameObject tombstoneRef;
     public Inventory inventory;
-
+    public Sugar playerSugar;
+    private float candyHealthIncrease = 20; // tweak
     public Rigidbody rb;
 
     private float maxSpeed = 11f; // tweak as needed
@@ -50,6 +52,14 @@ public class BikerTheyThemController : MonoBehaviour
         inventory.AddToInventory(e.item);
     }
 
+
+    void ConsumeCandy()
+    {
+        Debug.Log("in ConsumeCandy");
+        inventory.RemoveCandyFromInventory(1);
+        playerSugar.AddSugar(candyHealthIncrease);
+    }
+
     void PlayerDeath(PlayerDeathEvent e)
     {
         Debug.Log("On PlayerDeath");
@@ -57,10 +67,11 @@ public class BikerTheyThemController : MonoBehaviour
         inventory.DropInventory();
     }
 
+
     private void Start()
     {
-        // inventory = gameObject.AddComponent<Inventory>();
         inventory = FindFirstObjectByType<Inventory>();
+        playerSugar = FindFirstObjectByType<Sugar>();
         rb = GetComponent<Rigidbody>();
 
         //speed = 0f;
@@ -191,6 +202,11 @@ public class BikerTheyThemController : MonoBehaviour
     {
         HandleMovementPerFrame();
         stateMachine.Update();
+
+        if (Input.GetKeyDown(KeyCode.E) && inventory.candyCount > 0)
+        {
+            ConsumeCandy();
+        }
     }
     
     void FixedUpdate()
@@ -207,7 +223,7 @@ public class IdleState : State<BikerTheyThemController>
 
     public override void Enter()
     {
-        Debug.Log("Entered idle state");
+        // Debug.Log("Entered idle state");
     }
 
     public override void Update()
@@ -223,7 +239,7 @@ public class AcceleratingState : State<BikerTheyThemController>
 
     public override void Enter()
     {
-        Debug.Log("Entered accelerating state");
+        // Debug.Log("Entered accelerating state");
     }
 
     public override void Update()
@@ -245,7 +261,7 @@ public class DecceleratingState : State<BikerTheyThemController>
 
     public override void Enter()
     {
-        Debug.Log("Entered deccelerating state");
+        // Debug.Log("Entered deccelerating state");
     }
 
     public override void Update()
