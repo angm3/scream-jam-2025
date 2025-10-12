@@ -31,7 +31,7 @@ public class CollectibleIdleState : State<Collectible>
 
     public override void Enter()
     {
-        Debug.Log("collectible entered idle state");
+        // Debug.Log("collectible entered idle state");
     }
 
     public override void Update()
