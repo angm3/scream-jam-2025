@@ -9,6 +9,13 @@ public class BikerTheyThemController : MonoBehaviour
     private float maxSpeed = 11f; // tweak as needed
     public Rigidbody rb;
 
+    public float jump_timer;
+    private float max_jump_multiplier = 40f;
+    private float max_jump_timer = 1.5f;
+    
+    
+    
+
     public BikerTheyThemController()
     { 
         stateMachine = new StateMachine<BikerTheyThemController> ();
@@ -57,6 +64,8 @@ public class BikerTheyThemController : MonoBehaviour
         //speed = 0f;
         GameManager.Instance?.RegisterPlayer(this.gameObject);
         this.gameObject.tag = "Player";
+
+        jump_timer = 0;
     }
 
 
@@ -65,7 +74,7 @@ public class BikerTheyThemController : MonoBehaviour
         // if W is pressed, accelerate
         if (Input.GetKey(KeyCode.W))
         {
-            rb.AddForce(transform.forward * 25f, ForceMode.Acceleration);
+            rb.AddForce(transform.forward * 22f, ForceMode.Acceleration);
         }
 
         // if S is pressed, deccelerate
@@ -88,12 +97,18 @@ public class BikerTheyThemController : MonoBehaviour
             rb.AddForce(transform.right * 10f, ForceMode.Acceleration);
             transform.Rotate(0, 0, -2f);
         }
+        
+
+        if (Input.GetKey(KeyCode.Space))
+        {
+            jump_timer += Time.fixedDeltaTime;
+        }
 
         if (rb.linearVelocity.magnitude > maxSpeed)
         {
             rb.linearVelocity = rb.linearVelocity.normalized * maxSpeed;
         }
-        
+
         // Rotate the biker to face the direction of movement
         Vector3 velocity = rb.linearVelocity;
 
@@ -105,9 +120,9 @@ public class BikerTheyThemController : MonoBehaviour
 
             if (flatVel.sqrMagnitude > 0.001f)
             {
-                    // Calculate desired rotation based on velocity direction
-                    Quaternion targetRot = Quaternion.LookRotation(flatVel.normalized, Vector3.up);
-                
+                // Calculate desired rotation based on velocity direction
+                Quaternion targetRot = Quaternion.LookRotation(flatVel.normalized, Vector3.up);
+
                 // still point foward if velocity is negative
                 if (Vector3.Dot(transform.forward, flatVel) < 0)
                     targetRot = Quaternion.LookRotation(-flatVel.normalized, Vector3.up);
@@ -118,11 +133,30 @@ public class BikerTheyThemController : MonoBehaviour
             }
         }
     }
+    
+    public void HandleMovementPerFrame()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.Log("Jump Start");
+            //rb.AddForce(-Physics.gravity * 30f, ForceMode.Acceleration);
+            jump_timer = 0;
+        }
+        
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            Debug.Log("Jump End!");
+            rb.AddForce(-Physics.gravity * Mathf.Min(Mathf.Max(jump_timer, 0.4f * max_jump_timer) / max_jump_timer, 1f) * max_jump_multiplier, ForceMode.Acceleration);
+            //jump_timer = 0;
+        }
+    }
+    
         
 
     // Update is called once per frame
     void Update()
     {
+        HandleMovementPerFrame();
         stateMachine.Update();
     }
     

@@ -21,8 +21,11 @@ public class CameraTracking : MonoBehaviour
 
         Vector3 dir = player_velocity.normalized;
 
-        Vector3 desiredPos = GameManager.Instance.GetPlayer().transform.position - dir * 7f + Vector3.up * 2.8f;
+        Vector3 desiredPos = GameManager.Instance.GetPlayer().transform.position - dir * 5f + Vector3.up * 2.4f;
 
+        // smooth camera movement
+        desiredPos = Vector3.Lerp(transform.position, desiredPos, 0.025f);
+        
         gameObject.transform.position = desiredPos;
         transform.LookAt(GameManager.Instance.GetPlayer().transform.position + Vector3.up * 1.5f);        
     }
