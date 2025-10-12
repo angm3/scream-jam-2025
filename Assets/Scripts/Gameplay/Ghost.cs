@@ -15,7 +15,7 @@ public class Ghost : Monster<Ghost>
     {
         return Vector3.Dot(rb.transform.forward, rb.linearVelocity) > 0;
     }
-    
+
     void OnTriggerEnter(Collider other)
     {
         Debug.Log("Collison detected in ghost");
@@ -37,6 +37,17 @@ public class Ghost : Monster<Ghost>
             }
         }
     }
+
+
+    public void SetColorOfLight(Color color)
+    {
+        Light pointLight = GetComponentInChildren<Light>();
+        
+        if (pointLight != null)
+        {
+            pointLight.color = color;
+        }
+    }
     
 }
 
@@ -48,6 +59,8 @@ public class GhostIdleState : MonsterIdleState<Ghost>
     public override void Enter()
     {
         Debug.Log("Entered Ghost Idle");
+        
+        owner.SetColorOfLight(new Color(1f, 1f, 0f, 1f));
     }
 
     public override void Update() 
@@ -72,7 +85,8 @@ public class GhostChasingState : MonsterChasingState<Ghost>
     {
 
         Debug.Log("Ghost is chasing");
-
+        owner.SetColorOfLight(new Color(255f / 255f, 154f / 255f, 0f, 255f));
+        
         attack_cooldown_timer = 3f;
         can_attack = false;
     }
@@ -137,6 +151,7 @@ public class GhostAttackingState : MonsterAttackingState<Ghost>
     public override void Enter()
     {
         Debug.Log("Ghost is attacking");
+        owner.SetColorOfLight(new Color(255f / 255f, 0f / 255f, 0f, 255f));
         is_projecting = true;
         dashCoroutine = owner.StartCoroutine(DashAtPlayer());
     }
