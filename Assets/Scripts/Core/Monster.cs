@@ -6,6 +6,7 @@ using UnityEngine;
 public abstract class Monster<T> : MonoBehaviour where T : Monster<T>
 {
     protected StateMachine<T> stateMachine;
+    protected int playerDamage;
 
     protected virtual void Awake()
     {
