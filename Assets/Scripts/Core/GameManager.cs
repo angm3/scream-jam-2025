@@ -7,6 +7,8 @@ public class GameManager : MonoBehaviour
     //public GameObject camera_ref;
     public static GameManager Instance { get; private set; }
 
+    public Stash stash;
+
     //private Transform playerTransform;
 
     private void Awake()
@@ -19,6 +21,8 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject); // Persist across scenes
+
+            stash = new Stash();
         }
     }
 
@@ -26,6 +30,7 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Extraction Successful");
         // TODO: Transfer inventory items to "stash"
+        TransferInventoryToStash();
         SceneController.Instance.LoadScene("Garage", includeUI: true);
     }
 
@@ -55,6 +60,43 @@ public class GameManager : MonoBehaviour
     public void RegisterPlayer(GameObject player)
     {
         player_ref = player;
+    }
+
+    public void TransferInventoryToStash()
+    {
+        Debug.Log("Transfer inventory to stash");
+        if (player_ref == null)
+        {
+            Debug.LogWarning("No player registered, cannot transfer inventory");
+            return;
+        }
+
+        Inventory playerInventory = player_ref.GetComponent<BikerTheyThemController>().inventory;
+        if (playerInventory == null)
+        {
+            Debug.LogWarning("Player has no Inventory component");
+            return;
+        }
+
+        // Transfer all candy
+        stash.StashItems(playerInventory, playerInventory.candyCount);
+
+        // Transfer all blueprints
+        while (playerInventory.blueprints.Count > 0)
+        {
+            Collectible blueprint = (Collectible)playerInventory.blueprints[0];
+            stash.StashBlueprint(playerInventory, blueprint);
+        }
+
+        // Transfer all potion ingredients
+        while (playerInventory.potionIngredients.Count > 0)
+        {
+            Collectible ingredient = (Collectible)playerInventory.potionIngredients[0];
+            stash.StashIngredient(playerInventory, ingredient);
+        }
+
+        Debug.Log($"Transferred inventory to stash. Stash now has {stash.candyCount} candy, {stash.blueprints.Count} blueprints, {stash.potionIngredients.Count} ingredients");
+        
     }
 
     public GameObject GetPlayer() => player_ref;
