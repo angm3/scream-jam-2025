@@ -11,6 +11,7 @@ public class BikerTheyThemController : MonoBehaviour
 
     private float maxSpeed = 11f; // tweak as needed
     private float minSpeedForTurn = 0.7f;
+    private float speedEffectThreshold = 7f; // threshold for effects and bike ramming damage
 
     public float jump_timer;
     public float jump_cooldown_timer;
@@ -34,6 +35,7 @@ public class BikerTheyThemController : MonoBehaviour
         EventBus.Subscribe<PlayerDamageEvent>(TakeDamage);
         EventBus.Subscribe<PlayerAddInventoryEvent>(GetCollectible);
         EventBus.Subscribe<PlayerBumpEvent>(BumpPlayer);
+        EventBus.Subscribe<PlayerDeathEvent>(PlayerDeath);
     }
 
     void OnDisable()
@@ -41,7 +43,7 @@ public class BikerTheyThemController : MonoBehaviour
         EventBus.Unsubscribe<PlayerDamageEvent>(TakeDamage);
         EventBus.Unsubscribe<PlayerAddInventoryEvent>(GetCollectible);
         EventBus.Unsubscribe<PlayerBumpEvent>(BumpPlayer);
-
+        EventBus.Unsubscribe<PlayerDeathEvent>(PlayerDeath);
     }
 
     private void Start()
@@ -111,7 +113,6 @@ public class BikerTheyThemController : MonoBehaviour
         inventory.AddToInventory(e.item);
     }
 
-
     void ConsumeCandy()
     {
         Debug.Log("in ConsumeCandy");
@@ -122,11 +123,13 @@ public class BikerTheyThemController : MonoBehaviour
     void PlayerDeath(PlayerDeathEvent e)
     {
         Debug.Log("On PlayerDeath");
-        Instantiate(tombstoneRef.AddComponent<Tombstone>(), transform.position, transform.rotation);
+        Instantiate(tombstoneRef.AddComponent<Tombstone>(), transform.position, Quaternion.Euler(90,0,0));
+        Debug.Log("Instantiated tombstone");
         inventory.DropInventory();
+        this.gameObject.SetActive(false);
+        // TODO: scene manager should switch scenes OR load death ui menu
     }
 
-    // FUNCTION FOR HANDLING BIKER MOVEMENT
     public void HandleMovement()
     {
         LinearMotion();
@@ -135,10 +138,18 @@ public class BikerTheyThemController : MonoBehaviour
         RotateBiker();
         JumpBiker();
 
-        //rb.AddForce(-transform.up * 3f, ForceMode.Acceleration);
+        bool meetsThreshold = checkSpeedEffectThreshold();
+        if (meetsThreshold)
+        {
+            Debug.Log("Reached speed effect threshold");
+            // TODO: apply light effect here
+            // TODO: ramming monster damage -- check on Monster, can call checkSpeedEffectThreshold there
+        }
+
     }
 
-    private void LinearMotion() {      
+    private void LinearMotion() 
+    {      
         // if W is pressed, accelerate
         if (Input.GetKey(KeyCode.W))
         {
@@ -152,7 +163,8 @@ public class BikerTheyThemController : MonoBehaviour
         }
     }
 
-    private void LateralMotion() {
+    private void LateralMotion() 
+    {
         if (rb.linearVelocity.magnitude > minSpeedForTurn)
         {
             // if A is pressed, turn left
@@ -265,12 +277,17 @@ public class BikerTheyThemController : MonoBehaviour
             }
         }
     }
-    
-    private bool checkIfVelocityIsForward()
+
+    public bool checkIfVelocityIsForward()
     {
         return Vector3.Dot(rb.transform.forward, rb.linearVelocity) > 0;
-    }  
+    }
 
+    public bool checkSpeedEffectThreshold()
+    {
+        return rb.linearVelocity.magnitude >= speedEffectThreshold;
+    }
+    
 }
 
 
@@ -301,6 +318,9 @@ public class AcceleratingState : State<BikerTheyThemController>
 
     public override void Update()
     {
+        Debug.Log("Draining sugar: " + owner.playerSugar.decayRate.ToString());
+        // drain sugar
+        owner.playerSugar.DrainSugar(owner.playerSugar.decayRate * Time.deltaTime);
         if (Input.GetKeyUp(KeyCode.W))
         {
             // switch states to deccelerating
