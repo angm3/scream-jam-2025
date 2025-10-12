@@ -9,6 +9,7 @@ public class Ghost : Monster<Ghost>
     private void Start()
     {
         stateMachine.ChangeState(new GhostIdleState(this, stateMachine));
+        playerDamage = 69;
     }
 
     public bool checkIfVelocityIsForward(Rigidbody rb)
@@ -25,7 +26,7 @@ public class Ghost : Monster<Ghost>
             if (stateMachine.CurrentState is GhostAttackingState)
             {
                 Debug.Log("Player hit by ghost");
-                EventBus.Publish(new PlayerDamageEvent(69));
+                EventBus.Publish(new PlayerDamageEvent(playerDamage));
             }
             else if (stateMachine.CurrentState is GhostChasingState || stateMachine.CurrentState is GhostIdleState)
             {
