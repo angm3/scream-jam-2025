@@ -33,7 +33,7 @@ public class GarageManager : MonoBehaviour
         GameManager.Instance.StartNewRun();
 
         // Load neighborhood scene
-        SceneController.Instance.LoadScene("Neighborhood", includeUI: true);
+        SceneController.Instance.LoadScene("SampleScene", includeUI: true);
     }
 }
 
