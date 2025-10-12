@@ -11,6 +11,7 @@ public class BikerTheyThemController : MonoBehaviour
 
     private float maxSpeed = 11f; // tweak as needed
     private float minSpeedForTurn = 0.7f;
+    private float speedEffectThreshold = 7f; // threshold for effects and bike ramming damage
 
     public float jump_timer;
     public float jump_cooldown_timer;
@@ -146,6 +147,14 @@ public class BikerTheyThemController : MonoBehaviour
             }
         }
 
+        bool meetsThreshold = checkSpeedEffectThreshold();
+        if (meetsThreshold)
+        {
+            Debug.Log("Reached speed effect threshold");
+            // TODO: apply light effect here
+            // TODO: ramming monster damage -- check on Monster, can call checkSpeedEffectThreshold there
+        }
+
         if (Input.GetKey(KeyCode.Space))
         {
             jump_timer += Time.fixedDeltaTime;
@@ -216,11 +225,17 @@ public class BikerTheyThemController : MonoBehaviour
             }
         }
     }
-    
+
     public bool checkIfVelocityIsForward()
     {
         return Vector3.Dot(rb.transform.forward, rb.linearVelocity) > 0;
-    }  
+    }
+
+    public bool checkSpeedEffectThreshold()
+    {
+        return rb.linearVelocity.magnitude >= speedEffectThreshold;
+    }
+    
 
     // Update is called once per frame
     void Update()
