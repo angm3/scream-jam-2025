@@ -1,37 +1,53 @@
 using System;
 using System.Collections;
+using TMPro;
 using UnityEngine;
-using static UnityEditor.Progress;
 
-public class Inventory
+public class Inventory : MonoBehaviour
 {
     public int candyCount;
+
+    // [SerializeField]
+     public TMP_Text candyCounterText;
     public ArrayList blueprints;
     public ArrayList potionIngredients;
 
-
-    public Inventory()
+    public void Start()
     {
-        this.candyCount = 0;
-        this.blueprints = new ArrayList();
-        this.potionIngredients = new ArrayList();
+        candyCount = 0;
+        blueprints = new ArrayList();
+        potionIngredients = new ArrayList();
+        UpdateCounterText();
+    }
+
+    private void UpdateCounterText()
+    {
+        Debug.Log($"Updating counter on {gameObject.name}", gameObject);
+
+        if (candyCounterText != null)
+        {
+            candyCounterText.text = $"Candy: {candyCount}";
+        } else
+        {
+            Debug.Log("Not updating candy counter ", candyCounterText);
+        }
     }
 
     public void AddToInventory(Collectible item)
     {
         switch (item.type) {
             case "candy":
-                this.candyCount++;
+                candyCount++;
                 break;
             case "blueprint":
-                this.blueprints.Add(item);
+                blueprints.Add(item);
                 break;
             case "potion_ingredient":
-                this.potionIngredients.Add(item);
+                potionIngredients.Add(item);
                 break;
 
         }
-
+        UpdateCounterText();
     }
 
     public void RemoveFromInventory(Collectible item)
@@ -39,23 +55,33 @@ public class Inventory
         switch (item.type)
         {
             case "candy":
-                this.candyCount--;
+                candyCount--;
                 break;
             case "blueprint":
-                this.blueprints.Remove(item);
+                blueprints.Remove(item);
                 break;
             case "potion_ingredient":
-                this.potionIngredients.Remove(item);
+                potionIngredients.Remove(item);
                 break;
 
         }
+        UpdateCounterText();
     }
 
-    public void ClearInventory()
+    public void DropInventory()
     {
-        this.candyCount = 0;
-        this.blueprints.Clear();
-        this.potionIngredients.Clear();
+        candyCount = 0;
+        blueprints.Clear();
+        potionIngredients.Clear();
+        UpdateCounterText();
+    }
+
+    public void PickUpInventory(Inventory droppedInventory)
+    {
+        candyCount += droppedInventory.candyCount;
+        blueprints.AddRange(droppedInventory.blueprints);
+        potionIngredients.AddRange(droppedInventory.potionIngredients);
+        UpdateCounterText();
     }
 
 }

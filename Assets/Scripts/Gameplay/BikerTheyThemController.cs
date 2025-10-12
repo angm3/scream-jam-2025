@@ -4,11 +4,13 @@ using UnityEngine;
 public class BikerTheyThemController : MonoBehaviour
 {
     public StateMachine<BikerTheyThemController> stateMachine;
-
+    public GameObject tombstoneRef;
     public Inventory inventory;
-    
-    private float maxSpeed = 11f; // tweak as needed
+
     public Rigidbody rb;
+
+    private float maxSpeed = 11f; // tweak as needed
+    private float minSpeedForTurn = 0.7f;
 
     public float jump_timer;
     public float jump_cooldown_timer;
@@ -25,7 +27,6 @@ public class BikerTheyThemController : MonoBehaviour
         stateMachine = new StateMachine<BikerTheyThemController> ();
         // set initial state
         stateMachine.ChangeState(new IdleState(this, stateMachine));
-        inventory = new Inventory();
     }
 
     void OnEnable()
@@ -58,17 +59,25 @@ public class BikerTheyThemController : MonoBehaviour
     void GetCollectible(PlayerAddInventoryEvent e)
     {
         Debug.Log("Adding to inventory: " + e.item.type.ToString());
-        this.inventory.AddToInventory(e.item);
-        // TODO: on death clear inventory
+        inventory.AddToInventory(e.item);
+    }
+
+    void PlayerDeath(PlayerDeathEvent e)
+    {
+        Debug.Log("On PlayerDeath");
+        Instantiate(tombstoneRef.AddComponent<Tombstone>(), transform.position, transform.rotation);
+        inventory.DropInventory();
     }
 
     private void Start()
     {
-
+        // inventory = gameObject.AddComponent<Inventory>();
+        inventory = FindFirstObjectByType<Inventory>();
         rb = GetComponent<Rigidbody>();
 
         //speed = 0f;
         GameManager.Instance?.RegisterPlayer(this.gameObject);
+        this.gameObject.tag = "Player";
 
         jump_timer = 0;
         jump_cooldown_timer = jump_cooldown;
@@ -91,30 +100,58 @@ public class BikerTheyThemController : MonoBehaviour
             rb.AddForce(-transform.forward * 15f, ForceMode.Acceleration);
         }
 
-        // if A is pressed, turn left
-        if (Input.GetKey(KeyCode.A))
+        if (rb.linearVelocity.magnitude > minSpeedForTurn)
         {
-            rb.AddForce(-transform.right * 10f, ForceMode.Acceleration);
-            // rotate bike left visually 
-            transform.Rotate(0, 0, 2f);
-        }
+            // if A is pressed, turn left
+            if (Input.GetKey(KeyCode.A))
+            {
+                if (checkIfVelocityIsForward())
+                {
+                    rb.AddForce(-transform.right * 10f, ForceMode.Acceleration);
+                    transform.Rotate(0, 0, 2f);
+                }
+                else
+                {
+                    rb.AddForce(transform.right * 10f, ForceMode.Acceleration);
+                    transform.Rotate(0, 0, -2f);
+                }
 
-        // if D is pressed, turn right
-        if (Input.GetKey(KeyCode.D))
-        {
-            rb.AddForce(transform.right * 10f, ForceMode.Acceleration);
-            transform.Rotate(0, 0, -2f);
+            }
+
+            // if D is pressed, turn right
+            if (Input.GetKey(KeyCode.D))
+            {
+                if (checkIfVelocityIsForward())
+                {
+                    rb.AddForce(transform.right * 10f, ForceMode.Acceleration);
+                    transform.Rotate(0, 0, -2f);
+                }
+                else
+                {
+                    rb.AddForce(-transform.right * 10f, ForceMode.Acceleration);
+                    transform.Rotate(0, 0, 2f);
+                }
+            }
         }
-        
 
         if (Input.GetKey(KeyCode.Space))
         {
             jump_timer += Time.fixedDeltaTime;
         }
 
-        if (rb.linearVelocity.magnitude > maxSpeed)
+        if (checkIfVelocityIsForward())
+        { 
+            if (rb.linearVelocity.magnitude > maxSpeed)
+            {
+                rb.linearVelocity = rb.linearVelocity.normalized * maxSpeed;
+            }
+        }
+        else
         {
-            rb.linearVelocity = rb.linearVelocity.normalized * maxSpeed;
+            if (rb.linearVelocity.magnitude > 0.3f * maxSpeed)
+            {
+                rb.linearVelocity = rb.linearVelocity.normalized * 0.3f * maxSpeed;
+            }
         }
 
         // Rotate the biker to face the direction of movement
@@ -168,7 +205,10 @@ public class BikerTheyThemController : MonoBehaviour
         }
     }
     
-        
+    public bool checkIfVelocityIsForward()
+    {
+        return Vector3.Dot(rb.transform.forward, rb.linearVelocity) > 0;
+    }  
 
     // Update is called once per frame
     void Update()
