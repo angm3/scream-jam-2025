@@ -1,4 +1,5 @@
 using System;
+using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -77,5 +78,9 @@ public class Sugar : MonoBehaviour
         Debug.Log("subtracting sugar " + amount.ToString());
         currentSugar = Math.Max(currentSugar - amount, 0f);
         UpdateSugarBar();
+        if (currentSugar == 0)
+        {
+            EventBus.Publish(new PlayerDeathEvent());
+        }
     }
 }
