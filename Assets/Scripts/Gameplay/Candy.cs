@@ -2,10 +2,9 @@ using UnityEngine;
 
 public class Candy : Collectible
 {
-
     public Candy()
     {
-        this.type = "candy";
+        type = "candy";
     }
 
     public override void OnTriggerEnter(Collider other)

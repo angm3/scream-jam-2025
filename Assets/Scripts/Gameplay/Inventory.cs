@@ -1,14 +1,15 @@
 using System;
 using System.Collections;
+using System.Threading;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
     public int candyCount;
-
-    // [SerializeField]
-     public TMP_Text candyCounterText;
+    public int maxCandyCount;
+    public TMP_Text candyCounterText;
     public ArrayList blueprints;
     public ArrayList potionIngredients;
 
@@ -17,6 +18,7 @@ public class Inventory : MonoBehaviour
         candyCount = 0;
         blueprints = new ArrayList();
         potionIngredients = new ArrayList();
+        maxCandyCount = 15; // tweak as needed
         UpdateCounterText();
     }
 
@@ -50,11 +52,24 @@ public class Inventory : MonoBehaviour
         UpdateCounterText();
     }
 
-    public void RemoveFromInventory(Collectible item)
+    public void RemoveCandyFromInventory(int count)
+    {
+        if (candyCount >= count)
+        {
+            candyCount -= count;
+        }
+        else
+        {
+            Debug.LogWarning("trying to remove too much candy!");
+        }
+        UpdateCounterText();
+    }
+    
+    public void RemoveItemFromInventory(Collectible item)
     {
         switch (item.type)
         {
-            case "candy":
+            case "candy": // shouldn't happen
                 candyCount--;
                 break;
             case "blueprint":
