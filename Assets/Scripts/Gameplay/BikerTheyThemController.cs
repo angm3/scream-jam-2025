@@ -121,7 +121,14 @@ public class BikerTheyThemController : MonoBehaviour
             }
             stateMachine.ChangeState(new IdleState(this, stateMachine));
         }
+
+        if(!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && stateMachine.CurrentState is DriftingState)
+        {
+            resetVelocityAtEndOfDrift();
+            stateMachine.ChangeState(new IdleState(this, stateMachine));
+        }
     }
+
     
     void FixedUpdate()
     {
@@ -233,8 +240,8 @@ public class BikerTheyThemController : MonoBehaviour
                 stateMachine.ChangeState(new IdleState(this, stateMachine));
                 return;
             }
-            if((!Input.GetKey(KeyCode.S) || !checkIfVelocityIsForward()) && stateMachine.CurrentState is not DriftingState)
-            //if(!Input.GetKey(KeyCode.S) || (!checkIfVelocityIsForward() && stateMachine.CurrentState is not DriftingState)) {
+            //if((!Input.GetKey(KeyCode.S) || !checkIfVelocityIsForward()) && stateMachine.CurrentState is not DriftingState)
+            if(!Input.GetKey(KeyCode.S) || (!checkIfVelocityIsForward() && stateMachine.CurrentState is not DriftingState)) 
             {
                 if(post_drift_timer > post_drift_time_lock)
                 {
