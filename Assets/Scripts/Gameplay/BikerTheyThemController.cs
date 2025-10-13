@@ -19,7 +19,7 @@ public class BikerTheyThemController : MonoBehaviour
     float drift_multiplier = 0.4f;
     float drift_forward_roll = 0.5f;
     float drift_forward_yaw = 4f;
-    float max_drift_yaw = 180f;
+    float max_drift_yaw = 360f;
     float post_drift_timer = 0f;
     float post_drift_time_lock = 0.2f;
     Vector3 forwardAtStartOfDrift = Vector3.zero;
@@ -207,7 +207,7 @@ public class BikerTheyThemController : MonoBehaviour
         if (rb.linearVelocity.magnitude > minSpeedForTurn && ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))))
         {
             //if(stateMachine.CurrentState is not DriftingState && (rb.linearVelocity.magnitude > maxSpeedForDrift || !Input.GetKey(KeyCode.S))) {
-            if(!Input.GetKey(KeyCode.S) || !checkIfVelocityIsForward() || rb.linearVelocity.magnitude < minSpeedForDrift) {
+            if(!Input.GetKey(KeyCode.S) || rb.linearVelocity.magnitude < minSpeedForDrift) {
                 if(stateMachine.CurrentState is DriftingState) {
                     resetVelocityAtEndOfDrift();
                     stateMachine.ChangeState(new IdleState(this, stateMachine));
