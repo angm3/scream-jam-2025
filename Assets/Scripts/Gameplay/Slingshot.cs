@@ -56,6 +56,18 @@ public class SlingshotShootingState : State<Slingshot>
         hold_for_timer = 0f;
         Debug.Log("Slingshot: enter shooting state");
     }
+    
+    void ShootProjectile(Vector3 dir)
+    {
+        GameObject projectile = GameObject.Instantiate(owner.projectilePrefab, owner.transform.position, Quaternion.identity);
+        Rigidbody rb = projectile.GetComponent<Rigidbody>();
+        rb.linearVelocity = dir * Mathf.Min(30f, 5f + hold_for_timer * 20f);
+
+        rb.angularVelocity = Random.insideUnitSphere * 10f;
+
+        GameManager.Instance.GetPlayer().GetComponent<BikerTheyThemController>().ConsumeCandy();
+        owner.stateMachine.ChangeState(new SlingshotCooldownState(owner, stateMachine));
+    }
 
     public override void Update()
     {
@@ -64,6 +76,7 @@ public class SlingshotShootingState : State<Slingshot>
         if (Input.GetMouseButtonUp(0))
         {
             // Shoot
+            /*
             Plane playerPlane = new Plane(Vector3.up, owner.transform.position);
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             float distance;
@@ -92,6 +105,18 @@ public class SlingshotShootingState : State<Slingshot>
             GameManager.Instance.GetPlayer().GetComponent<BikerTheyThemController>().ConsumeCandy();
 
             owner.stateMachine.ChangeState(new SlingshotCooldownState(owner, stateMachine));
+            */
+            
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Vector3 targetPoint;
+
+            if (Physics.Raycast(ray, out RaycastHit hit))
+                targetPoint = hit.point;
+            else
+                targetPoint = ray.GetPoint(20f); // arbitrary distance ahead
+
+            Vector3 dir = (targetPoint - owner.transform.position).normalized;
+            ShootProjectile(dir);
         }
     }
 }
