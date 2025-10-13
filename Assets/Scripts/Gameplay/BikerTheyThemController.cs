@@ -9,10 +9,24 @@ public class BikerTheyThemController : MonoBehaviour
     private float candyHealthIncrease = 20; // tweak
     public Rigidbody rb;
 
+    // Speed thresholds
     private float maxSpeed = 11f; // tweak as needed
-    private float minSpeedForTurn = 0.7f;
+    private float minSpeedForTurn = 0.5f;
+    private float minSpeedForDrift = 2f;
     private float speedEffectThreshold = 7f; // threshold for effects and bike ramming damage
+    private float idleStateResetSpeed = 0.15f;
 
+    // Drift Parameters
+    float drift_multiplier = 0.4f;      // Drift force applied per frame
+    float drift_forward_roll = 0.5f;    // Drift roll applied per frame
+    float drift_forward_yaw = 4f;       // Drift yaw applied per prafe
+    float max_drift_yaw = 360f;         // Maximal yaw change angle allowed over the course of a drift
+    float post_drift_timer = 0f;        // Time initialized to zero
+    float post_drift_time_lock = 0.2f;  // Time to "lock" player from turning left or right after a drift stops...a small time lock helps with stability
+    int drift_rotate_counter = 0;       // Counter that ensures the bike is not rotated beyond some yaw limit
+    Vector3 forwardAtStartOfDrift = Vector3.zero;
+
+    // Jump Parameters/Variables
     public float jump_timer;
     public float jump_cooldown_timer;
     public float jump_cooldown = 1f;
@@ -46,6 +60,12 @@ public class BikerTheyThemController : MonoBehaviour
         EventBus.Unsubscribe<PlayerDeathEvent>(PlayerDeath);
     }
 
+    void Awake()
+    {
+        GameManager.Instance.RegisterPlayer(this.gameObject);
+        this.gameObject.tag = "Player";
+    }
+
     private void Start()
     {
         inventory = FindFirstObjectByType<Inventory>();
@@ -53,8 +73,6 @@ public class BikerTheyThemController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
 
         //speed = 0f;
-        GameManager.Instance?.RegisterPlayer(this.gameObject);
-        this.gameObject.tag = "Player";
 
         jump_timer = 0;
         jump_cooldown_timer = jump_cooldown;
@@ -67,7 +85,8 @@ public class BikerTheyThemController : MonoBehaviour
 
         // Assign the material to the bike's collider
         Collider collider = GetComponent<BoxCollider>();
-        if (collider != null) {
+        if (collider != null)
+        {
             collider.material = tireFriction;
         }
     }
@@ -82,13 +101,36 @@ public class BikerTheyThemController : MonoBehaviour
         {
             ConsumeCandy();
         }
-        
+
         if (Input.GetKeyDown(KeyCode.W))
         {
             // switch states to accelerating
+            if (stateMachine.CurrentState is DriftingState)
+            {
+                resetVelocityAtEndOfDrift();
+            }
             stateMachine.ChangeState(new AcceleratingState(this, stateMachine));
         }
+        
+        // Force a state reset to idle if the bike slows down too much
+        if (rb.linearVelocity.magnitude < idleStateResetSpeed)
+        {
+            // switch states to idle
+            if (stateMachine.CurrentState is DriftingState)
+            {
+                resetVelocityAtEndOfDrift();
+            }
+            stateMachine.ChangeState(new IdleState(this, stateMachine));
+        }
+
+        // If in drift state AND A and D are not pressed OR S is not pressed, kill the drift and force an idle state
+        if (((!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D)) || !Input.GetKey(KeyCode.S)) && stateMachine.CurrentState is DriftingState)
+        {
+            resetVelocityAtEndOfDrift();
+            stateMachine.ChangeState(new IdleState(this, stateMachine));
+        }
     }
+
     
     void FixedUpdate()
     {
@@ -114,21 +156,33 @@ public class BikerTheyThemController : MonoBehaviour
         inventory.AddToInventory(e.item);
     }
 
-    void ConsumeCandy()
+    public void ConsumeCandy()
     {
         Debug.Log("in ConsumeCandy");
         inventory.RemoveCandyFromInventory(1);
         playerSugar.AddSugar(candyHealthIncrease);
     }
 
+    public bool CanUseCandy()
+    {
+        return inventory.candyCount > 0;
+    }
+
     void PlayerDeath(PlayerDeathEvent e)
     {
         Debug.Log("On PlayerDeath");
-        Instantiate(tombstoneRef.AddComponent<Tombstone>(), transform.position, Quaternion.Euler(90,0,0));
-        Debug.Log("Instantiated tombstone");
+        Instantiate(tombstoneRef.AddComponent<Tombstone>(), transform.position, Quaternion.Euler(90, 0, 0));
         inventory.DropInventory();
-        this.gameObject.SetActive(false);
-        // TODO: scene manager should switch scenes OR load death ui menu
+        gameObject.SetActive(false);
+
+        SceneController.Instance.LoadScene("UI", true);
+    }
+
+    void resetVelocityAtEndOfDrift() {
+        Debug.Log("Reset velocity at end of drift.");
+        rb.linearVelocity = transform.forward * Mathf.Max(minSpeedForDrift * 0.6f, rb.linearVelocity.magnitude * 0.8f);
+        drift_rotate_counter = 0;
+        post_drift_timer = 0f;
     }
 
     public void HandleMovement()
@@ -136,7 +190,10 @@ public class BikerTheyThemController : MonoBehaviour
         LinearMotion();
         LateralMotion();    
         ClampSpeed();
-        RotateBiker();
+        if(stateMachine.CurrentState is not DriftingState)
+        {
+            RotateBiker();
+        }
         JumpBiker();
 
         bool meetsThreshold = checkSpeedEffectThreshold();
@@ -149,6 +206,9 @@ public class BikerTheyThemController : MonoBehaviour
             Debug.Log("Player speed below threshold");
         }
 
+        Debug.Log("Linear Velocity: " + rb.linearVelocity.ToString());
+        Debug.Log("Linear Velocity Euler Angles: " + rb.rotation.eulerAngles.ToString());
+
     }
 
     private void LinearMotion() 
@@ -160,46 +220,124 @@ public class BikerTheyThemController : MonoBehaviour
         }
 
         // if S is pressed, deccelerate
-        if (Input.GetKey(KeyCode.S))
+        if(stateMachine.CurrentState is not DriftingState)
         {
-            rb.AddForce(-transform.forward * 15f, ForceMode.Acceleration);
+            if (Input.GetKey(KeyCode.S))
+            {
+                rb.AddForce(-transform.forward * 15f, ForceMode.Acceleration);
+                Debug.Log("Deccelerating");
+            }
         }
+        
     }
 
     private void LateralMotion() 
     {
-        if (rb.linearVelocity.magnitude > minSpeedForTurn)
+        post_drift_timer += Time.fixedDeltaTime;
+
+        // If pressing A or D, enter the below block of code
+        if (rb.linearVelocity.magnitude > minSpeedForTurn && ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))))
         {
-            // if A is pressed, turn left
-            if (Input.GetKey(KeyCode.A))
+            // If below the minimum drift speed and in a drifing state, kill the drift and force an idle state
+            if (rb.linearVelocity.magnitude < minSpeedForDrift && stateMachine.CurrentState is DriftingState)
             {
-                if (checkIfVelocityIsForward())
+                resetVelocityAtEndOfDrift();
+                stateMachine.ChangeState(new IdleState(this, stateMachine));
+                return;
+            }
+            
+            // If NOT pressing S OR Velocity is backwards and bike is not in a drift, perform normal turning
+            if (!Input.GetKey(KeyCode.S) || (!checkIfVelocityIsForward() && stateMachine.CurrentState is not DriftingState))
+            {
+                if (post_drift_timer > post_drift_time_lock)
                 {
-                    rb.AddForce(-transform.right * 10f, ForceMode.Acceleration);
-                    transform.Rotate(0, 0, 2f);
-                }
-                else
-                {
-                    rb.AddForce(transform.right * 10f, ForceMode.Acceleration);
-                    transform.Rotate(0, 0, -2f);
+                    // if A is pressed, turn left
+                    if (Input.GetKey(KeyCode.A))
+                    {
+                        if (checkIfVelocityIsForward())
+                        {
+                            rb.AddForce(-transform.right * 10f, ForceMode.Acceleration);
+                            transform.Rotate(0, 0, 3f);
+                        }
+                        else
+                        {
+                            rb.AddForce(transform.right * 10f, ForceMode.Acceleration);
+                            transform.Rotate(0, 0, -3f);
+                        }
+
+                    }
+
+                    // if D is pressed, turn right
+                    if (Input.GetKey(KeyCode.D))
+                    {
+                        if (checkIfVelocityIsForward())
+                        {
+                            rb.AddForce(transform.right * 10f, ForceMode.Acceleration);
+                            transform.Rotate(0, 0, -3f);
+                        }
+                        else
+                        {
+                            rb.AddForce(-transform.right * 10f, ForceMode.Acceleration);
+                            transform.Rotate(0, 0, 3f);
+                        }
+                    }
                 }
 
             }
 
-            // if D is pressed, turn right
-            if (Input.GetKey(KeyCode.D))
+            // If S is pressed OR bike is in a drifting state AND going backwards 
+            else
             {
-                if (checkIfVelocityIsForward())
+                // If this is  a new drift state, set it, capture the current forwards vector, and force the bike 
+                // to be uprights.
+                if (stateMachine.CurrentState is not DriftingState && checkIfVelocityIsForward())
                 {
-                    rb.AddForce(transform.right * 10f, ForceMode.Acceleration);
-                    transform.Rotate(0, 0, -2f);
+                    stateMachine.ChangeState(new DriftingState(this, stateMachine));
+                    transform.Rotate(0f, 0f, -transform.eulerAngles.z); // Force bike to be upright
+                    forwardAtStartOfDrift = transform.forward;          // Capture forward direction (drift forces act opposite this)
+                    Debug.Log("Drift: New Drift State.");
+                    drift_rotate_counter = 0;
                 }
+                // If the bike is at the minimum drift speed...
+                if (rb.linearVelocity.magnitude > minSpeedForDrift)
+                {
+                    // Drift left...
+                    if (Input.GetKey(KeyCode.A))
+                    {
+                        rb.AddForce(-forwardAtStartOfDrift * drift_multiplier);
+
+
+                        if (drift_rotate_counter < Mathf.Ceil(max_drift_yaw / drift_forward_yaw))
+                        {
+                            transform.Rotate(0, -drift_forward_yaw, drift_forward_roll, Space.Self);
+                            drift_rotate_counter += 1;
+
+                        }
+                    }
+                    // Drift right...
+                    else if (Input.GetKey(KeyCode.D))
+                    {
+                        rb.AddForce(-forwardAtStartOfDrift * drift_multiplier);
+
+                        if (drift_rotate_counter < Mathf.Ceil(max_drift_yaw / drift_forward_yaw))
+                        {
+                            transform.Rotate(0, drift_forward_yaw, -drift_forward_roll, Space.Self);
+                            drift_rotate_counter += 1;
+                        }
+
+                    }
+
+                    Debug.Log("Drift Euler Angles: " + transform.eulerAngles);
+                }
+                // If bike is below minimum drifitng speed, kill the drift and force an idle state
                 else
                 {
-                    rb.AddForce(-transform.right * 10f, ForceMode.Acceleration);
-                    transform.Rotate(0, 0, 2f);
+                    resetVelocityAtEndOfDrift();
+                    stateMachine.ChangeState(new IdleState(this, stateMachine));
                 }
+
             }
+
         }
     }
 
@@ -257,6 +395,11 @@ public class BikerTheyThemController : MonoBehaviour
     
     public void HandleMovementPerFrame()
     {
+        if (Input.GetKey(KeyCode.P))
+        {
+            Debug.Log("P hit");
+            EventBus.Publish(new EnemyDamageEvent(25));
+        }
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if (jump_cooldown_timer > jump_cooldown)
@@ -300,7 +443,7 @@ public class IdleState : State<BikerTheyThemController>
 
     public override void Enter()
     {
-        Debug.Log("Entered idle state");
+        Debug.Log("Drift: Entered idle state");
     }
 
     public override void Update()
@@ -316,7 +459,7 @@ public class AcceleratingState : State<BikerTheyThemController>
 
     public override void Enter()
     {
-        Debug.Log("Entered accelerating state");
+        Debug.Log("Drift: Entered accelerating state");
     }
 
     public override void Update()
@@ -354,4 +497,35 @@ public class DecceleratingState : State<BikerTheyThemController>
     }
     
     
+}
+
+
+
+public class DriftingState : State<BikerTheyThemController>
+{
+    public DriftingState(BikerTheyThemController owner, StateMachine<BikerTheyThemController> sm) : base(owner, sm) { }
+    
+    private float decay_multiplier = 0.5f;
+
+    public override void Enter()
+    {
+        Debug.Log("Drift: Entered drifting state");
+    }
+
+    public override void Update()
+    {
+        Debug.Log("Draining sugar: " + (owner.playerSugar.decayRate*decay_multiplier).ToString());
+        // drain sugar
+        owner.playerSugar.DrainSugar(owner.playerSugar.decayRate * decay_multiplier * Time.deltaTime);
+        if (Input.GetKeyUp(KeyCode.S) || Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
+        {
+            // switch states to deccelerating
+            //owner.stateMachine.ChangeState(new IdleState(owner, owner.stateMachine));
+        }
+    }
+    
+    public override void FixedUpdate()
+    {
+        
+    }
 }

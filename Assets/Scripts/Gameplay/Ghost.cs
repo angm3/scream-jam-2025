@@ -5,11 +5,30 @@ using System.Collections;
 
 public class Ghost : Monster<Ghost>
 {
+    private Healthbar healthbar;
+    [SerializeField] private int playerHitDamage = 100;
+    [SerializeField] private int projectileHitDamage = 50;
     
     private void Start()
     {
         stateMachine.ChangeState(new GhostIdleState(this, stateMachine));
         playerDamage = 69;
+        maxHealth = 100;
+        currentHealth = 100;
+        healthbar = GetComponentInChildren<Healthbar>();
+        Debug.Log(healthbar);
+    }
+
+    void OnEnable()
+    {
+        EventBus.Subscribe<EnemyDamageEvent>(TakeDamage);
+       
+    }
+
+    void OnDisable()
+    {
+        EventBus.Unsubscribe<EnemyDamageEvent>(TakeDamage);
+       
     }
 
     public bool checkIfVelocityIsForward(Rigidbody rb)
@@ -33,7 +52,8 @@ public class Ghost : Monster<Ghost>
                 Debug.Log("Ghost hit by player");
                 if (other.gameObject.GetComponent<BikerTheyThemController>().checkSpeedEffectThreshold())
                 {
-                    stateMachine.ChangeState(new GhostDyingState(this, stateMachine));
+                    TakeDamage(new EnemyDamageEvent(playerHitDamage));
+                    healthbar.UpdateHealthBar(maxHealth, currentHealth);
                 }
             }
         }
@@ -41,9 +61,22 @@ public class Ghost : Monster<Ghost>
         if (other.gameObject.CompareTag("Projectile"))
         {
             Debug.Log("Ghost hit by projectile");
-            stateMachine.ChangeState(new GhostDyingState(this, stateMachine));
+            TakeDamage(new EnemyDamageEvent(projectileHitDamage));
+            healthbar.UpdateHealthBar(maxHealth, currentHealth);
             
         }
+
+        if (currentHealth <= 0)
+        {
+            Debug.Log("Ghost has no health, dying");
+            stateMachine.ChangeState(new GhostDyingState(this, stateMachine));
+        }
+    }
+
+    public void TakeDamage(EnemyDamageEvent e)
+    {
+        Debug.Log("Ghost took damage: " + e.enemyDamage.ToString());
+        currentHealth -= e.enemyDamage;
     }
 
 
@@ -64,15 +97,26 @@ public class GhostIdleState : MonsterIdleState<Ghost>
 {
     public GhostIdleState(Ghost owner, StateMachine<Ghost> sm) : base(owner, sm) { }
 
+    float bobPhase;
+
     public override void Enter()
     {
         Debug.Log("Entered Ghost Idle");
-        
+
         owner.SetColorOfLight(new Color(1f, 1f, 0f, 1f));
+        bobPhase = Random.Range(0f, 2f * Mathf.PI);
     }
 
-    public override void Update() 
+    public override void Update()
     {
+
+        // make the ghost bob up and down
+        float bobHeight = 0.5f;
+        float bobSpeed = 2f;
+        // random bob phase
+        owner.transform.position = new Vector3(owner.transform.position.x, owner.transform.position.y + Mathf.Sin(bobPhase +Time.time * bobSpeed) * bobHeight * Time.deltaTime, owner.transform.position.z);
+
+
         if ((GameManager.Instance.GetPlayer().transform.position - this.owner.gameObject.transform.position).magnitude < 10f)
         {
             stateMachine.ChangeState(new GhostChasingState(owner, stateMachine));
@@ -187,7 +231,10 @@ public class GhostAttackingState : MonsterAttackingState<Ghost>
 
         //Debug.Log("Done dashong" + Time.time);
 
-        stateMachine.ChangeState(new GhostIdleState(owner, stateMachine));
+        if (!(stateMachine.CurrentState is GhostDyingState))
+        {
+            stateMachine.ChangeState(new GhostIdleState(owner, stateMachine));
+        }
     }
 }
 
@@ -195,13 +242,46 @@ public class GhostAttackingState : MonsterAttackingState<Ghost>
 
 public class GhostDyingState : MonsterDyingState<Ghost>
 {
+    private float duration = 1f;      // total lifetime of the dying effect
+    private float elapsed = 0f;
+    private Vector3 startScale;
+    private Vector3 targetScale = Vector3.zero;
+    private float rotationSpeed = 360f;   // degrees per second
+    private float riseHeight = 2f;        // how far upward it rises
+    public Vector3 initialPosition;
+
     public GhostDyingState(Ghost owner, StateMachine<Ghost> sm) : base(owner, sm) { }
 
-    
     public override void Enter()
     {
         Debug.Log("Ghost is dying");
-        UnityEngine.Object.Destroy(owner.gameObject);
+        elapsed = 0f;
+        startScale = owner.transform.localScale;
+        initialPosition = owner.transform.position;
     }
 
+    public override void Update()
+    {
+        elapsed += Time.deltaTime;
+        float t = elapsed / duration;
+
+        // Rise upward in a helical motion (spiral)
+        float angle = t * Mathf.PI * 4f; // number of twists (2 full turns)
+        float radius = Mathf.Lerp(0.5f, 0f, t); // spiral tightens as it rises
+        Vector3 offset = new Vector3(Mathf.Cos(angle) * radius, Mathf.Lerp(0, riseHeight, t), Mathf.Sin(angle) * radius);
+
+        owner.transform.position = initialPosition + offset;
+
+        // Rotate around its own Y axis
+        owner.transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime, Space.World);
+
+        // Shrink over time
+        owner.transform.localScale = Vector3.Lerp(startScale, targetScale, t);
+
+        // When done, destroy
+        if (t >= 1f)
+        {
+            Object.Destroy(owner.gameObject);
+        }
+    }
 }
