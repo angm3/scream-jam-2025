@@ -5,6 +5,7 @@ public abstract class Collectible : MonoBehaviour
     public StateMachine<Collectible> stateMachine;
 
     public string type; // candy, blueprint, potion_ingredient
+    public string id;
                   
     public Collectible()
     {
