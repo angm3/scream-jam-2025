@@ -5,11 +5,30 @@ using System.Collections;
 
 public class Ghost : Monster<Ghost>
 {
+    private Healthbar healthbar;
+    [SerializeField] private int playerHitDamage = 100;
+    [SerializeField] private int projectileHitDamage = 50;
     
     private void Start()
     {
         stateMachine.ChangeState(new GhostIdleState(this, stateMachine));
         playerDamage = 69;
+        maxHealth = 100;
+        currentHealth = 100;
+        healthbar = GetComponentInChildren<Healthbar>();
+        Debug.Log(healthbar);
+    }
+
+    void OnEnable()
+    {
+        EventBus.Subscribe<EnemyDamageEvent>(TakeDamage);
+       
+    }
+
+    void OnDisable()
+    {
+        EventBus.Unsubscribe<EnemyDamageEvent>(TakeDamage);
+       
     }
 
     public bool checkIfVelocityIsForward(Rigidbody rb)
@@ -33,7 +52,8 @@ public class Ghost : Monster<Ghost>
                 Debug.Log("Ghost hit by player");
                 if (other.gameObject.GetComponent<BikerTheyThemController>().checkSpeedEffectThreshold())
                 {
-                    stateMachine.ChangeState(new GhostDyingState(this, stateMachine));
+                    TakeDamage(new EnemyDamageEvent(playerHitDamage));
+                    healthbar.UpdateHealthBar(maxHealth, currentHealth);
                 }
             }
         }
@@ -41,9 +61,22 @@ public class Ghost : Monster<Ghost>
         if (other.gameObject.CompareTag("Projectile"))
         {
             Debug.Log("Ghost hit by projectile");
-            stateMachine.ChangeState(new GhostDyingState(this, stateMachine));
+            TakeDamage(new EnemyDamageEvent(projectileHitDamage));
+            healthbar.UpdateHealthBar(maxHealth, currentHealth);
             
         }
+
+        if (currentHealth <= 0)
+        {
+            Debug.Log("Ghost has no health, dying");
+            stateMachine.ChangeState(new GhostDyingState(this, stateMachine));
+        }
+    }
+
+    public void TakeDamage(EnemyDamageEvent e)
+    {
+        Debug.Log("Ghost took damage: " + e.enemyDamage.ToString());
+        currentHealth -= e.enemyDamage;
     }
 
 
