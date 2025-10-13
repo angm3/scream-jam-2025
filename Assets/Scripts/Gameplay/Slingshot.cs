@@ -76,37 +76,6 @@ public class SlingshotShootingState : State<Slingshot>
         if (Input.GetMouseButtonUp(0))
         {
             // Shoot
-            /*
-            Plane playerPlane = new Plane(Vector3.up, owner.transform.position);
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            float distance;
-            Vector3 relativeMousePosition = Vector3.zero;
-            if (playerPlane.Raycast(ray, out distance))
-            {
-                relativeMousePosition = ray.GetPoint(distance);
-            }
-
-            Vector3 baes_projectile_dir = -(GameManager.Instance.GetPlayer().transform.position - relativeMousePosition).normalized;
-            // Create projectile
-            GameObject projectile = GameObject.Instantiate(owner.projectilePrefab, owner.transform.position, Quaternion.identity);
-            projectile.GetComponent<Rigidbody>().linearVelocity = baes_projectile_dir * Mathf.Min(30f, 5f + hold_for_timer * 20f);
-
-            // give the projectile some spin randomized
-            projectile.GetComponent<Rigidbody>().angularVelocity = new Vector3(
-                Random.Range(-10f, 10f),
-                Random.Range(-10f, 10f),
-                Random.Range(-10f, 10f)
-            );
-
-            // Recoil player
-            //EventBus.Publish(new PlayerBumpEvent(-baes_projectile_dir, Mathf.Min(20f, 5f + hold_for_timer * 15f)));
-
-            // decrement candy count
-            GameManager.Instance.GetPlayer().GetComponent<BikerTheyThemController>().ConsumeCandy();
-
-            owner.stateMachine.ChangeState(new SlingshotCooldownState(owner, stateMachine));
-            */
-            
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             Vector3 targetPoint;
 
