@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Shader Graphs_LowSugarScreenEffect
+  m_Name: Vignette
   m_Shader: {fileID: -6465566751694194690, guid: eaf93c9cabeed104c9f42f4fca7d1857, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -36,7 +36,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
-    m_Floats: []
+    m_Floats:
+    - _Vignette_darkening: 0
+    - _Vignette_radius: 0
+    - _Vignette_softness: 0
     m_Colors: []
   m_BuildTextureStacks: []
   m_AllowLocking: 1
