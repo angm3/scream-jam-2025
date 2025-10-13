@@ -1,18 +1,24 @@
-
 using UnityEngine;
-
 
 public class Slingshot : MonoBehaviour
 {
     public StateMachine<Slingshot> stateMachine;
     public GameObject projectilePrefab;
 
-    public Slingshot()
+    void Start()
     {
         stateMachine = new StateMachine<Slingshot>();
-        stateMachine.ChangeState(new SlingshotCanShootState(this, stateMachine));
+        bool hasEnoughInventory = GameManager.Instance.GetPlayer().GetComponent<BikerTheyThemController>().CanUseCandy();
+        Debug.Log("Slingshot: Constructor - hasEnoughInventory=" + hasEnoughInventory.ToString());
+        if (hasEnoughInventory)
+        {
+            stateMachine.ChangeState(new SlingshotCanShootState(this, stateMachine));
+        } else
+        {
+            stateMachine.ChangeState(new SlingshotEmptyState(this, stateMachine));
+        }
     }
-    
+
     void Update()
     {
         stateMachine.Update();
@@ -48,6 +54,7 @@ public class SlingshotShootingState : State<Slingshot>
     public override void Enter()
     {
         hold_for_timer = 0f;
+        Debug.Log("Slingshot: enter shooting state");
     }
 
     public override void Update()
@@ -65,29 +72,49 @@ public class SlingshotShootingState : State<Slingshot>
             {
                 relativeMousePosition = ray.GetPoint(distance);
             }
-            //Debug.Log("relativeMousePosition = " + (relativeMousePosition - GameManager.Instance.GetPlayer().transform.position));
 
             Vector3 baes_projectile_dir = -(GameManager.Instance.GetPlayer().transform.position - relativeMousePosition).normalized;
             // Create projectile
-            //GameObject projectilePrefab = Resources.Load<GameObject>("Prefabs/Projectile");
             GameObject projectile = GameObject.Instantiate(owner.projectilePrefab, owner.transform.position, Quaternion.identity);
             projectile.GetComponent<Rigidbody>().linearVelocity = baes_projectile_dir * Mathf.Min(30f, 5f + hold_for_timer * 20f);
-            
+
             // give the projectile some spin randomized
             projectile.GetComponent<Rigidbody>().angularVelocity = new Vector3(
                 Random.Range(-10f, 10f),
                 Random.Range(-10f, 10f),
                 Random.Range(-10f, 10f)
             );
-            
+
             // Recoil player
             //EventBus.Publish(new PlayerBumpEvent(-baes_projectile_dir, Mathf.Min(20f, 5f + hold_for_timer * 15f)));
+
+            // decrement candy count
+            GameManager.Instance.GetPlayer().GetComponent<BikerTheyThemController>().ConsumeCandy();
 
             owner.stateMachine.ChangeState(new SlingshotCooldownState(owner, stateMachine));
         }
     }
 }
 
+public class SlingshotEmptyState : State<Slingshot>
+{
+    public SlingshotEmptyState(Slingshot slingshot, StateMachine<Slingshot> stateMachine) : base(slingshot, stateMachine) { }
+
+    public override void Enter()
+    {
+        Debug.Log("Slingshot is empty");
+    }
+
+    public override void Update()
+    {
+        bool hasEnoughInventory = GameManager.Instance.GetPlayer().GetComponent<BikerTheyThemController>().CanUseCandy();
+        if (hasEnoughInventory)
+        {
+            Debug.Log("Slingshot: Empty Update - has enough inventory");
+            owner.stateMachine.ChangeState(new SlingshotCanShootState(owner, stateMachine));
+        }
+    }
+}
 
 
 
@@ -104,9 +131,16 @@ public class SlingshotCooldownState : State<Slingshot>
     public override void Update()
     {
         cooldown_time_counter += Time.deltaTime;
-        if (cooldown_time_counter >= cooldown_timer)
+        bool hasEnoughInventory = GameManager.Instance.GetPlayer().GetComponent<BikerTheyThemController>().CanUseCandy();
+        // Debug.Log("Slingshot: Update - hasEnoughInventory=" + hasEnoughInventory.ToString());
+        if (cooldown_time_counter >= cooldown_timer && hasEnoughInventory)
         {
+            Debug.Log("Slingshot: cooldown Update - switching to can shoot state.");
             owner.stateMachine.ChangeState(new SlingshotCanShootState(owner, stateMachine));
+        } else if (!hasEnoughInventory) // need cooldown conditions?
+        {
+            Debug.Log("Slingshot: cooldown Update - switching to empty state"); 
+            owner.stateMachine.ChangeState(new SlingshotEmptyState(owner, stateMachine));
         }
     }
 }
