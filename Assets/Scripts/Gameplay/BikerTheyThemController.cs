@@ -59,6 +59,12 @@ public class BikerTheyThemController : MonoBehaviour
         EventBus.Unsubscribe<PlayerDeathEvent>(PlayerDeath);
     }
 
+    void Awake()
+    {
+        GameManager.Instance.RegisterPlayer(this.gameObject);
+        this.gameObject.tag = "Player";
+    }
+
     private void Start()
     {
         inventory = FindFirstObjectByType<Inventory>();
@@ -66,8 +72,6 @@ public class BikerTheyThemController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
 
         //speed = 0f;
-        GameManager.Instance?.RegisterPlayer(this.gameObject);
-        this.gameObject.tag = "Player";
 
         jump_timer = 0;
         jump_cooldown_timer = jump_cooldown;
@@ -80,7 +84,8 @@ public class BikerTheyThemController : MonoBehaviour
 
         // Assign the material to the bike's collider
         Collider collider = GetComponent<BoxCollider>();
-        if (collider != null) {
+        if (collider != null)
+        {
             collider.material = tireFriction;
         }
     }
@@ -130,11 +135,16 @@ public class BikerTheyThemController : MonoBehaviour
         inventory.AddToInventory(e.item);
     }
 
-    void ConsumeCandy()
+    public void ConsumeCandy()
     {
         Debug.Log("in ConsumeCandy");
         inventory.RemoveCandyFromInventory(1);
         playerSugar.AddSugar(candyHealthIncrease);
+    }
+
+    public bool CanUseCandy()
+    {
+        return inventory.candyCount > 0;
     }
 
     void PlayerDeath(PlayerDeathEvent e)
