@@ -175,8 +175,8 @@ public class BikerTheyThemController : MonoBehaviour
             Debug.Log("Player speed below threshold");
         }
 
-        Debug.Log("Linear Velocity: " + rb.linearVelocity.ToString());
-        Debug.Log("Linear Velocity Euler Angles: " + rb.rotation.eulerAngles.ToString());
+        //Debug.Log("Linear Velocity: " + rb.linearVelocity.ToString());
+        //Debug.Log("Linear Velocity Euler Angles: " + rb.rotation.eulerAngles.ToString());
 
     }
 
