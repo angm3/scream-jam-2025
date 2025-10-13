@@ -26,11 +26,16 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void HandleSuccessfulExtraction ()
+    public void HandleSuccessfulExtraction()
     {
         Debug.Log("Extraction Successful");
         // TODO: Transfer inventory items to "stash"
         TransferInventoryToStash();
+        ReturnToGarage();
+    }
+    
+    public void ReturnToGarage()
+    {
         SceneController.Instance.LoadScene("Garage", includeUI: true);
     }
 
@@ -53,7 +58,7 @@ public class GameManager : MonoBehaviour
     public void EndGame()
     {
         Debug.Log("Game Over!");
-        // ...
+        Application.Quit();
     }
 
     // Called by player when scene loads
