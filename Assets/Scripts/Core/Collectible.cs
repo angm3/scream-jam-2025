@@ -35,7 +35,13 @@ public class CollectibleIdleState : State<Collectible>
 
     public override void Update()
     {
-
+        // bob up and down
+        float bobHeight = 0.25f;
+        float bobSpeed = 2f;
+        owner.transform.position = new Vector3(owner.transform.position.x, owner.transform.position.y + Mathf.Sin(Time.time * bobSpeed) * bobHeight * Time.deltaTime, owner.transform.position.z);
+        // rotate slowly
+        float rotateSpeed = 45f;
+        owner.transform.Rotate(Vector3.up, rotateSpeed * Time.deltaTime);
     }
 }
 
