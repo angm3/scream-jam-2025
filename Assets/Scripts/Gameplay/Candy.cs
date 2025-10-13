@@ -38,3 +38,4 @@ public class Candy : Collectible
         Destroy(this.gameObject, 0.5f);
     }
 }
+ 
