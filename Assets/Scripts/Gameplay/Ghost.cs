@@ -16,7 +16,7 @@ public class Ghost : Monster<Ghost>
     {
         return Vector3.Dot(rb.transform.forward, rb.linearVelocity) > 0;
     }
-    
+
     void OnTriggerEnter(Collider other)
     {
         Debug.Log("Collison detected in ghost");
@@ -37,6 +37,24 @@ public class Ghost : Monster<Ghost>
                 }
             }
         }
+
+        if (other.gameObject.CompareTag("Projectile"))
+        {
+            Debug.Log("Ghost hit by projectile");
+            stateMachine.ChangeState(new GhostDyingState(this, stateMachine));
+            
+        }
+    }
+
+
+    public void SetColorOfLight(Color color)
+    {
+        Light pointLight = GetComponentInChildren<Light>();
+        
+        if (pointLight != null)
+        {
+            pointLight.color = color;
+        }
     }
     
 }
@@ -49,6 +67,8 @@ public class GhostIdleState : MonsterIdleState<Ghost>
     public override void Enter()
     {
         Debug.Log("Entered Ghost Idle");
+        
+        owner.SetColorOfLight(new Color(1f, 1f, 0f, 1f));
     }
 
     public override void Update() 
@@ -73,7 +93,8 @@ public class GhostChasingState : MonsterChasingState<Ghost>
     {
 
         Debug.Log("Ghost is chasing");
-
+        owner.SetColorOfLight(new Color(255f / 255f, 154f / 255f, 0f, 255f));
+        
         attack_cooldown_timer = 3f;
         can_attack = false;
     }
@@ -81,6 +102,12 @@ public class GhostChasingState : MonsterChasingState<Ghost>
     public override void Update()
     {
 
+        // Rotate -x towards player
+        Vector3 directionToPlayer = (GameManager.Instance.GetPlayer().transform.position - owner.transform.position).normalized;
+        Quaternion targetRotation = Quaternion.LookRotation(directionToPlayer);
+        owner.transform.rotation = targetRotation;
+        
+        
         if (owner.checkIfVelocityIsForward(GameManager.Instance.GetPlayer().GetComponent<Rigidbody>()))
         {
             owner.gameObject.transform.position = Vector3.MoveTowards(
@@ -132,6 +159,7 @@ public class GhostAttackingState : MonsterAttackingState<Ghost>
     public override void Enter()
     {
         Debug.Log("Ghost is attacking");
+        owner.SetColorOfLight(new Color(255f / 255f, 0f / 255f, 0f, 255f));
         is_projecting = true;
         dashCoroutine = owner.StartCoroutine(DashAtPlayer());
     }
