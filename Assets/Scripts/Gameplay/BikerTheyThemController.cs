@@ -140,11 +140,11 @@ public class BikerTheyThemController : MonoBehaviour
     void PlayerDeath(PlayerDeathEvent e)
     {
         Debug.Log("On PlayerDeath");
-        Instantiate(tombstoneRef.AddComponent<Tombstone>(), transform.position, Quaternion.Euler(90,0,0));
-        Debug.Log("Instantiated tombstone");
+        Instantiate(tombstoneRef.AddComponent<Tombstone>(), transform.position, Quaternion.Euler(90, 0, 0));
         inventory.DropInventory();
-        this.gameObject.SetActive(false);
-        // TODO: scene manager should switch scenes OR load death ui menu
+        gameObject.SetActive(false);
+
+        SceneController.Instance.LoadScene("UI", true);
     }
 
     void resetVelocityAtEndOfDrift() {
