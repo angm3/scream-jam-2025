@@ -206,12 +206,13 @@ public class BikerTheyThemController : MonoBehaviour
 
         if (rb.linearVelocity.magnitude > minSpeedForTurn && ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))))
         {
-            //if(stateMachine.CurrentState is not DriftingState && (rb.linearVelocity.magnitude > maxSpeedForDrift || !Input.GetKey(KeyCode.S))) {
-            if(!Input.GetKey(KeyCode.S) || rb.linearVelocity.magnitude < minSpeedForDrift) {
-                if(stateMachine.CurrentState is DriftingState) {
-                    resetVelocityAtEndOfDrift();
-                    stateMachine.ChangeState(new IdleState(this, stateMachine));
-                }
+            if(rb.linearVelocity.magnitude < minSpeedForDrift && stateMachine.CurrentState is DriftingState) {
+                resetVelocityAtEndOfDrift();
+                stateMachine.ChangeState(new IdleState(this, stateMachine));
+                return;
+            }
+
+            if(!Input.GetKey(KeyCode.S) || (!checkIfVelocityIsForward() && stateMachine.CurrentState is not DriftingState)) {
 
                 if(post_drift_timer > post_drift_time_lock)
                 {
@@ -248,9 +249,10 @@ public class BikerTheyThemController : MonoBehaviour
                 }
                 
             }
+
             // If below max drift speed AND S is pressed (DRIFTING!!!!)
             else {
-                if(stateMachine.CurrentState is not DriftingState) {
+                if(stateMachine.CurrentState is not DriftingState && checkIfVelocityIsForward()) {
                     stateMachine.ChangeState(new DriftingState(this, stateMachine));
                     transform.Rotate(0f, 0f, -transform.eulerAngles.z);
                     forwardAtStartOfDrift = transform.forward;
