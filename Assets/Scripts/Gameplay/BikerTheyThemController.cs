@@ -14,6 +14,7 @@ public class BikerTheyThemController : MonoBehaviour
     private float minSpeedForTurn = 0.5f;
     private float minSpeedForDrift = 2f;
     private float speedEffectThreshold = 7f; // threshold for effects and bike ramming damage
+    private float idleStateResetSpeed = 0.15f;
 
     // Drift Parameters
     float drift_multiplier = 0.4f;
@@ -95,14 +96,25 @@ public class BikerTheyThemController : MonoBehaviour
         {
             ConsumeCandy();
         }
-        
+
         if (Input.GetKeyDown(KeyCode.W))
         {
             // switch states to accelerating
-            if(stateMachine.CurrentState is DriftingState) {
+            if (stateMachine.CurrentState is DriftingState)
+            {
                 resetVelocityAtEndOfDrift();
             }
             stateMachine.ChangeState(new AcceleratingState(this, stateMachine));
+        }
+        
+        if (rb.linearVelocity.magnitude < idleStateResetSpeed)
+        {
+            // switch states to idle
+            if (stateMachine.CurrentState is DriftingState)
+            {
+                resetVelocityAtEndOfDrift();
+            }
+            stateMachine.ChangeState(new IdleState(this, stateMachine));
         }
     }
     
@@ -175,8 +187,8 @@ public class BikerTheyThemController : MonoBehaviour
             Debug.Log("Player speed below threshold");
         }
 
-        //Debug.Log("Linear Velocity: " + rb.linearVelocity.ToString());
-        //Debug.Log("Linear Velocity Euler Angles: " + rb.rotation.eulerAngles.ToString());
+        Debug.Log("Linear Velocity: " + rb.linearVelocity.ToString());
+        Debug.Log("Linear Velocity Euler Angles: " + rb.rotation.eulerAngles.ToString());
 
     }
 
@@ -206,14 +218,14 @@ public class BikerTheyThemController : MonoBehaviour
 
         if (rb.linearVelocity.magnitude > minSpeedForTurn && ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))))
         {
-            if(rb.linearVelocity.magnitude < minSpeedForDrift && stateMachine.CurrentState is DriftingState) {
+            if((!Input.GetKey(KeyCode.S) || rb.linearVelocity.magnitude < minSpeedForDrift) && stateMachine.CurrentState is DriftingState) {
                 resetVelocityAtEndOfDrift();
                 stateMachine.ChangeState(new IdleState(this, stateMachine));
                 return;
             }
-
-            if(!Input.GetKey(KeyCode.S) || (!checkIfVelocityIsForward() && stateMachine.CurrentState is not DriftingState)) {
-
+            if((!Input.GetKey(KeyCode.S) || !checkIfVelocityIsForward()) && stateMachine.CurrentState is not DriftingState)
+            //if(!Input.GetKey(KeyCode.S) || (!checkIfVelocityIsForward() && stateMachine.CurrentState is not DriftingState)) {
+            {
                 if(post_drift_timer > post_drift_time_lock)
                 {
                     // if A is pressed, turn left
