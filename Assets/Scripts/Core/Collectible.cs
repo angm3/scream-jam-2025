@@ -5,6 +5,7 @@ public abstract class Collectible : MonoBehaviour
     public StateMachine<Collectible> stateMachine;
 
     public string type; // candy, blueprint, potion_ingredient
+    public string id;
                   
     public Collectible()
     {
@@ -54,6 +55,7 @@ public class CollectibleCollectedState : State<Collectible>
         // on enter collected state, trigger inventory add and destroy self.
         Debug.Log("Collectible collected");
         EventBus.Publish(new PlayerAddInventoryEvent(this.owner));
-        Object.Destroy(this.owner.gameObject);
+        //Object.Destroy(this.owner.gameObject);
+        
     }
 }

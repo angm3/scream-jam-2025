@@ -56,6 +56,18 @@ public class SlingshotShootingState : State<Slingshot>
         hold_for_timer = 0f;
         Debug.Log("Slingshot: enter shooting state");
     }
+    
+    void ShootProjectile(Vector3 dir)
+    {
+        GameObject projectile = GameObject.Instantiate(owner.projectilePrefab, owner.transform.position, Quaternion.identity);
+        Rigidbody rb = projectile.GetComponent<Rigidbody>();
+        rb.linearVelocity = dir * Mathf.Min(30f, 5f + hold_for_timer * 20f);
+
+        rb.angularVelocity = Random.insideUnitSphere * 10f;
+
+        GameManager.Instance.GetPlayer().GetComponent<BikerTheyThemController>().ConsumeCandy();
+        owner.stateMachine.ChangeState(new SlingshotCooldownState(owner, stateMachine));
+    }
 
     public override void Update()
     {
@@ -64,34 +76,16 @@ public class SlingshotShootingState : State<Slingshot>
         if (Input.GetMouseButtonUp(0))
         {
             // Shoot
-            Plane playerPlane = new Plane(Vector3.up, owner.transform.position);
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            float distance;
-            Vector3 relativeMousePosition = Vector3.zero;
-            if (playerPlane.Raycast(ray, out distance))
-            {
-                relativeMousePosition = ray.GetPoint(distance);
-            }
+            Vector3 targetPoint;
 
-            Vector3 baes_projectile_dir = -(GameManager.Instance.GetPlayer().transform.position - relativeMousePosition).normalized;
-            // Create projectile
-            GameObject projectile = GameObject.Instantiate(owner.projectilePrefab, owner.transform.position, Quaternion.identity);
-            projectile.GetComponent<Rigidbody>().linearVelocity = baes_projectile_dir * Mathf.Min(30f, 5f + hold_for_timer * 20f);
+            if (Physics.Raycast(ray, out RaycastHit hit))
+                targetPoint = hit.point;
+            else
+                targetPoint = ray.GetPoint(20f); // arbitrary distance ahead
 
-            // give the projectile some spin randomized
-            projectile.GetComponent<Rigidbody>().angularVelocity = new Vector3(
-                Random.Range(-10f, 10f),
-                Random.Range(-10f, 10f),
-                Random.Range(-10f, 10f)
-            );
-
-            // Recoil player
-            //EventBus.Publish(new PlayerBumpEvent(-baes_projectile_dir, Mathf.Min(20f, 5f + hold_for_timer * 15f)));
-
-            // decrement candy count
-            GameManager.Instance.GetPlayer().GetComponent<BikerTheyThemController>().ConsumeCandy();
-
-            owner.stateMachine.ChangeState(new SlingshotCooldownState(owner, stateMachine));
+            Vector3 dir = (targetPoint - owner.transform.position).normalized;
+            ShootProjectile(dir);
         }
     }
 }

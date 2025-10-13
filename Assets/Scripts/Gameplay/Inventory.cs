@@ -42,7 +42,7 @@ public class Inventory : MonoBehaviour
                 candyCount++;
                 break;
             case "blueprint":
-                blueprints.Add(item);
+                blueprints.Add(item.id);
                 break;
             case "potion_ingredient":
                 potionIngredients.Add(item);
