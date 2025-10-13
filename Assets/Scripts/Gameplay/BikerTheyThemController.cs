@@ -252,6 +252,7 @@ public class BikerTheyThemController : MonoBehaviour
             else {
                 if(stateMachine.CurrentState is not DriftingState) {
                     stateMachine.ChangeState(new DriftingState(this, stateMachine));
+                    transform.Rotate(0f, 0f, -transform.eulerAngles.z);
                     forwardAtStartOfDrift = transform.forward;
                     Debug.Log("Drift: New Drift State.");
                     drift_rotate_counter = 0;
