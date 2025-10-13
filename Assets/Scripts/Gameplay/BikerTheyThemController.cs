@@ -378,6 +378,11 @@ public class BikerTheyThemController : MonoBehaviour
     
     public void HandleMovementPerFrame()
     {
+        if (Input.GetKey(KeyCode.P))
+        {
+            Debug.Log("P hit");
+            EventBus.Publish(new EnemyDamageEvent(25));
+        }
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if (jump_cooldown_timer > jump_cooldown)

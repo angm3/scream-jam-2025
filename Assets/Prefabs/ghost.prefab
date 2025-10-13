@@ -139,6 +139,7 @@ GameObject:
   - component: {fileID: 1349278410281758486}
   - component: {fileID: 3822319560783748368}
   - component: {fileID: 5233643775473299285}
+  - component: {fileID: 6732336899409309700}
   m_Layer: 0
   m_Name: HealthbarCanvas
   m_TagString: Untagged
@@ -229,6 +230,20 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &6732336899409309700
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4199194192294379159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0abb8159c1744dd409008bf48dcbf5cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Healthbar
+  _healthbarSprite: {fileID: 3525585617051661430}
+  reduceSpeed: 2
 --- !u!1 &5562881606460596960
 GameObject:
   m_ObjectHideFlags: 0
@@ -531,6 +546,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 797db36fb2384cb48bed0db4f8a5e455, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Ghost
+  playerHitDamage: 100
+  projectileHitDamage: 50
 --- !u!4 &763852913582963013 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d65973aaec03a7b4a80f220c10d023cb, type: 3}
