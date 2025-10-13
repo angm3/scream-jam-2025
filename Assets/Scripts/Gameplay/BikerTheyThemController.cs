@@ -17,14 +17,14 @@ public class BikerTheyThemController : MonoBehaviour
     private float idleStateResetSpeed = 0.15f;
 
     // Drift Parameters
-    float drift_multiplier = 0.4f;
-    float drift_forward_roll = 0.5f;
-    float drift_forward_yaw = 4f;
-    float max_drift_yaw = 360f;
-    float post_drift_timer = 0f;
-    float post_drift_time_lock = 0.2f;
+    float drift_multiplier = 0.4f;      // Drift force applied per frame
+    float drift_forward_roll = 0.5f;    // Drift roll applied per frame
+    float drift_forward_yaw = 4f;       // Drift yaw applied per prafe
+    float max_drift_yaw = 360f;         // Maximal yaw change angle allowed over the course of a drift
+    float post_drift_timer = 0f;        // Time initialized to zero
+    float post_drift_time_lock = 0.2f;  // Time to "lock" player from turning left or right after a drift stops...a small time lock helps with stability
+    int drift_rotate_counter = 0;       // Counter that ensures the bike is not rotated beyond some yaw limit
     Vector3 forwardAtStartOfDrift = Vector3.zero;
-    int drift_rotate_counter = 0;
 
     // Jump Parameters/Variables
     public float jump_timer;
@@ -112,6 +112,7 @@ public class BikerTheyThemController : MonoBehaviour
             stateMachine.ChangeState(new AcceleratingState(this, stateMachine));
         }
         
+        // Force a state reset to idle if the bike slows down too much
         if (rb.linearVelocity.magnitude < idleStateResetSpeed)
         {
             // switch states to idle
@@ -122,7 +123,8 @@ public class BikerTheyThemController : MonoBehaviour
             stateMachine.ChangeState(new IdleState(this, stateMachine));
         }
 
-        if(!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && stateMachine.CurrentState is DriftingState)
+        // If in drift state AND A and D are not pressed OR S is not pressed, kill the drift and force an idle state
+        if (((!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D)) || !Input.GetKey(KeyCode.S)) && stateMachine.CurrentState is DriftingState)
         {
             resetVelocityAtEndOfDrift();
             stateMachine.ChangeState(new IdleState(this, stateMachine));
@@ -178,7 +180,7 @@ public class BikerTheyThemController : MonoBehaviour
 
     void resetVelocityAtEndOfDrift() {
         Debug.Log("Reset velocity at end of drift.");
-        rb.linearVelocity = transform.forward * minSpeedForDrift * 0.4f;
+        rb.linearVelocity = transform.forward * Mathf.Max(minSpeedForDrift * 0.6f, rb.linearVelocity.magnitude * 0.8f);
         drift_rotate_counter = 0;
         post_drift_timer = 0f;
     }
@@ -223,7 +225,7 @@ public class BikerTheyThemController : MonoBehaviour
             if (Input.GetKey(KeyCode.S))
             {
                 rb.AddForce(-transform.forward * 15f, ForceMode.Acceleration);
-                Debug.Log("Decellerating");
+                Debug.Log("Deccelerating");
             }
         }
         
@@ -233,17 +235,21 @@ public class BikerTheyThemController : MonoBehaviour
     {
         post_drift_timer += Time.fixedDeltaTime;
 
+        // If pressing A or D, enter the below block of code
         if (rb.linearVelocity.magnitude > minSpeedForTurn && ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))))
         {
-            if((!Input.GetKey(KeyCode.S) || rb.linearVelocity.magnitude < minSpeedForDrift) && stateMachine.CurrentState is DriftingState) {
+            // If below the minimum drift speed and in a drifing state, kill the drift and force an idle state
+            if (rb.linearVelocity.magnitude < minSpeedForDrift && stateMachine.CurrentState is DriftingState)
+            {
                 resetVelocityAtEndOfDrift();
                 stateMachine.ChangeState(new IdleState(this, stateMachine));
                 return;
             }
-            //if((!Input.GetKey(KeyCode.S) || !checkIfVelocityIsForward()) && stateMachine.CurrentState is not DriftingState)
-            if(!Input.GetKey(KeyCode.S) || (!checkIfVelocityIsForward() && stateMachine.CurrentState is not DriftingState)) 
+            
+            // If NOT pressing S OR Velocity is backwards and bike is not in a drift, perform normal turning
+            if (!Input.GetKey(KeyCode.S) || (!checkIfVelocityIsForward() && stateMachine.CurrentState is not DriftingState))
             {
-                if(post_drift_timer > post_drift_time_lock)
+                if (post_drift_timer > post_drift_time_lock)
                 {
                     // if A is pressed, turn left
                     if (Input.GetKey(KeyCode.A))
@@ -276,51 +282,62 @@ public class BikerTheyThemController : MonoBehaviour
                         }
                     }
                 }
-                
+
             }
 
-            // If below max drift speed AND S is pressed (DRIFTING!!!!)
-            else {
-                if(stateMachine.CurrentState is not DriftingState && checkIfVelocityIsForward()) {
+            // If S is pressed OR bike is in a drifting state AND going backwards 
+            else
+            {
+                // If this is  a new drift state, set it, capture the current forwards vector, and force the bike 
+                // to be uprights.
+                if (stateMachine.CurrentState is not DriftingState && checkIfVelocityIsForward())
+                {
                     stateMachine.ChangeState(new DriftingState(this, stateMachine));
-                    transform.Rotate(0f, 0f, -transform.eulerAngles.z);
-                    forwardAtStartOfDrift = transform.forward;
+                    transform.Rotate(0f, 0f, -transform.eulerAngles.z); // Force bike to be upright
+                    forwardAtStartOfDrift = transform.forward;          // Capture forward direction (drift forces act opposite this)
                     Debug.Log("Drift: New Drift State.");
                     drift_rotate_counter = 0;
                 }
-                if(Vector3.Dot(forwardAtStartOfDrift, rb.linearVelocity) > 0) 
+                // If the bike is at the minimum drift speed...
+                if (rb.linearVelocity.magnitude > minSpeedForDrift)
                 {
+                    // Drift left...
                     if (Input.GetKey(KeyCode.A))
-                    {   
+                    {
                         rb.AddForce(-forwardAtStartOfDrift * drift_multiplier);
 
-                        if(drift_rotate_counter < Mathf.Ceil(max_drift_yaw/drift_forward_yaw)) {
+
+                        if (drift_rotate_counter < Mathf.Ceil(max_drift_yaw / drift_forward_yaw))
+                        {
                             transform.Rotate(0, -drift_forward_yaw, drift_forward_roll, Space.Self);
                             drift_rotate_counter += 1;
-                            
+
                         }
                     }
+                    // Drift right...
                     else if (Input.GetKey(KeyCode.D))
                     {
                         rb.AddForce(-forwardAtStartOfDrift * drift_multiplier);
 
-                        if(drift_rotate_counter < Mathf.Ceil(max_drift_yaw/drift_forward_yaw)) {
+                        if (drift_rotate_counter < Mathf.Ceil(max_drift_yaw / drift_forward_yaw))
+                        {
                             transform.Rotate(0, drift_forward_yaw, -drift_forward_roll, Space.Self);
                             drift_rotate_counter += 1;
                         }
-                        
+
                     }
 
                     Debug.Log("Drift Euler Angles: " + transform.eulerAngles);
                 }
-                else 
+                // If bike is below minimum drifitng speed, kill the drift and force an idle state
+                else
                 {
                     resetVelocityAtEndOfDrift();
                     stateMachine.ChangeState(new IdleState(this, stateMachine));
                 }
 
             }
-                
+
         }
     }
 
