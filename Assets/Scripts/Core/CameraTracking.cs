@@ -3,8 +3,9 @@ using UnityEngine;
 
 public class CameraTracking : MonoBehaviour
 {
-
-    private Vector3 delta_pos = new Vector3(-7, 2.8f, 0);
+    public float driftTimer = 0f;
+    private float driftFixTime = 1.0f;
+    private bool inDrift = false;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -22,12 +23,35 @@ public class CameraTracking : MonoBehaviour
 
         Vector3 dir = player_velocity.normalized;
 
-        Vector3 desiredPos = GameManager.Instance.GetPlayer().transform.position - dir * 3f + Vector3.up * 2.0f;
+        Vector3 desiredPos = Vector3.zero;
 
-        // smooth camera movement
-        desiredPos = Vector3.Lerp(transform.position, desiredPos, 0.1f);
+        if(GameManager.Instance.GetPlayer().GetComponent<BikerTheyThemController>().stateMachine.CurrentState is DriftingState || inDrift) {
+
+            desiredPos = GameManager.Instance.GetPlayer().transform.position - GameManager.Instance.GetPlayer().transform.forward * 6f + Vector3.up * 2.0f;
+
+            if(!inDrift) {
+                inDrift = true;
+                driftTimer = 0;
+            }
+            else {
+                driftTimer += Time.deltaTime;
+                Debug.Log("Camera Drift Timer: " + driftTimer);
+                if(driftTimer > driftFixTime) {
+                    inDrift = false;
+                    driftTimer = 0f;
+                }
+            }
+            //desiredPos = transform.position;
+        }
+        else {
+            Debug.Log("Camera Velocity Method");
+            desiredPos = GameManager.Instance.GetPlayer().transform.position - dir * 3f + Vector3.up * 2.0f;
+        }
         
-        gameObject.transform.position = desiredPos;
+        // smooth camera movement
+        Vector3 InterpDesiredPos = Vector3.Lerp(transform.position, desiredPos, 0.1f);
+        
+        gameObject.transform.position = InterpDesiredPos;
         transform.LookAt(GameManager.Instance.GetPlayer().transform.position + Vector3.up * 1.5f);        
     }
 }
