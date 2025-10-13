@@ -37,9 +37,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Vignette_darkening: 0
-    - _Vignette_radius: 0
-    - _Vignette_softness: 0
-    m_Colors: []
+    - _Vignette_darkening: 0.4
+    - _Vignette_radius: 0.25
+    - _Vignette_softness: 1
+    m_Colors:
+    - _Tint: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
