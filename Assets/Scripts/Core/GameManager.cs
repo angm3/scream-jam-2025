@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     public Stash stash;
+    public Inventory currentPlayerInventory;
 
     //private Transform playerTransform;
 
@@ -22,7 +23,9 @@ public class GameManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject); // Persist across scenes
 
+            // Set up stash and inventory 
             stash = new Stash();
+            currentPlayerInventory = new Inventory();
         }
     }
 
@@ -30,7 +33,7 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Extraction Successful");
         // TODO: Transfer inventory items to "stash"
-        TransferInventoryToStash();
+        //TransferInventoryToStash();
         ReturnToGarage();
     }
     
