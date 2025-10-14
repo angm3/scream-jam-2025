@@ -8,6 +8,7 @@ public class GarageManager : MonoBehaviour
     [SerializeField] private Button startRunButton;
     [SerializeField] private TextMeshProUGUI counts;
 
+
     void Start()
     {
         Cursor.visible = true;

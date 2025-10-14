@@ -24,6 +24,7 @@ public class Candy : Collectible
         if (other.gameObject.CompareTag("Player"))
         {
             Debug.Log("Candy trigger");
+            GameManager.Instance.general_info.SetInfo("CandyTrigger Hellow");
             stateMachine.ChangeState(new CollectibleCollectedState(this, stateMachine));
             Collect();
         }

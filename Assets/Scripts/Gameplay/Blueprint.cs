@@ -21,9 +21,6 @@ public class Blueprint : Collectible
     {
         // validate other is the player using 'player' tag
         Debug.Log("blueprint trigger");
-
-        Debug.Log((stateMachine));
-        Debug.Log((other));
         
         if (other.gameObject.CompareTag("Player"))
         {

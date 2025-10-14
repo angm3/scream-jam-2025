@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     public Stash stash;
+    
+    public GeneralInfo general_info;
 
     //private Transform playerTransform;
 
@@ -23,6 +25,7 @@ public class GameManager : MonoBehaviour
             DontDestroyOnLoad(gameObject); // Persist across scenes
 
             stash = new Stash();
+            general_info = new GeneralInfo();
         }
     }
 
