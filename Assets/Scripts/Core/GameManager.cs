@@ -100,7 +100,7 @@ public class GameManager : MonoBehaviour
             stash.StashIngredient(playerInventory, ingredient);
         }
 
-        Debug.Log($"Transferred inventory to stash. Stash now has {stash.candyCount} candy, {stash.blueprints.Count} blueprints, {stash.potionIngredients.Count} ingredients");
+        Debug.Log($"Transferred inventory to stash. Stash now has {stash.candyCount} candy, {stash.items.Count} blueprints, {stash.ingredients.Count} ingredients");
         
     }
 

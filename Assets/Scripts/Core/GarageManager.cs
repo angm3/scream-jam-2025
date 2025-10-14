@@ -8,6 +8,11 @@ public class GarageManager : MonoBehaviour
     [SerializeField] private Button startRunButton;
     [SerializeField] private TextMeshProUGUI counts;
 
+    // Inventory UI
+    // Stash UI
+
+    // Handle creating the appropriate UI from Stash and Inventory
+
     void Start()
     {
         Cursor.visible = true;
@@ -28,6 +33,16 @@ public class GarageManager : MonoBehaviour
 
         // Load neighborhood scene
         SceneController.Instance.LoadScene("SampleScene", includeUI: true);
+    }
+
+    public void DrawStash()
+    { 
+        // Draw all the appropriate sprites based on what is in the stash
+    }
+
+    public void DrawInventory()
+    { 
+        // Draw all the appropriate sprites based on what is in the inventory
     }
 }
 

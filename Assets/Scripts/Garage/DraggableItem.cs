@@ -6,8 +6,8 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 {
     private Transform originalParent;
     private CanvasGroup canvasGroup;
-    public int candyStackSize = 1;
     private Canvas canvas;
+    
 
     void Awake()
     {
