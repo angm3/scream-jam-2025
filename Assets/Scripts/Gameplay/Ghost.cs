@@ -12,7 +12,7 @@ public class Ghost : Monster<Ghost>
     private void Start()
     {
         stateMachine.ChangeState(new GhostIdleState(this, stateMachine));
-        playerDamage = 69;
+        playerDamage = 30;
         maxHealth = 100;
         currentHealth = 100;
         healthbar = GetComponentInChildren<Healthbar>();
@@ -153,8 +153,11 @@ public class GhostChasingState : MonsterChasingState<Ghost>
         
         attack_cooldown_timer = 3f;
         can_attack = false;
-        offset = Random.onUnitSphere * 2f;
-        offset.y = offset.y < 0f ? -offset.y : offset.y;
+
+        // Random sphere offset for ghost
+        float randomSphereRadius = 2f;
+        offset = Random.onUnitSphere * randomSphereRadius;
+        offset.y = (offset.y < 0f ? -offset.y : offset.y / randomSphereRadius);
     }
 
     public override void Update()
@@ -163,15 +166,15 @@ public class GhostChasingState : MonsterChasingState<Ghost>
         // Rotate -x towards player
         Vector3 directionToPlayer = (GameManager.Instance.GetPlayer().transform.position - owner.transform.position).normalized;
         Quaternion targetRotation = Quaternion.LookRotation(directionToPlayer);
-        owner.transform.rotation = targetRotation;
+        owner.transform.rotation = Quaternion.Slerp(owner.transform.rotation, targetRotation, Time.deltaTime*2f);
         
         
         if (owner.checkIfVelocityIsForward(GameManager.Instance.GetPlayer().GetComponent<Rigidbody>()))
         {
             Vector3 desiredPose = Vector3.MoveTowards(
                 owner.gameObject.transform.position,
-                GameManager.Instance.GetPlayer().transform.position + Vector3.up * 0.5f + GameManager.Instance.GetPlayer().GetComponent<Rigidbody>().linearVelocity * 2f + offset,
-                0.025f);
+                GameManager.Instance.GetPlayer().transform.position + Vector3.up * 0.2f + GameManager.Instance.GetPlayer().GetComponent<Rigidbody>().linearVelocity * 2f + offset,
+                Time.deltaTime*6f);
 
             //owner.gameObject.transform.position = checkForPhaseThroughPlayer(desiredPose) ? owner.gameObject.transform.position : desiredPose;
             owner.gameObject.transform.position = desiredPose;
@@ -180,8 +183,8 @@ public class GhostChasingState : MonsterChasingState<Ghost>
         {
             Vector3 desiredPose = Vector3.MoveTowards(
                 owner.gameObject.transform.position,
-                GameManager.Instance.GetPlayer().transform.position + Vector3.up * 0.5f - GameManager.Instance.GetPlayer().transform.forward * 1f + offset,
-                0.025f);
+                GameManager.Instance.GetPlayer().transform.position + Vector3.up * 0.2f - GameManager.Instance.GetPlayer().transform.forward * 1f + offset,
+                Time.deltaTime*4f);
 
             //owner.gameObject.transform.position = checkForPhaseThroughPlayer(desiredPose) ? owner.gameObject.transform.position : desiredPose;
             owner.gameObject.transform.position = desiredPose;
@@ -234,6 +237,8 @@ public class GhostAttackingState : MonsterAttackingState<Ghost>
     public float attack_windup_time;
     public Vector3 direction;
     public Vector3 targetPose;
+    public Vector3 targetPoseOffset;
+    public Quaternion targetRotation;
 
     public override void Enter()
     {
@@ -257,20 +262,25 @@ public class GhostAttackingState : MonsterAttackingState<Ghost>
         {
             elapsedTime += Time.deltaTime;
 
-            targetPose = GameManager.Instance.GetPlayer().transform.position + GameManager.Instance.GetPlayer().GetComponent<Rigidbody>().linearVelocity * (attack_windup_time - elapsedTime);
+            // This block determines where the ghost looks
+            targetPose = GameManager.Instance.GetPlayer().transform.position + GameManager.Instance.GetPlayer().GetComponent<Rigidbody>().linearVelocity * (attack_windup_time - elapsedTime) * 0.0f;
             direction = (targetPose - owner.transform.position).normalized;
-            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            targetRotation = Quaternion.LookRotation(direction);
             
-            owner.transform.rotation = Quaternion.Slerp(owner.transform.rotation, targetRotation, Time.deltaTime*1f);
-            owner.transform.position += GameManager.Instance.GetPlayer().GetComponent<Rigidbody>().linearVelocity * 0.5f * Time.deltaTime;
+            // This affects the rotation and position of the ghost
+            owner.transform.rotation = Quaternion.Slerp(owner.transform.rotation, targetRotation, Time.deltaTime*2f);
+            owner.transform.position += (GameManager.Instance.GetPlayer().GetComponent<Rigidbody>().linearVelocity * 1.4f + Vector3.up * 1.5f) * Time.deltaTime;
 
             yield return null;
         }
 
         // Add a bit of randomness to the exact point the ghost attacks
-        targetPose = Random.onUnitSphere * 2f;
-        targetPose.y = targetPose.y < 0 ? -targetPose.y : targetPose.y;
-        direction = (GameManager.Instance.GetPlayer().transform.position + Random.onUnitSphere * 1f - owner.transform.position).normalized;
+        float randomSphereRadius = 1.75f;
+        targetPoseOffset = Random.onUnitSphere * randomSphereRadius;
+        // Force y pose to be positive and between 0 and 1
+        targetPoseOffset.y = (targetPoseOffset.y < 0 ? -targetPoseOffset.y : targetPoseOffset.y) / randomSphereRadius;
+        direction = (GameManager.Instance.GetPlayer().transform.position + targetPoseOffset - owner.transform.position).normalized;
+        targetRotation = Quaternion.LookRotation(direction);
 
         is_projecting = false;
 
@@ -280,16 +290,27 @@ public class GhostAttackingState : MonsterAttackingState<Ghost>
 
         while (elapsedTime < dashDuration)
         {
+            owner.transform.rotation = Quaternion.Slerp(owner.transform.rotation, targetRotation, Time.deltaTime*2f);
             owner.transform.position += direction * dashSpeed * Time.deltaTime;
+
+            // Ensure the ghost doesn't dash too far into the ground
+            if(owner.transform.position.y < GameManager.Instance.GetPlayer().transform.position.y - 0.5f)
+            {
+                Vector3 pos = owner.transform.position;
+                pos.y = GameManager.Instance.GetPlayer().transform.position.y - 0.2f;
+                owner.transform.position = pos;
+            }
+
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-
 
         //Debug.Log("Done dashong" + Time.time);
 
         if (!(stateMachine.CurrentState is GhostDyingState))
         {
+            // Force the ghost to wait/give the player time to get away
+            yield return new WaitForSeconds(1f);
             stateMachine.ChangeState(new GhostIdleState(owner, stateMachine));
         }
     }
