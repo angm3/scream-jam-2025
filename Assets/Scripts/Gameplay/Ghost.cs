@@ -17,6 +17,15 @@ public class Ghost : Monster<Ghost>
         currentHealth = 100;
         healthbar = GetComponentInChildren<Healthbar>();
         Debug.Log(healthbar);
+
+        // Set/Add a Rigidbody if it doesn't exist
+        Rigidbody rb = gameObject.GetComponent<Rigidbody>();
+        if (rb == null)
+        {
+            rb = gameObject.AddComponent<Rigidbody>();
+        }
+        rb.isKinematic = true;
+        rb.useGravity = false;
     }
 
     void OnEnable()
@@ -79,6 +88,7 @@ public class Ghost : Monster<Ghost>
         currentHealth -= e.enemyDamage;
     }
 
+    
 
     public void SetColorOfLight(Color color)
     {
@@ -132,6 +142,8 @@ public class GhostChasingState : MonsterChasingState<Ghost>
     public float attack_cooldown = 5f;
     public float attack_cooldown_timer;
     public bool can_attack;
+    public Vector3 offset;
+    
 
     public override void Enter()
     {
@@ -141,6 +153,8 @@ public class GhostChasingState : MonsterChasingState<Ghost>
         
         attack_cooldown_timer = 3f;
         can_attack = false;
+        offset = Random.onUnitSphere * 2f;
+        offset.y = offset.y < 0f ? -offset.y : offset.y;
     }
 
     public override void Update()
@@ -154,17 +168,23 @@ public class GhostChasingState : MonsterChasingState<Ghost>
         
         if (owner.checkIfVelocityIsForward(GameManager.Instance.GetPlayer().GetComponent<Rigidbody>()))
         {
-            owner.gameObject.transform.position = Vector3.MoveTowards(
+            Vector3 desiredPose = Vector3.MoveTowards(
                 owner.gameObject.transform.position,
-                GameManager.Instance.GetPlayer().transform.position + Vector3.up * 1f + GameManager.Instance.GetPlayer().GetComponent<Rigidbody>().linearVelocity * 2f,
-                0.01f);
+                GameManager.Instance.GetPlayer().transform.position + Vector3.up * 0.5f + GameManager.Instance.GetPlayer().GetComponent<Rigidbody>().linearVelocity * 2f + offset,
+                0.025f);
+
+            //owner.gameObject.transform.position = checkForPhaseThroughPlayer(desiredPose) ? owner.gameObject.transform.position : desiredPose;
+            owner.gameObject.transform.position = desiredPose;
         }
         else
         {
-            owner.gameObject.transform.position = Vector3.MoveTowards(
+            Vector3 desiredPose = Vector3.MoveTowards(
                 owner.gameObject.transform.position,
-                GameManager.Instance.GetPlayer().transform.position,
-                0.01f);
+                GameManager.Instance.GetPlayer().transform.position + Vector3.up * 0.5f - GameManager.Instance.GetPlayer().transform.forward * 1f + offset,
+                0.025f);
+
+            //owner.gameObject.transform.position = checkForPhaseThroughPlayer(desiredPose) ? owner.gameObject.transform.position : desiredPose;
+            owner.gameObject.transform.position = desiredPose;
         }
 
         if ((GameManager.Instance.GetPlayer().transform.position - owner.transform.position).magnitude < 7f && can_attack)
@@ -190,6 +210,18 @@ public class GhostChasingState : MonsterChasingState<Ghost>
             }
         }
     }
+
+    private bool checkForPhaseThroughPlayer(Vector3 desiredPose)
+    {
+        // Current Ghost Position minus Player Position
+        Vector3 currentPoseDelta = owner.gameObject.transform.position - GameManager.Instance.GetPlayer().transform.position;
+        
+        // Desired Ghost Position minus Player Position
+        Vector3 desiredPoseDelta = desiredPose - GameManager.Instance.GetPlayer().transform.position;
+
+        // Return true if new position is on the other side of the player, otherwise return false if not (false is the desired behavior)
+        return Vector3.Dot(currentPoseDelta, desiredPoseDelta) < 0;
+    }
 }
 
 
@@ -199,27 +231,52 @@ public class GhostAttackingState : MonsterAttackingState<Ghost>
     public GhostAttackingState(Ghost owner, StateMachine<Ghost> sm) : base(owner, sm) { }
     public Coroutine dashCoroutine;
     public bool is_projecting;
+    public float attack_windup_time;
+    public Vector3 direction;
+    public Vector3 targetPose;
 
     public override void Enter()
     {
         Debug.Log("Ghost is attacking");
         owner.SetColorOfLight(new Color(255f / 255f, 0f / 255f, 0f, 255f));
         is_projecting = true;
+
+        // Windup for an attack
+        //attack_windup_time = Random.Range(0.5f, 1.0f);
+        attack_windup_time = 1f;
+
         dashCoroutine = owner.StartCoroutine(DashAtPlayer());
     }
 
     IEnumerator DashAtPlayer()
     {
+        //yield return new WaitForSeconds(attack_windup_time);
+        float elapsedTime = 0f;
 
-        yield return new WaitForSeconds(1f);
+        while(elapsedTime < attack_windup_time)
+        {
+            elapsedTime += Time.deltaTime;
+
+            targetPose = GameManager.Instance.GetPlayer().transform.position + GameManager.Instance.GetPlayer().GetComponent<Rigidbody>().linearVelocity * (attack_windup_time - elapsedTime);
+            direction = (targetPose - owner.transform.position).normalized;
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            
+            owner.transform.rotation = Quaternion.Slerp(owner.transform.rotation, targetRotation, Time.deltaTime*1f);
+            owner.transform.position += GameManager.Instance.GetPlayer().GetComponent<Rigidbody>().linearVelocity * 0.5f * Time.deltaTime;
+
+            yield return null;
+        }
+
+        // Add a bit of randomness to the exact point the ghost attacks
+        targetPose = Random.onUnitSphere * 2f;
+        targetPose.y = targetPose.y < 0 ? -targetPose.y : targetPose.y;
+        direction = (GameManager.Instance.GetPlayer().transform.position + Random.onUnitSphere * 1f - owner.transform.position).normalized;
 
         is_projecting = false;
 
-        Vector3 direction = (GameManager.Instance.GetPlayer().transform.position - owner.transform.position).normalized;
-
         float dashSpeed = 20f;
         float dashDuration = 0.4f;
-        float elapsedTime = 0f;
+        elapsedTime = 0f;
 
         while (elapsedTime < dashDuration)
         {
