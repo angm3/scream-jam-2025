@@ -17,6 +17,13 @@ public class Sugar : MonoBehaviour
     public Color midColor = Color.yellow;
     public Color lowColor = Color.red;
 
+    // Damage shader material
+    public Material vignetteMaterial;
+    public float lowHealthThreshold = 30f;
+    public float pulseSpeed = 2f;
+    public float minRadius = 0.25f;
+    public float maxRadius = 0.5f;
+
     void Start()
     {
         currentSugar = maxSugar;
@@ -26,12 +33,34 @@ public class Sugar : MonoBehaviour
             sugarSlider.maxValue = maxSugar;
             sugarSlider.value = currentSugar;
         }
+
+        if (vignetteMaterial != null)
+        {
+            vignetteMaterial.SetFloat("_Intensity", 0);
+        }
     }
 
     void Update()
     {
         // keep sugar bar in sync (TBD If needed)
         // UpdateSugarBar();
+        UpdateDamageEffect();
+    }
+
+    void UpdateDamageEffect()
+    {
+        if (vignetteMaterial == null) return;
+
+        if (currentSugar <= lowHealthThreshold && currentSugar > 0)
+        {
+            float pulse = Mathf.Lerp(minRadius, maxRadius, (Mathf.Sin(Time.time * pulseSpeed) + 1f) / 2f);
+            vignetteMaterial.SetFloat("_Vignette_radius", pulse);
+        }
+        else
+        {
+            // disable by setting to 1
+            vignetteMaterial.SetFloat("_Vignette_radius", 1f);
+        }
     }
 
     void UpdateSugarBar()
@@ -43,6 +72,8 @@ public class Sugar : MonoBehaviour
         {
             UpdateBarColor();
         }
+
+        UpdateDamageEffect();
     }
 
     void UpdateBarColor()
@@ -78,8 +109,15 @@ public class Sugar : MonoBehaviour
         Debug.Log("subtracting sugar " + amount.ToString());
         currentSugar = Math.Max(currentSugar - amount, 0f);
         UpdateSugarBar();
+
         if (currentSugar <= 0)
         {
+            // disable damage shader on death
+            if (vignetteMaterial != null)
+            {
+                vignetteMaterial.SetFloat("_Vignette_radius", 1f);
+            }
+
             EventBus.Publish(new PlayerDeathEvent());
         }
     }
