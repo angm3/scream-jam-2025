@@ -9,6 +9,7 @@ public class CollectibleUIItem : MonoBehaviour
     public int stackCount = 1;
 
     public Image iconImage;
+    public Image itemSpriteImage;
     public TMP_Text stackText;
 
     public void SetData(string type, string id, int count = 1)

@@ -26,6 +26,10 @@ public class GameManager : MonoBehaviour
             // Set up stash and inventory 
             stash = new Stash();
             currentPlayerInventory = new Inventory();
+
+            // TESTING
+            currentPlayerInventory.candyCount = 6;
+            stash.candyCount = 118;
         }
     }
 

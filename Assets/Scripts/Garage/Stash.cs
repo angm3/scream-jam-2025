@@ -5,6 +5,7 @@ using System.Collections;
 public class Stash
 {
     public int candyCount;
+    public int maxCandyStackSize = 5;
     public ArrayList items = new ArrayList();
     public ArrayList ingredients = new ArrayList();
 
