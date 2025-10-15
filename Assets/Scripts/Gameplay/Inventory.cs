@@ -5,34 +5,21 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Inventory : MonoBehaviour
+[System.Serializable]
+public class Inventory
 {
     public int candyCount;
     public int maxCandyCount;
-    public TMP_Text candyCounterText;
     public ArrayList blueprints;
     public ArrayList potionIngredients;
 
-    public void Start()
+    public Inventory()
     {
         candyCount = 0;
         blueprints = new ArrayList();
         potionIngredients = new ArrayList();
         maxCandyCount = 15; // tweak as needed
-        UpdateCounterText();
-    }
-
-    private void UpdateCounterText()
-    {
-        Debug.Log($"Updating counter on {gameObject.name}", gameObject);
-
-        if (candyCounterText != null)
-        {
-            candyCounterText.text = $"Candy: {candyCount}";
-        } else
-        {
-            Debug.Log("Not updating candy counter ", candyCounterText);
-        }
+        EventBus.Publish(new InventoryChangedEvent());
     }
 
     public void AddToInventory(Collectible item)
@@ -49,7 +36,7 @@ public class Inventory : MonoBehaviour
                 break;
 
         }
-        UpdateCounterText();
+        EventBus.Publish(new InventoryChangedEvent());
     }
 
     public void RemoveCandyFromInventory(int count)
@@ -62,7 +49,7 @@ public class Inventory : MonoBehaviour
         {
             Debug.LogWarning("trying to remove too much candy!");
         }
-        UpdateCounterText();
+        EventBus.Publish(new InventoryChangedEvent());
     }
     
     public void RemoveItemFromInventory(Collectible item)
@@ -80,7 +67,7 @@ public class Inventory : MonoBehaviour
                 break;
 
         }
-        UpdateCounterText();
+        EventBus.Publish(new InventoryChangedEvent());
     }
 
     public void DropInventory()
@@ -88,7 +75,7 @@ public class Inventory : MonoBehaviour
         candyCount = 0;
         blueprints.Clear();
         potionIngredients.Clear();
-        UpdateCounterText();
+        EventBus.Publish(new InventoryChangedEvent());
         Debug.Log("Dropped inventory");
     }
 
@@ -97,7 +84,7 @@ public class Inventory : MonoBehaviour
         candyCount += droppedInventory.candyCount;
         blueprints.AddRange(droppedInventory.blueprints);
         potionIngredients.AddRange(droppedInventory.potionIngredients);
-        UpdateCounterText();
+        EventBus.Publish(new InventoryChangedEvent());
     }
 
 }

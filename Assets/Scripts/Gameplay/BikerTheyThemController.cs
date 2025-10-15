@@ -68,7 +68,8 @@ public class BikerTheyThemController : MonoBehaviour
 
     private void Start()
     {
-        inventory = FindFirstObjectByType<Inventory>();
+        // Use the GameManager to get the player's inventory
+        inventory = GameManager.Instance.currentPlayerInventory;
         playerSugar = FindFirstObjectByType<Sugar>();
         rb = GetComponent<Rigidbody>();
 

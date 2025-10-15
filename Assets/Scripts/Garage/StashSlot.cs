@@ -1,12 +1,13 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class InventorySlot : MonoBehaviour, IDropHandler
+public class StashSlot : MonoBehaviour, IDropHandler
 {
-    // Inventory Slot within the Inventory UI
+    // Stash Slot within the Stash UI
 
     public void OnDrop(PointerEventData eventData)
     {
+        // Check whether the draggable item is able to be dropped into this slot
         if (eventData.pointerDrag != null)
         {
             DraggableItem item = eventData.pointerDrag.GetComponent<DraggableItem>();
