@@ -36,8 +36,6 @@ public class GameManager : MonoBehaviour
     public void HandleSuccessfulExtraction()
     {
         Debug.Log("Extraction Successful");
-        // TODO: Transfer inventory items to "stash"
-        //TransferInventoryToStash();
         ReturnToGarage();
     }
     
