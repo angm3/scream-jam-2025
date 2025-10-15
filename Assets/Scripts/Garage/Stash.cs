@@ -5,8 +5,9 @@ using System.Collections;
 public class Stash
 {
     public int candyCount;
-    public ArrayList blueprints = new ArrayList();
-    public ArrayList potionIngredients = new ArrayList();
+    public int maxCandyStackSize = 5;
+    public ArrayList items = new ArrayList();
+    public ArrayList ingredients = new ArrayList();
 
     // Transfer FROM player TO stash
     public void StashItems(Inventory playerInventory, int candyToStash)
@@ -22,7 +23,7 @@ public class Stash
     {
         if (playerInventory.blueprints.Contains(blueprint))
         {
-            blueprints.Add(blueprint);
+            items.Add(blueprint);
             playerInventory.RemoveItemFromInventory(blueprint);
         }
     }
@@ -31,7 +32,7 @@ public class Stash
     {
         if (playerInventory.potionIngredients.Contains(ingredient))
         {
-            potionIngredients.Add(ingredient);
+            ingredients.Add(ingredient);
             playerInventory.RemoveItemFromInventory(ingredient);
         }
     }
@@ -49,18 +50,18 @@ public class Stash
 
     public void WithdrawBlueprint(Inventory playerInventory, Collectible blueprint)
     {
-        if (blueprints.Contains(blueprint))
+        if (items.Contains(blueprint))
         {
-            blueprints.Remove(blueprint);
+            items.Remove(blueprint);
             playerInventory.blueprints.Add(blueprint);
         }
     }
 
     public void WithdrawIngredient(Inventory playerInventory, Collectible ingredient)
     {
-        if (potionIngredients.Contains(ingredient))
+        if (ingredients.Contains(ingredient))
         {
-            potionIngredients.Remove(ingredient);
+            ingredients.Remove(ingredient);
             playerInventory.potionIngredients.Add(ingredient);
         }
     }
