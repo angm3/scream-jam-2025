@@ -23,6 +23,8 @@ public class GarageManager : MonoBehaviour
     [Header("Properties")]
     [SerializeField] public int inventorySize = 15;
     [SerializeField] public int stashSize = 108;
+    [SerializeField] public int ingredientsSize = 1;
+    [SerializeField] public int bikeUpgradesSize = 3;
     
 
     // Handle creating the appropriate UI from Stash and Inventory
@@ -34,6 +36,9 @@ public class GarageManager : MonoBehaviour
 
         CreateEmptySlots(inventoryGridContainer, inventorySize);
         CreateEmptySlots(stashGridContainer, stashSize);
+        CreateEmptySlots(bikeUpgradesGridContainer, bikeUpgradesSize);
+        // TODO, hard coded for now in the editor
+        //CreateEmptySlots(ingredientsGridContainer, ingredientsSize);
 
         LoadPlayerInventory();
         LoadStash();
