@@ -13,7 +13,7 @@ TagManager:
   - Water
   - UI
   - UICamera
-  - 
+  - ScreenEffects
   - 
   - 
   - 
@@ -41,6 +41,9 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: ScreenEffects
+    uniqueID: 4251408977
     locked: 0
   m_RenderingLayers:
   - Default
