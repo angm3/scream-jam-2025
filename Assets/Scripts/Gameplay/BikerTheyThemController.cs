@@ -9,10 +9,26 @@ public class BikerTheyThemController : MonoBehaviour
     private float candyHealthIncrease = 20; // tweak
     public Rigidbody rb;
 
+    // Bike Part Transforms
+    public Transform frontWheel;
+    public Transform backWheel;
+    public Transform pedals;
+    public Transform handlebars;
+
+    // Bike parameters (all made up)
+    float wheelRadius = 0.25f;
+    float wheelCircumference; 
+    float gearRatio = 4f;
+    float desiredSteerAngle = 0f;
+    float steerAngle = 0f;
+    Quaternion handlebarsInitialRot;
+    Quaternion frontWheelInitialRot;
+    Vector3 dirHBFromFW;
+
     // Speed thresholds
     private float maxSpeed = 20f;               // tweak as needed
     private float minSpeedForTurn = 0.5f;
-    private float minSpeedForDrift = 4f;
+    private float minSpeedForDrift = 1.5f;
     private float speedEffectThreshold = 12f;   // threshold for effects and bike ramming damage
     private float idleStateResetSpeed = 0.2f;
 
@@ -21,13 +37,13 @@ public class BikerTheyThemController : MonoBehaviour
     float brake_force = 10f;
     float backward_force = 6f;
     float turn_force = 12f;
-    float drift_force = 0.5f; 
+    float drift_force = 0.4f; 
 
     // Turn Parameters
     float forward_turn_roll = 3f;
-    float forward_turn_yaw = 2f;
+    float forward_turn_yaw = 1f;
     float backward_turn_roll = 3f;
-    float backward_turn_yaw = 2f;
+    float backward_turn_yaw = 1f;
 
     // Drift Parameters
     float drift_forward_roll = 0.5f;    // Drift roll applied per frame
@@ -84,8 +100,17 @@ public class BikerTheyThemController : MonoBehaviour
         playerSugar = FindFirstObjectByType<Sugar>();
         rb = GetComponent<Rigidbody>();
 
-        //speed = 0f;
+        frontWheel = transform.Find("bike/FrontWheel");
+        backWheel = transform.Find("bike/BackWheel");
+        pedals = transform.Find("bike/Pedals");
+        handlebars = transform.Find("bike/Handlebars");
 
+        handlebarsInitialRot = handlebars.localRotation;
+        frontWheelInitialRot = frontWheel.localRotation;
+        dirHBFromFW = frontWheel.InverseTransformDirection(handlebars.position - frontWheel.position);
+        wheelCircumference = 2f*Mathf.PI*wheelRadius;
+        
+        // Initialize jump timer
         jump_timer = 0;
         jump_cooldown_timer = jump_cooldown;
 
@@ -141,6 +166,26 @@ public class BikerTheyThemController : MonoBehaviour
             resetVelocityAtEndOfDrift();
             stateMachine.ChangeState(new IdleState(this, stateMachine));
         }
+
+        // Set current steer angle
+        if ((!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D)) || stateMachine.CurrentState is DriftingState)
+        {
+            desiredSteerAngle = 0;
+        }
+        else 
+        {
+            if(Input.GetKey(KeyCode.A))
+            {
+                
+                desiredSteerAngle = checkIfVelocityIsForward() ? -30 : 30;
+            }
+            if(Input.GetKey(KeyCode.D))
+            {
+                desiredSteerAngle = checkIfVelocityIsForward() ? 30 : -30;
+            }
+        }
+
+        BikeYawAnimations(desiredSteerAngle);
     }
 
     
@@ -207,6 +252,7 @@ public class BikerTheyThemController : MonoBehaviour
             RotateBiker();
         }
         JumpBiker();
+        BikeRollAnimations();
 
         bool meetsThreshold = checkSpeedEffectThreshold();
         if (meetsThreshold)
@@ -410,6 +456,35 @@ public class BikerTheyThemController : MonoBehaviour
         {
             jump_timer += Time.fixedDeltaTime;
         }
+    }
+
+    private void BikeRollAnimations() {
+        // Rotate the front and bike ties and pedals to animate them as rolling
+        if(stateMachine.CurrentState is not DriftingState) {
+            float distanceThisFrame = rb.linearVelocity.magnitude * Time.fixedDeltaTime;
+            float rotations = distanceThisFrame / wheelCircumference;
+            float degrees = rotations * 360f;
+            if(checkIfVelocityIsForward()) {
+                frontWheel.Rotate(-Vector3.forward*degrees);
+                backWheel.Rotate(-Vector3.forward*degrees);
+                pedals.Rotate(Vector3.right*degrees/gearRatio);
+            }
+            else {
+                frontWheel.Rotate(Vector3.forward*degrees);
+                backWheel.Rotate(Vector3.forward*degrees);
+                pedals.Rotate(-Vector3.right*degrees/gearRatio);
+            }
+        }
+    }
+
+    private void BikeYawAnimations(float targetAngle) 
+    {
+        steerAngle = Mathf.Lerp(steerAngle, targetAngle, Time.deltaTime*5f);
+        
+        // Rotate the handlebars and front wheel
+        handlebars.localRotation = handlebarsInitialRot * Quaternion.Euler(Vector3.forward * steerAngle);
+
+        frontWheel.localRotation = frontWheelInitialRot * Quaternion.Euler(dirHBFromFW * steerAngle);
     }
     
     public void HandleMovementPerFrame()
