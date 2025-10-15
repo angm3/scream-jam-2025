@@ -8,6 +8,7 @@ public class BikerTheyThemController : MonoBehaviour
     public Sugar playerSugar;
     private float candyHealthIncrease = 20; // tweak
     public Rigidbody rb;
+    public ParticleSystem speedLines;
 
     // Bike Part Transforms
     public Transform frontWheel;
@@ -120,6 +121,11 @@ public class BikerTheyThemController : MonoBehaviour
         tireFriction.dynamicFriction = 0.12f;
         tireFriction.staticFriction = 0.2f;
         tireFriction.frictionCombine = PhysicsMaterialCombine.Multiply;
+
+        if (speedLines != null)
+        {
+            speedLines.Stop();
+        }
 
         // Assign the material to the bike's collider
         Collider collider = GetComponent<BoxCollider>();
@@ -256,6 +262,14 @@ public class BikerTheyThemController : MonoBehaviour
         BikeRollAnimations();
 
         bool meetsThreshold = checkSpeedEffectThreshold();
+        bool meetsMaxSpeedThreshold = checkMaxSpeedEffectThreshold();
+        if (meetsMaxSpeedThreshold)
+        { 
+            if (speedLines != null && !speedLines.isPlaying)
+            {
+                speedLines.Play();
+            }
+        }
         if (meetsThreshold)
         {
             Debug.Log("Reached speed effect threshold");
@@ -522,6 +536,11 @@ public class BikerTheyThemController : MonoBehaviour
     public bool checkIfVelocityIsForward()
     {
         return Vector3.Dot(rb.transform.forward, rb.linearVelocity) > 0;
+    }
+
+    public bool checkMaxSpeedEffectThreshold()
+    {
+        return rb.linearVelocity.magnitude >= maxSpeed - 0.5f;
     }
 
     public bool checkSpeedEffectThreshold()
