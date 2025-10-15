@@ -139,6 +139,11 @@ public class BikerTheyThemController : MonoBehaviour
         {
             ConsumeCandy();
         }
+        
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            RingBell();
+        }
 
         if (Input.GetKeyDown(KeyCode.W))
         {
@@ -219,6 +224,13 @@ public class BikerTheyThemController : MonoBehaviour
         Debug.Log("in ConsumeCandy");
         inventory.RemoveCandyFromInventory(1);
         playerSugar.AddSugar(candyHealthIncrease);
+    }
+    
+    public void RingBell()
+    {
+        AudioManager.Instance.PlaySFX("bell_ring");
+        // Implement bell ringing logic here (e.g., alert nearby NPCs)
+        Debug.Log("Ding Dong!");
     }
 
     public bool CanUseCandy()

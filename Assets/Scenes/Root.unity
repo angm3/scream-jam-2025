@@ -472,6 +472,8 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: fca57018e60f3fc419f28233408c15ba, type: 3}
   - name: music_run
     clip: {fileID: 8300000, guid: d432652710513bd4abb1bc5ee869dbb9, type: 3}
+  - name: bell_ring
+    clip: {fileID: 8300000, guid: fca57018e60f3fc419f28233408c15ba, type: 3}
 --- !u!4 &1303328689
 Transform:
   m_ObjectHideFlags: 0
