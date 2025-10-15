@@ -24,7 +24,7 @@ public class Candy : Collectible
         if (other.gameObject.CompareTag("Player"))
         {
             Debug.Log("Candy trigger");
-            GeneralInfo.Instance.SetInfo("CandyTrigger Hellow");
+            GeneralInfo.Instance.SetInfo("Collected Candy!");
             stateMachine.ChangeState(new CollectibleCollectedState(this, stateMachine));
             Collect();
         }
@@ -34,6 +34,7 @@ public class Candy : Collectible
     public void Collect()
     {
         candyModel.SetActive(false);
+        AudioManager.Instance.PlaySFX("candy_collect", 1, 0.22f);
         pointLight.enabled = false;
         candyParticles.Play();
         Destroy(this.gameObject, 0.5f);

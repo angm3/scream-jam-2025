@@ -53,6 +53,8 @@ public class GameManager : MonoBehaviour
         // Later: transfer candy from stash to inventory based on UI selection
 
         Debug.Log("New run started!");
+        Debug.Log("Playing run music");
+        AudioManager.Instance.PlayMusic("music_run");
     }
 
     // Add your game management logic here
