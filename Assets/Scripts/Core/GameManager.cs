@@ -9,7 +9,8 @@ public class GameManager : MonoBehaviour
 
     public Stash stash;
     
-    public GeneralInfo general_info;
+
+    public Inventory currentPlayerInventory;
 
     //private Transform playerTransform;
 
@@ -24,16 +25,19 @@ public class GameManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject); // Persist across scenes
 
+            // Set up stash and inventory 
             stash = new Stash();
-            general_info = new GeneralInfo();
+            currentPlayerInventory = new Inventory();
+
+            // TESTING
+            currentPlayerInventory.candyCount = 6;
+            stash.candyCount = 118;
         }
     }
 
     public void HandleSuccessfulExtraction()
     {
         Debug.Log("Extraction Successful");
-        // TODO: Transfer inventory items to "stash"
-        TransferInventoryToStash();
         ReturnToGarage();
     }
     
@@ -103,7 +107,7 @@ public class GameManager : MonoBehaviour
             stash.StashIngredient(playerInventory, ingredient);
         }
 
-        Debug.Log($"Transferred inventory to stash. Stash now has {stash.candyCount} candy, {stash.blueprints.Count} blueprints, {stash.potionIngredients.Count} ingredients");
+        Debug.Log($"Transferred inventory to stash. Stash now has {stash.candyCount} candy, {stash.items.Count} blueprints, {stash.ingredients.Count} ingredients");
         
     }
 

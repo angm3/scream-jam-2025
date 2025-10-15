@@ -66,7 +66,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: aa20830135f6ee44082383c99be1bd89, type: 2}
+  - {fileID: 2100000, guid: cbef2c87426d05344b9bae9283b08ab8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5420,6 +5420,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Candy
   type: candy
+  id: 
   candyParticles: {fileID: 0}
   candyModel: {fileID: 0}
   pointLight: {fileID: 0}

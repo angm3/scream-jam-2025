@@ -9,17 +9,45 @@ public class BikerTheyThemController : MonoBehaviour
     private float candyHealthIncrease = 20; // tweak
     public Rigidbody rb;
 
+    // Bike Part Transforms
+    public Transform frontWheel;
+    public Transform backWheel;
+    public Transform pedals;
+    public Transform handlebars;
+
+    // Bike parameters (all made up)
+    float wheelRadius = 0.25f;
+    float wheelCircumference; 
+    float gearRatio = 4f;
+    float desiredSteerAngle = 0f;
+    float steerAngle = 0f;
+    Quaternion handlebarsInitialRot;
+    Quaternion frontWheelInitialRot;
+    Vector3 dirHBFromFW;
+
     // Speed thresholds
-    private float maxSpeed = 11f; // tweak as needed
+    private float maxSpeed = 20f;               // tweak as needed
     private float minSpeedForTurn = 0.5f;
-    private float minSpeedForDrift = 2f;
-    private float speedEffectThreshold = 7f; // threshold for effects and bike ramming damage
-    private float idleStateResetSpeed = 0.15f;
+    private float minSpeedForDrift = 1.5f;
+    private float speedEffectThreshold = 12f;   // threshold for effects and bike ramming damage
+    private float idleStateResetSpeed = 0.2f;
+
+    // Force parameters
+    float forward_force = 10f;
+    float brake_force = 10f;
+    float backward_force = 6f;
+    float turn_force = 12f;
+    float drift_force = 0.4f; 
+
+    // Turn Parameters
+    float forward_turn_roll = 3f;
+    float forward_turn_yaw = 1f;
+    float backward_turn_roll = 3f;
+    float backward_turn_yaw = 1f;
 
     // Drift Parameters
-    float drift_multiplier = 0.4f;      // Drift force applied per frame
     float drift_forward_roll = 0.5f;    // Drift roll applied per frame
-    float drift_forward_yaw = 4f;       // Drift yaw applied per prafe
+    float drift_forward_yaw = 4f;       // Drift yaw applied per frame
     float max_drift_yaw = 360f;         // Maximal yaw change angle allowed over the course of a drift
     float post_drift_timer = 0f;        // Time initialized to zero
     float post_drift_time_lock = 0.2f;  // Time to "lock" player from turning left or right after a drift stops...a small time lock helps with stability
@@ -68,12 +96,22 @@ public class BikerTheyThemController : MonoBehaviour
 
     private void Start()
     {
-        inventory = FindFirstObjectByType<Inventory>();
+        // Use the GameManager to get the player's inventory
+        inventory = GameManager.Instance.currentPlayerInventory;
         playerSugar = FindFirstObjectByType<Sugar>();
         rb = GetComponent<Rigidbody>();
 
-        //speed = 0f;
+        frontWheel = transform.Find("bike/FrontWheel");
+        backWheel = transform.Find("bike/BackWheel");
+        pedals = transform.Find("bike/Pedals");
+        handlebars = transform.Find("bike/Handlebars");
 
+        handlebarsInitialRot = handlebars.localRotation;
+        frontWheelInitialRot = frontWheel.localRotation;
+        dirHBFromFW = frontWheel.InverseTransformDirection(handlebars.position - frontWheel.position);
+        wheelCircumference = 2f*Mathf.PI*wheelRadius;
+        
+        // Initialize jump timer
         jump_timer = 0;
         jump_cooldown_timer = jump_cooldown;
 
@@ -129,6 +167,26 @@ public class BikerTheyThemController : MonoBehaviour
             resetVelocityAtEndOfDrift();
             stateMachine.ChangeState(new IdleState(this, stateMachine));
         }
+
+        // Set current steer angle
+        if ((!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D)) || stateMachine.CurrentState is DriftingState)
+        {
+            desiredSteerAngle = 0;
+        }
+        else 
+        {
+            if(Input.GetKey(KeyCode.A))
+            {
+                
+                desiredSteerAngle = checkIfVelocityIsForward() ? -30 : 30;
+            }
+            if(Input.GetKey(KeyCode.D))
+            {
+                desiredSteerAngle = checkIfVelocityIsForward() ? 30 : -30;
+            }
+        }
+
+        BikeYawAnimations(desiredSteerAngle);
     }
 
     
@@ -195,6 +253,7 @@ public class BikerTheyThemController : MonoBehaviour
             RotateBiker();
         }
         JumpBiker();
+        BikeRollAnimations();
 
         bool meetsThreshold = checkSpeedEffectThreshold();
         if (meetsThreshold)
@@ -206,8 +265,8 @@ public class BikerTheyThemController : MonoBehaviour
             Debug.Log("Player speed below threshold");
         }
 
-        Debug.Log("Linear Velocity: " + rb.linearVelocity.ToString());
-        Debug.Log("Linear Velocity Euler Angles: " + rb.rotation.eulerAngles.ToString());
+        //Debug.Log("Linear Velocity: " + rb.linearVelocity.ToString());
+        //Debug.Log("Linear Velocity Euler Angles: " + rb.rotation.eulerAngles.ToString());
 
     }
 
@@ -216,7 +275,7 @@ public class BikerTheyThemController : MonoBehaviour
         // if W is pressed, accelerate
         if (Input.GetKey(KeyCode.W))
         {
-            rb.AddForce(transform.forward * 22f, ForceMode.Acceleration);
+            rb.AddForce(transform.forward * forward_force, ForceMode.Acceleration);
         }
 
         // if S is pressed, deccelerate
@@ -224,8 +283,15 @@ public class BikerTheyThemController : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.S))
             {
-                rb.AddForce(-transform.forward * 15f, ForceMode.Acceleration);
-                Debug.Log("Deccelerating");
+                if(checkIfVelocityIsForward())
+                {
+                    rb.AddForce(-transform.forward * brake_force, ForceMode.Acceleration);
+                    Debug.Log("Deccelerating");
+                }
+                else {
+                    rb.AddForce(-transform.forward * backward_force, ForceMode.Acceleration);
+                    Debug.Log("Backing Up");
+                }
             }
         }
         
@@ -256,13 +322,13 @@ public class BikerTheyThemController : MonoBehaviour
                     {
                         if (checkIfVelocityIsForward())
                         {
-                            rb.AddForce(-transform.right * 10f, ForceMode.Acceleration);
-                            transform.Rotate(0, 0, 3f);
+                            rb.AddForce(-transform.right * turn_force, ForceMode.Acceleration);
+                            transform.Rotate(0, -forward_turn_yaw, forward_turn_roll);
                         }
                         else
                         {
-                            rb.AddForce(transform.right * 10f, ForceMode.Acceleration);
-                            transform.Rotate(0, 0, -3f);
+                            rb.AddForce(transform.right * turn_force, ForceMode.Acceleration);
+                            transform.Rotate(0, backward_turn_yaw, -backward_turn_roll);
                         }
 
                     }
@@ -272,13 +338,13 @@ public class BikerTheyThemController : MonoBehaviour
                     {
                         if (checkIfVelocityIsForward())
                         {
-                            rb.AddForce(transform.right * 10f, ForceMode.Acceleration);
-                            transform.Rotate(0, 0, -3f);
+                            rb.AddForce(transform.right * turn_force, ForceMode.Acceleration);
+                            transform.Rotate(0, forward_turn_yaw, -forward_turn_roll);
                         }
                         else
                         {
-                            rb.AddForce(-transform.right * 10f, ForceMode.Acceleration);
-                            transform.Rotate(0, 0, 3f);
+                            rb.AddForce(-transform.right * turn_force, ForceMode.Acceleration);
+                            transform.Rotate(0, -backward_turn_yaw, backward_turn_roll);
                         }
                     }
                 }
@@ -304,7 +370,7 @@ public class BikerTheyThemController : MonoBehaviour
                     // Drift left...
                     if (Input.GetKey(KeyCode.A))
                     {
-                        rb.AddForce(-forwardAtStartOfDrift * drift_multiplier);
+                        rb.AddForce(-forwardAtStartOfDrift * drift_force);
 
 
                         if (drift_rotate_counter < Mathf.Ceil(max_drift_yaw / drift_forward_yaw))
@@ -317,7 +383,7 @@ public class BikerTheyThemController : MonoBehaviour
                     // Drift right...
                     else if (Input.GetKey(KeyCode.D))
                     {
-                        rb.AddForce(-forwardAtStartOfDrift * drift_multiplier);
+                        rb.AddForce(-forwardAtStartOfDrift * drift_force);
 
                         if (drift_rotate_counter < Mathf.Ceil(max_drift_yaw / drift_forward_yaw))
                         {
@@ -391,6 +457,35 @@ public class BikerTheyThemController : MonoBehaviour
         {
             jump_timer += Time.fixedDeltaTime;
         }
+    }
+
+    private void BikeRollAnimations() {
+        // Rotate the front and bike ties and pedals to animate them as rolling
+        if(stateMachine.CurrentState is not DriftingState) {
+            float distanceThisFrame = rb.linearVelocity.magnitude * Time.fixedDeltaTime;
+            float rotations = distanceThisFrame / wheelCircumference;
+            float degrees = rotations * 360f;
+            if(checkIfVelocityIsForward()) {
+                frontWheel.Rotate(-Vector3.forward*degrees);
+                backWheel.Rotate(-Vector3.forward*degrees);
+                pedals.Rotate(Vector3.right*degrees/gearRatio);
+            }
+            else {
+                frontWheel.Rotate(Vector3.forward*degrees);
+                backWheel.Rotate(Vector3.forward*degrees);
+                pedals.Rotate(-Vector3.right*degrees/gearRatio);
+            }
+        }
+    }
+
+    private void BikeYawAnimations(float targetAngle) 
+    {
+        steerAngle = Mathf.Lerp(steerAngle, targetAngle, Time.deltaTime*5f);
+        
+        // Rotate the handlebars and front wheel
+        handlebars.localRotation = handlebarsInitialRot * Quaternion.Euler(Vector3.forward * steerAngle);
+
+        frontWheel.localRotation = frontWheelInitialRot * Quaternion.Euler(dirHBFromFW * steerAngle);
     }
     
     public void HandleMovementPerFrame()

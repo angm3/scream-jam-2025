@@ -54,7 +54,7 @@ public class ExtractionPoint : MonoBehaviour
 
             // Optional: Show progress
             Debug.Log($"Extracting... {progress * 100:F0}%");
-            GameManager.Instance.general_info.SetInfo($"Extracting... {progress * 100:F0}%");
+            GeneralInfo.Instance.SetInfo($"Extracting... {progress * 100:F0}%");
 
             yield return null;
         }

@@ -5,99 +5,122 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Inventory : MonoBehaviour
+[System.Serializable]
+public class Inventory
 {
-    public int candyCount;
-    public int maxCandyCount;
-    public TMP_Text candyCounterText;
-    public ArrayList blueprints;
-    public ArrayList potionIngredients;
+	public int candyCount;
+	public int maxCandyCount;
+	public int maxCandyStackSize = 5;
+	public int maxInventorySlots = 15;
+	public ArrayList blueprints;
+	public ArrayList potionIngredients;
 
-    public void Start()
-    {
-        candyCount = 0;
-        blueprints = new ArrayList();
-        potionIngredients = new ArrayList();
-        maxCandyCount = 15; // tweak as needed
-        UpdateCounterText();
-    }
+	public Inventory()
+	{
+		candyCount = 0;
+		blueprints = new ArrayList();
+		potionIngredients = new ArrayList();
+		maxCandyCount = 15; // tweak as needed
+		EventBus.Publish(new InventoryChangedEvent());
+	}
 
-    private void UpdateCounterText()
-    {
-        Debug.Log($"Updating counter on {gameObject.name}", gameObject);
+	public int GetUsedSlots()
+	{
+		int slots = 0;
 
-        if (candyCounterText != null)
-        {
-            candyCounterText.text = $"Candy: {candyCount}";
-        } else
-        {
-            Debug.Log("Not updating candy counter ", candyCounterText);
-        }
-    }
+		slots += Mathf.CeilToInt(candyCount / 5f);
 
-    public void AddToInventory(Collectible item)
-    {
-        switch (item.type) {
-            case "candy":
-                candyCount++;
-                break;
-            case "blueprint":
-                blueprints.Add(item.id);
-                break;
-            case "potion_ingredient":
-                potionIngredients.Add(item);
-                break;
+		slots += potionIngredients.Count;
+		slots += blueprints.Count;
 
-        }
-        UpdateCounterText();
-    }
+		return slots;
+	}
 
-    public void RemoveCandyFromInventory(int count)
-    {
-        if (candyCount >= count)
-        {
-            candyCount -= count;
-        }
-        else
-        {
-            Debug.LogWarning("trying to remove too much candy!");
-        }
-        UpdateCounterText();
-    }
-    
-    public void RemoveItemFromInventory(Collectible item)
-    {
-        switch (item.type)
-        {
-            case "candy": // shouldn't happen
-                candyCount--;
-                break;
-            case "blueprint":
-                blueprints.Remove(item);
-                break;
-            case "potion_ingredient":
-                potionIngredients.Remove(item);
-                break;
+	public bool CanAddItem(string type)
+	{
+		if (type == "candy")
+		{
+			// if we have partial stack, we can add to it (assuming 1 candy pick up at a time rn)
+			if (candyCount % 5 != 0) return true;
 
-        }
-        UpdateCounterText();
-    }
+			return GetUsedSlots() < maxInventorySlots;
+		}
+		else
+		{
+			return GetUsedSlots() < maxInventorySlots;
+		}
+	}
 
-    public void DropInventory()
-    {
-        candyCount = 0;
-        blueprints.Clear();
-        potionIngredients.Clear();
-        UpdateCounterText();
-        Debug.Log("Dropped inventory");
-    }
+	public void AddToInventory(Collectible item)
+	{
+		if (!CanAddItem(item.type))
+		{
+			Debug.LogWarning("Inventory full, can't pick this item up");
+			// TODO: add an event here
+			return;
+		}
 
-    public void PickUpInventory(Inventory droppedInventory)
-    {
-        candyCount += droppedInventory.candyCount;
-        blueprints.AddRange(droppedInventory.blueprints);
-        potionIngredients.AddRange(droppedInventory.potionIngredients);
-        UpdateCounterText();
-    }
+		switch (item.type) {
+			case "candy":
+				candyCount++;
+				break;
+			case "blueprint":
+				blueprints.Add(item.id);
+				break;
+			case "potion_ingredient":
+				potionIngredients.Add(item);
+				break;
+
+		}
+		EventBus.Publish(new InventoryChangedEvent());
+	}
+
+	public void RemoveCandyFromInventory(int count)
+	{
+		if (candyCount >= count)
+		{
+			candyCount -= count;
+		}
+		else
+		{
+			Debug.LogWarning("trying to remove too much candy!");
+		}
+		EventBus.Publish(new InventoryChangedEvent());
+	}
+	
+	public void RemoveItemFromInventory(Collectible item)
+	{
+		switch (item.type)
+		{
+			case "candy": // shouldn't happen
+				candyCount--;
+				break;
+			case "blueprint":
+				blueprints.Remove(item);
+				break;
+			case "potion_ingredient":
+				potionIngredients.Remove(item);
+				break;
+
+		}
+		EventBus.Publish(new InventoryChangedEvent());
+	}
+
+	public void DropInventory()
+	{
+		candyCount = 0;
+		blueprints.Clear();
+		potionIngredients.Clear();
+		EventBus.Publish(new InventoryChangedEvent());
+		Debug.Log("Dropped inventory");
+	}
+
+	public void PickUpInventory(Inventory droppedInventory)
+	{
+		candyCount += droppedInventory.candyCount;
+		blueprints.AddRange(droppedInventory.blueprints);
+		potionIngredients.AddRange(droppedInventory.potionIngredients);
+		EventBus.Publish(new InventoryChangedEvent());
+	}
 
 }

@@ -75,7 +75,7 @@ public class Sugar : MonoBehaviour
 
     public void DrainSugar(float amount)
     {
-        Debug.Log("subtracting sugar " + amount.ToString());
+        //Debug.Log("subtracting sugar " + amount.ToString());
         currentSugar = Math.Max(currentSugar - amount, 0f);
         UpdateSugarBar();
         if (currentSugar <= 0)
