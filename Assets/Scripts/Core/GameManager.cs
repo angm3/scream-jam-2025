@@ -12,6 +12,10 @@ public class GameManager : MonoBehaviour
 
     public Inventory currentPlayerInventory;
 
+    public Texture2D cursorCrosshair;
+    public Vector2 hotSpot = Vector2.zero;
+    public CursorMode cursorMode = CursorMode.Auto;
+
     //private Transform playerTransform;
 
     private void Awake()
@@ -28,6 +32,8 @@ public class GameManager : MonoBehaviour
             // Set up stash and inventory 
             stash = new Stash();
             currentPlayerInventory = new Inventory();
+
+            Cursor.SetCursor(cursorCrosshair, hotSpot, cursorMode);
 
             // TESTING
             currentPlayerInventory.candyCount = 6;

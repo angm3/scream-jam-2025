@@ -541,6 +541,9 @@ MonoBehaviour:
     maxCandyCount: 15
     maxCandyStackSize: 5
     maxInventorySlots: 15
+  cursorCrosshair: {fileID: 2800000, guid: a7cd2185d7b9982469a4bbedc41eff51, type: 3}
+  hotSpot: {x: 0, y: 0}
+  cursorMode: 0
 --- !u!1 &1728111371
 GameObject:
   m_ObjectHideFlags: 0
