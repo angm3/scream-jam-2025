@@ -28,6 +28,7 @@ public class PlayerUI : MonoBehaviour
 
     public void UpdateCandyCounter()
     {
+        Debug.Log("Updating candy counter UI");
         Inventory inv = GameManager.Instance.currentPlayerInventory;
         if (inv != null && candyCounterText != null)
         {

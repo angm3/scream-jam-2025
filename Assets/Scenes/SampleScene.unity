@@ -6035,7 +6035,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 325, y: 175}
+  m_AnchoredPosition: {x: 351, y: 228}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &706946623
@@ -14558,8 +14558,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1731854548}
   - component: {fileID: 1731854549}
+  - component: {fileID: 1731854550}
   m_Layer: 0
-  m_Name: GeneralInfoManager
+  m_Name: UIText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14594,6 +14595,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GeneralInfo
   general_info_text: {fileID: 0}
   current_alpha: 0
+--- !u!114 &1731854550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1731854547}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f825a7e6473a7746b90214a1c397119, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerUI
+  candyCounterText: {fileID: 706946624}
 --- !u!1001 &1747071550
 PrefabInstance:
   m_ObjectHideFlags: 0
