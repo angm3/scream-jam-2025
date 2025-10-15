@@ -10,16 +10,28 @@ public class BikerTheyThemController : MonoBehaviour
     public Rigidbody rb;
 
     // Speed thresholds
-    private float maxSpeed = 11f; // tweak as needed
+    private float maxSpeed = 20f;               // tweak as needed
     private float minSpeedForTurn = 0.5f;
-    private float minSpeedForDrift = 2f;
-    private float speedEffectThreshold = 7f; // threshold for effects and bike ramming damage
-    private float idleStateResetSpeed = 0.15f;
+    private float minSpeedForDrift = 4f;
+    private float speedEffectThreshold = 12f;   // threshold for effects and bike ramming damage
+    private float idleStateResetSpeed = 0.2f;
+
+    // Force parameters
+    float forward_force = 10f;
+    float brake_force = 10f;
+    float backward_force = 6f;
+    float turn_force = 12f;
+    float drift_force = 0.5f; 
+
+    // Turn Parameters
+    float forward_turn_roll = 3f;
+    float forward_turn_yaw = 2f;
+    float backward_turn_roll = 3f;
+    float backward_turn_yaw = 2f;
 
     // Drift Parameters
-    float drift_multiplier = 0.4f;      // Drift force applied per frame
     float drift_forward_roll = 0.5f;    // Drift roll applied per frame
-    float drift_forward_yaw = 4f;       // Drift yaw applied per prafe
+    float drift_forward_yaw = 4f;       // Drift yaw applied per frame
     float max_drift_yaw = 360f;         // Maximal yaw change angle allowed over the course of a drift
     float post_drift_timer = 0f;        // Time initialized to zero
     float post_drift_time_lock = 0.2f;  // Time to "lock" player from turning left or right after a drift stops...a small time lock helps with stability
@@ -216,7 +228,7 @@ public class BikerTheyThemController : MonoBehaviour
         // if W is pressed, accelerate
         if (Input.GetKey(KeyCode.W))
         {
-            rb.AddForce(transform.forward * 22f, ForceMode.Acceleration);
+            rb.AddForce(transform.forward * forward_force, ForceMode.Acceleration);
         }
 
         // if S is pressed, deccelerate
@@ -224,8 +236,15 @@ public class BikerTheyThemController : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.S))
             {
-                rb.AddForce(-transform.forward * 15f, ForceMode.Acceleration);
-                Debug.Log("Deccelerating");
+                if(checkIfVelocityIsForward())
+                {
+                    rb.AddForce(-transform.forward * brake_force, ForceMode.Acceleration);
+                    Debug.Log("Deccelerating");
+                }
+                else {
+                    rb.AddForce(-transform.forward * backward_force, ForceMode.Acceleration);
+                    Debug.Log("Backing Up");
+                }
             }
         }
         
@@ -256,13 +275,13 @@ public class BikerTheyThemController : MonoBehaviour
                     {
                         if (checkIfVelocityIsForward())
                         {
-                            rb.AddForce(-transform.right * 10f, ForceMode.Acceleration);
-                            transform.Rotate(0, 0, 3f);
+                            rb.AddForce(-transform.right * turn_force, ForceMode.Acceleration);
+                            transform.Rotate(0, -forward_turn_yaw, forward_turn_roll);
                         }
                         else
                         {
-                            rb.AddForce(transform.right * 10f, ForceMode.Acceleration);
-                            transform.Rotate(0, 0, -3f);
+                            rb.AddForce(transform.right * turn_force, ForceMode.Acceleration);
+                            transform.Rotate(0, backward_turn_yaw, -backward_turn_roll);
                         }
 
                     }
@@ -272,13 +291,13 @@ public class BikerTheyThemController : MonoBehaviour
                     {
                         if (checkIfVelocityIsForward())
                         {
-                            rb.AddForce(transform.right * 10f, ForceMode.Acceleration);
-                            transform.Rotate(0, 0, -3f);
+                            rb.AddForce(transform.right * turn_force, ForceMode.Acceleration);
+                            transform.Rotate(0, forward_turn_yaw, -forward_turn_roll);
                         }
                         else
                         {
-                            rb.AddForce(-transform.right * 10f, ForceMode.Acceleration);
-                            transform.Rotate(0, 0, 3f);
+                            rb.AddForce(-transform.right * turn_force, ForceMode.Acceleration);
+                            transform.Rotate(0, -backward_turn_yaw, backward_turn_roll);
                         }
                     }
                 }
@@ -304,7 +323,7 @@ public class BikerTheyThemController : MonoBehaviour
                     // Drift left...
                     if (Input.GetKey(KeyCode.A))
                     {
-                        rb.AddForce(-forwardAtStartOfDrift * drift_multiplier);
+                        rb.AddForce(-forwardAtStartOfDrift * drift_force);
 
 
                         if (drift_rotate_counter < Mathf.Ceil(max_drift_yaw / drift_forward_yaw))
@@ -317,7 +336,7 @@ public class BikerTheyThemController : MonoBehaviour
                     // Drift right...
                     else if (Input.GetKey(KeyCode.D))
                     {
-                        rb.AddForce(-forwardAtStartOfDrift * drift_multiplier);
+                        rb.AddForce(-forwardAtStartOfDrift * drift_force);
 
                         if (drift_rotate_counter < Mathf.Ceil(max_drift_yaw / drift_forward_yaw))
                         {
