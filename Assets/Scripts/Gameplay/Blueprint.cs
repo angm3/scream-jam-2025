@@ -3,6 +3,7 @@ using UnityEngine;
 public class Blueprint : Collectible
 {
     public string id;
+    public string collect_text;
 
     public Blueprint(string id)
     {
@@ -33,6 +34,8 @@ public class Blueprint : Collectible
     {
         Debug.Log(GameManager.Instance.GetPlayer().GetComponent<BikerTheyThemController>().inventory.blueprints[0]);
         // play some particle effects or sound here
+        GeneralInfo.Instance.SetInfo(collect_text);
         Destroy(gameObject);
+        
     }
 }
