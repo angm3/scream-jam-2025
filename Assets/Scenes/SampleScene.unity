@@ -5226,10 +5226,6 @@ PrefabInstance:
       value: slingshot
       objectReference: {fileID: 0}
     - target: {fileID: 6939653607986938436, guid: 542446945f7d67a488507280d840eac1, type: 3}
-      propertyPath: id
-      value: slingshot
-      objectReference: {fileID: 0}
-    - target: {fileID: 6939653607986938436, guid: 542446945f7d67a488507280d840eac1, type: 3}
       propertyPath: collect_text
       value: Picked up Slingshot!
       objectReference: {fileID: 0}
@@ -15972,7 +15968,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 416485d0aad37d544b37c598c3875475, type: 2}
     - target: {fileID: 6939653607986938436, guid: 542446945f7d67a488507280d840eac1, type: 3}
       propertyPath: id
-      value: speed_wheel
+      value: fast_wheel
       objectReference: {fileID: 0}
     - target: {fileID: 6939653607986938436, guid: 542446945f7d67a488507280d840eac1, type: 3}
       propertyPath: collect_text
