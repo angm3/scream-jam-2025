@@ -66,6 +66,11 @@ public class GameManager : MonoBehaviour
             GeneralInfo.Instance.GetReferenceToText();
         }
         AudioManager.Instance.PlayMusic("music_run");
+        
+        for (int i = 0; i < equippedBikeUpgrades.Count; i++)
+        {
+            Debug.Log($"Equipped upgrade: {equippedBikeUpgrades[i]}");
+        }
     }
 
     // Add your game management logic here

@@ -57,6 +57,7 @@ public class AudioManager : MonoBehaviour
         }
 
         UpdateVolumes();
+        PlayMusic("music_menu"); // Start menu music
     }
     
     private AudioSource CreateChildSource(string name, bool loop)

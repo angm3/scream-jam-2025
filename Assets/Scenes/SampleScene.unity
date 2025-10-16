@@ -5171,7 +5171,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5470196984239491522, guid: 542446945f7d67a488507280d840eac1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 59.324085
+      value: 53.44
       objectReference: {fileID: 0}
     - target: {fileID: 5470196984239491522, guid: 542446945f7d67a488507280d840eac1, type: 3}
       propertyPath: m_LocalPosition.y
@@ -5179,7 +5179,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5470196984239491522, guid: 542446945f7d67a488507280d840eac1, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 162.73357
+      value: 182.12
       objectReference: {fileID: 0}
     - target: {fileID: 5470196984239491522, guid: 542446945f7d67a488507280d840eac1, type: 3}
       propertyPath: m_LocalRotation.w
@@ -5222,8 +5222,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: 416485d0aad37d544b37c598c3875475, type: 2}
     - target: {fileID: 6939653607986938436, guid: 542446945f7d67a488507280d840eac1, type: 3}
+      propertyPath: id
+      value: slingshot
+      objectReference: {fileID: 0}
+    - target: {fileID: 6939653607986938436, guid: 542446945f7d67a488507280d840eac1, type: 3}
+      propertyPath: id
+      value: slingshot
+      objectReference: {fileID: 0}
+    - target: {fileID: 6939653607986938436, guid: 542446945f7d67a488507280d840eac1, type: 3}
       propertyPath: collect_text
-      value: Picked up Treaded Wheels!
+      value: Picked up Slingshot!
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -14718,6 +14726,7 @@ MonoBehaviour:
     maxCandyCount: 15
     maxCandyStackSize: 5
     maxInventorySlots: 15
+  equippedBikeUpgrades: []
   cursorCrosshair: {fileID: 0}
   hotSpot: {x: 0, y: 0}
   cursorMode: 0
@@ -15897,6 +15906,83 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6384345484031634408, guid: e52ade343d56eb04781671f320afafd3, type: 3}
   m_PrefabInstance: {fileID: 1248786009}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1249527651
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4657244834018513784, guid: 542446945f7d67a488507280d840eac1, type: 3}
+      propertyPath: m_Name
+      value: scroll (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5470196984239491522, guid: 542446945f7d67a488507280d840eac1, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 59.324085
+      objectReference: {fileID: 0}
+    - target: {fileID: 5470196984239491522, guid: 542446945f7d67a488507280d840eac1, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -14.019121
+      objectReference: {fileID: 0}
+    - target: {fileID: 5470196984239491522, guid: 542446945f7d67a488507280d840eac1, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 162.73357
+      objectReference: {fileID: 0}
+    - target: {fileID: 5470196984239491522, guid: 542446945f7d67a488507280d840eac1, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.9560479
+      objectReference: {fileID: 0}
+    - target: {fileID: 5470196984239491522, guid: 542446945f7d67a488507280d840eac1, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.11396691
+      objectReference: {fileID: 0}
+    - target: {fileID: 5470196984239491522, guid: 542446945f7d67a488507280d840eac1, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.2071079
+      objectReference: {fileID: 0}
+    - target: {fileID: 5470196984239491522, guid: 542446945f7d67a488507280d840eac1, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.17346573
+      objectReference: {fileID: 0}
+    - target: {fileID: 5470196984239491522, guid: 542446945f7d67a488507280d840eac1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -8.399
+      objectReference: {fileID: 0}
+    - target: {fileID: 5470196984239491522, guid: 542446945f7d67a488507280d840eac1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 26.121
+      objectReference: {fileID: 0}
+    - target: {fileID: 5470196984239491522, guid: 542446945f7d67a488507280d840eac1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -22.519
+      objectReference: {fileID: 0}
+    - target: {fileID: 6602602442278171309, guid: 542446945f7d67a488507280d840eac1, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6602602442278171309, guid: 542446945f7d67a488507280d840eac1, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 416485d0aad37d544b37c598c3875475, type: 2}
+    - target: {fileID: 6602602442278171309, guid: 542446945f7d67a488507280d840eac1, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 416485d0aad37d544b37c598c3875475, type: 2}
+    - target: {fileID: 6939653607986938436, guid: 542446945f7d67a488507280d840eac1, type: 3}
+      propertyPath: id
+      value: speed_wheel
+      objectReference: {fileID: 0}
+    - target: {fileID: 6939653607986938436, guid: 542446945f7d67a488507280d840eac1, type: 3}
+      propertyPath: collect_text
+      value: Picked up Speed Wheels!
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 542446945f7d67a488507280d840eac1, type: 3}
 --- !u!1001 &1255072847
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -25080,4 +25166,5 @@ SceneRoots:
   - {fileID: 45940380}
   - {fileID: 1413676532}
   - {fileID: 401096719}
+  - {fileID: 1249527651}
   - {fileID: 828416660}

@@ -490,6 +490,8 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: d275efa667873944fb50d0d3f4832660, type: 3}
   - name: drag_end
     clip: {fileID: 8300000, guid: 8cf0af0c11564c04890226b91dc9d9a5, type: 3}
+  - name: music_menu
+    clip: {fileID: 8300000, guid: 73cf8c0161d0f0f4e97bb5e1d52a96ef, type: 3}
 --- !u!4 &1303328689
 Transform:
   m_ObjectHideFlags: 0
