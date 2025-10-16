@@ -110,6 +110,11 @@ public class Sugar : MonoBehaviour
         currentSugar = Math.Max(currentSugar - amount, 0f);
         UpdateSugarBar();
 
+        if (currentSugar <= lowHealthThreshold)
+        {
+            GeneralInfo.Instance.SetInfo("Low Sugar!!! Press 'E' to eat candy.");
+        }
+
         if (currentSugar <= 0)
         {
             // disable damage shader on death

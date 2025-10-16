@@ -234,7 +234,7 @@ public class BikerTheyThemController : MonoBehaviour
     
     public void RingBell()
     {
-        AudioManager.Instance.PlaySFX("bell_ring");
+        AudioManager.Instance.PlaySFX("bell_ring", 1f, 0.45f);
         // Implement bell ringing logic here (e.g., alert nearby NPCs)
         Debug.Log("Ding Dong!");
     }
