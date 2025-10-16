@@ -60,6 +60,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -8220969133327139783, guid: 40e1b84262b25234c9f4c85db7dda39a, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -8220969133327139783, guid: 40e1b84262b25234c9f4c85db7dda39a, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: dc26ae3756655dd43b077891a05a15d5, type: 2}
+    - target: {fileID: -1976325113056280650, guid: 40e1b84262b25234c9f4c85db7dda39a, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -1976325113056280650, guid: 40e1b84262b25234c9f4c85db7dda39a, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: dc26ae3756655dd43b077891a05a15d5, type: 2}
     - target: {fileID: 919132149155446097, guid: 40e1b84262b25234c9f4c85db7dda39a, type: 3}
       propertyPath: m_Name
       value: candy_0
@@ -68,6 +84,10 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Projectile
       objectReference: {fileID: 0}
+    - target: {fileID: 2845467572312133762, guid: 40e1b84262b25234c9f4c85db7dda39a, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: aa20830135f6ee44082383c99be1bd89, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
