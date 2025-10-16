@@ -6,7 +6,7 @@ public class Tombstone : MonoBehaviour
 
     public Tombstone(Inventory droppedInventory)
     {
-        deathInventory = droppedInventory;
+        //deathInventory = droppedInventory;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -15,6 +15,11 @@ public class Tombstone : MonoBehaviour
         // pick up their old inventory and delete tombstone
         if (other.gameObject.CompareTag("Player"))
         {
+
+            // print inventory for testing
+            Debug.Log("Tombstone Inventory:");
+            Debug.Log(deathInventory.candyCount);
+            
             Debug.Log("Player entered Tombstone");
             other.gameObject.GetComponent<BikerTheyThemController>().inventory.PickUpInventory(deathInventory);
             Object.Destroy(this.gameObject);

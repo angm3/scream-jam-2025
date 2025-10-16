@@ -275,10 +275,36 @@ public class BikerTheyThemController : MonoBehaviour
     {
         //Debug.Log("On PlayerDeath");
         Instantiate(tombstoneRef.AddComponent<Tombstone>(), transform.position, Quaternion.Euler(90, 0, 0));
+
+        // create deep copy of inventory for tombstone
+        Inventory inventory_cpy = new Inventory();
+        inventory_cpy.candyCount = inventory.candyCount;
+        for (int i = 0; i < inventory.potionIngredients.Count; i++)
+        {
+            inventory_cpy.potionIngredients.Add(inventory.potionIngredients[i]);
+        }
+        for (int i = 0; i < inventory.blueprints.Count; i++)
+        {
+            inventory_cpy.blueprints.Add(inventory.blueprints[i]);
+        }
+
+        GameManager.Instance.lastTombstoneInventory = inventory_cpy;
+        GameManager.Instance.lastTombstonePosition = gameObject.transform.position;
+        GameManager.Instance.lastTombstoneRotation = gameObject.transform.rotation;
+        
+        Debug.Log($"Candy in tomb pre: {GameManager.Instance.lastTombstoneInventory.candyCount}");
+
+        Debug.Log("lastTombstoneInventory is null: " + (GameManager.Instance.lastTombstoneInventory == null).ToString());
+        Debug.Log("lastTombstonePosition is null: " + (GameManager.Instance.lastTombstonePosition == Vector3.zero).ToString());
+        Debug.Log("lastTombstoneRotation is null: " + (GameManager.Instance.lastTombstoneRotation == Quaternion.identity).ToString());
+
         inventory.DropInventory();
         gameObject.SetActive(false);
 
         SceneController.Instance.LoadScene("UI", true);
+
+        Debug.Log($"Candy after death: {inventory.candyCount}");
+        Debug.Log($"Candy in tomb: {GameManager.Instance.lastTombstoneInventory.candyCount}");
     }
 
     void resetVelocityAtEndOfDrift() {

@@ -19,6 +19,12 @@ public class GameManager : MonoBehaviour
 
     //private Transform playerTransform;
 
+    public Inventory lastTombstoneInventory; // store the inventory of the last tombstone created
+    //public Transform lastTombstoneTransform; // store the transform of the last tombstone created
+    public Vector3 lastTombstonePosition;
+    public Quaternion lastTombstoneRotation;
+    public GameObject tombstonePrefab;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -35,6 +41,10 @@ public class GameManager : MonoBehaviour
             currentPlayerInventory = new Inventory();
 
             Cursor.SetCursor(cursorCrosshair, hotSpot, cursorMode);
+
+            lastTombstoneInventory = null;
+            lastTombstonePosition = Vector3.zero;
+            lastTombstoneRotation = Quaternion.identity;
 
             // TESTING
             //currentPlayerInventory.candyCount = 6;
@@ -68,11 +78,13 @@ public class GameManager : MonoBehaviour
         AudioManager.Instance.PlayMusic("music_run");
         
         Debug.Log("In start new run");
-        
+
         for (int i = 0; i < equippedBikeUpgrades.Count; i++)
         {
             Debug.Log($"Equipped upgrade: {equippedBikeUpgrades[i]}");
         }
+
+        
     }
 
     // Add your game management logic here
@@ -92,6 +104,22 @@ public class GameManager : MonoBehaviour
     public void RegisterPlayer(GameObject player)
     {
         player_ref = player;
+        
+        Debug.Log("Checking create tombstone");
+        Debug.Log($"lastTombstoneInventory is null: {lastTombstoneInventory == null}");
+        Debug.Log($"lastTombstoneTransform is null: {lastTombstonePosition == Vector3.zero}");
+        Debug.Log($"lastTombstoneRotation is null: {lastTombstoneRotation == Quaternion.identity}");
+        if (lastTombstoneInventory != null)
+        {
+            Debug.Log("Creating tombstone");
+            GameObject tombstone = GameObject.Instantiate(tombstonePrefab, lastTombstonePosition, lastTombstoneRotation);
+            Tombstone tombstoneScript = tombstone.GetComponent<Tombstone>();
+            tombstoneScript.deathInventory = lastTombstoneInventory;
+            lastTombstoneInventory = null; // reset after creating tombstone
+            lastTombstonePosition = Vector3.zero;
+            lastTombstoneRotation = Quaternion.identity;
+            Debug.Log("Tombstone created");
+        }
     }
 
     public void TransferInventoryToStash()

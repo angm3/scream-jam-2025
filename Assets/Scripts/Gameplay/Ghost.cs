@@ -266,7 +266,7 @@ public class GhostAttackingState : MonsterAttackingState<Ghost>
         //yield return new WaitForSeconds(attack_windup_time);
         float elapsedTime = 0f;
 
-        while(elapsedTime < attack_windup_time)
+        while (elapsedTime < attack_windup_time)
         {
             elapsedTime += Time.deltaTime;
 
@@ -274,20 +274,24 @@ public class GhostAttackingState : MonsterAttackingState<Ghost>
             targetPose = GameManager.Instance.GetPlayer().transform.position + GameManager.Instance.GetPlayer().GetComponent<Rigidbody>().linearVelocity * (attack_windup_time - elapsedTime) * 0.0f;
             direction = (targetPose - owner.transform.position).normalized;
             targetRotation = Quaternion.LookRotation(direction);
-            
+
             // This affects the rotation and position of the ghost
-            owner.transform.rotation = Quaternion.Slerp(owner.transform.rotation, targetRotation, Time.deltaTime*2f);
+            owner.transform.rotation = Quaternion.Slerp(owner.transform.rotation, targetRotation, Time.deltaTime * 2f);
             owner.transform.position += (GameManager.Instance.GetPlayer().GetComponent<Rigidbody>().linearVelocity * 1.4f + Vector3.up * 1.5f) * Time.deltaTime;
 
             yield return null;
         }
 
         // Add a bit of randomness to the exact point the ghost attacks
-        float randomSphereRadius = 1.75f;
-        targetPoseOffset = Random.onUnitSphere * randomSphereRadius;
+        //float randomSphereRadius = 1.75f;
+        //targetPoseOffset = Random.onUnitSphere * randomSphereRadius;
         // Force y pose to be positive and between 0 and 1
-        targetPoseOffset.y = (targetPoseOffset.y < 0 ? -targetPoseOffset.y : targetPoseOffset.y) / randomSphereRadius;
-        direction = (GameManager.Instance.GetPlayer().transform.position + targetPoseOffset - owner.transform.position).normalized;
+        //targetPoseOffset.y = (targetPoseOffset.y < 0 ? -targetPoseOffset.y : targetPoseOffset.y) / randomSphereRadius;
+        //direction = (GameManager.Instance.GetPlayer().transform.position + targetPoseOffset - owner.transform.position).normalized;
+        //targetRotation = Quaternion.LookRotation(direction);
+        
+        // direction is player position - ghost position normalized
+        direction = (GameManager.Instance.GetPlayer().transform.position - owner.transform.position).normalized;
         targetRotation = Quaternion.LookRotation(direction);
 
         is_projecting = false;
