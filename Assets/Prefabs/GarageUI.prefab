@@ -1714,8 +1714,12 @@ PrefabInstance:
       value: InventorySlotItem
       objectReference: {fileID: 0}
     - target: {fileID: 3334408419974707852, guid: 7553dd771d3c9114ab3c1b54aaa1dbbe, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.59775
+      objectReference: {fileID: 0}
+    - target: {fileID: 3334408419974707852, guid: 7553dd771d3c9114ab3c1b54aaa1dbbe, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 26.5282
+      value: -9.4718
       objectReference: {fileID: 0}
     - target: {fileID: 3952623402022826825, guid: 7553dd771d3c9114ab3c1b54aaa1dbbe, type: 3}
       propertyPath: m_SizeDelta.x
@@ -1727,11 +1731,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6372861823223465992, guid: 7553dd771d3c9114ab3c1b54aaa1dbbe, type: 3}
       propertyPath: m_text
-      value: 0
+      value: 0/1
       objectReference: {fileID: 0}
     - target: {fileID: 6372861823223465992, guid: 7553dd771d3c9114ab3c1b54aaa1dbbe, type: 3}
       propertyPath: m_fontSize
       value: 34
+      objectReference: {fileID: 0}
+    - target: {fileID: 6372861823223465992, guid: 7553dd771d3c9114ab3c1b54aaa1dbbe, type: 3}
+      propertyPath: m_margin.x
+      value: -10.589233
       objectReference: {fileID: 0}
     - target: {fileID: 6696211089835099063, guid: 7553dd771d3c9114ab3c1b54aaa1dbbe, type: 3}
       propertyPath: m_Pivot.x
