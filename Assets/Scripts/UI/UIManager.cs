@@ -25,6 +25,10 @@ public class UIManager : MonoBehaviour
     public Button victoryExitButton;
     public Button victoryKeepPlayingButton;
 
+    [Header("Death Screen Buttons")]
+    public Button deathBackToGarageButton;
+    public Button deathExitButton;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -39,7 +43,7 @@ public class UIManager : MonoBehaviour
 
     void Start()
     {
-        HideAllMenus();
+        //HideAllMenus();
     }
 
     void Update()
@@ -96,11 +100,12 @@ public class UIManager : MonoBehaviour
     public void HideDeathPanel()
     { 
         deathPanel.SetActive(false);
-        Time .timeScale = 1f;
+        Time.timeScale = 1f;
     }
 
     void HideAllMenus()
     {
+        Debug.LogWarning("Hiding all Menus in UI Manager");
         pauseMenu.SetActive(false);
         infoPanel.SetActive(false);
         victoryPanel.SetActive(false);
@@ -126,6 +131,8 @@ public class UIManager : MonoBehaviour
         infoContinueButton = uiInit.infoContinueButton;
         victoryKeepPlayingButton = uiInit.victoryKeepPlayingButton;
         victoryExitButton = uiInit.victoryExitButton;
+        deathBackToGarageButton = uiInit.deathBackToGarageButton;
+        deathExitButton = uiInit.deathExitButton;
 
         // TODO make more specific method calls for these
         pauseResumeButton.onClick.AddListener(HidePauseMenu);
@@ -133,9 +140,19 @@ public class UIManager : MonoBehaviour
         pauseExitButton.onClick.AddListener(QuitGame);
         victoryExitButton.onClick.AddListener(QuitGame);
         infoContinueButton.onClick.AddListener(HideInfoPanel);
+        deathBackToGarageButton.onClick.AddListener(OnDeathBackToGarage);
+        deathExitButton.onClick.AddListener(QuitGame);
+
 
         HideAllMenus();
         //ShowInfoPanel();
+    }
+
+    public void OnDeathBackToGarage()
+    {
+        Time.timeScale = 1f;
+        HideDeathPanel();
+        SceneController.Instance.LoadScene("Garage");
     }
     
 }

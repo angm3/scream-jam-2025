@@ -278,7 +278,8 @@ public class BikerTheyThemController : MonoBehaviour
         inventory.DropInventory();
         gameObject.SetActive(false);
 
-        SceneController.Instance.LoadScene("UI", true);
+        //SceneController.Instance.LoadScene("UI", true);
+        UIManager.Instance.ShowDeathPanel();
     }
 
     void resetVelocityAtEndOfDrift() {
