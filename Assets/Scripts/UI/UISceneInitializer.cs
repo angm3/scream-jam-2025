@@ -20,6 +20,10 @@ public class UISceneInitializer : MonoBehaviour
     public Button victoryExitButton;
     public Button victoryKeepPlayingButton;
 
+    [Header("Death Screen Buttons")]
+    public Button deathBackToGarageButton;
+    public Button deathExitButton;
+
     void Start()
     {
         if (UIManager.Instance != null)

@@ -301,10 +301,12 @@ public class BikerTheyThemController : MonoBehaviour
         inventory.DropInventory();
         gameObject.SetActive(false);
 
-        SceneController.Instance.LoadScene("UI", true);
+        //SceneController.Instance.LoadScene("UI", true);
 
         Debug.Log($"Candy after death: {inventory.candyCount}");
         Debug.Log($"Candy in tomb: {GameManager.Instance.lastTombstoneInventory.candyCount}");
+        //SceneController.Instance.LoadScene("UI", true);
+        UIManager.Instance.ShowDeathPanel();
     }
 
     void resetVelocityAtEndOfDrift() {

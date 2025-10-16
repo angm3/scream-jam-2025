@@ -142,6 +142,7 @@ public class GarageManager : MonoBehaviour
             //Collectible bpItem = bp as Collectible;
             //string id = bpItem != null ? bpItem.id : "";
             string id = bp.ToString();
+            Debug.LogWarning($"Loading inventory item {id}");
             // dont spawn items that are equipped
             if (GameManager.Instance.equippedBikeUpgrades.Contains(id))
             { 
@@ -213,8 +214,8 @@ public class GarageManager : MonoBehaviour
         Inventory playerInv = GameManager.Instance.currentPlayerInventory;
         Stash stash = GameManager.Instance.stash;
 
-        Debug.Log($"BEFORE synced - inv: {playerInv.candyCount} candy, {playerInv.blueprints.Count} blueprints, {playerInv.potionIngredients.Count} ingredients");
-        Debug.Log($"BEFORE synced - stash: {stash.candyCount} candy, {stash.items.Count} blueprints, {stash.ingredients.Count} ingredients");
+        Debug.LogWarning($"BEFORE synced - inv: {playerInv.candyCount} candy, {playerInv.blueprints.Count} blueprints, {playerInv.potionIngredients.Count} ingredients");
+        Debug.LogWarning($"BEFORE synced - stash: {stash.candyCount} candy, {stash.items.Count} blueprints, {stash.ingredients.Count} ingredients");
 
         playerInv.candyCount = 0;
         playerInv.blueprints.Clear();
@@ -298,8 +299,8 @@ public class GarageManager : MonoBehaviour
             }
         }
 
-        Debug.Log($"AFTER synced - inv: {playerInv.candyCount} candy, {playerInv.blueprints.Count} blueprints, {playerInv.potionIngredients.Count} ingredients");
-        Debug.Log($"AFTER synced - stash: {stash.candyCount} candy, {stash.items.Count} blueprints, {stash.ingredients.Count} ingredients");
+        Debug.LogWarning($"AFTER synced - inv: {playerInv.candyCount} candy, {playerInv.blueprints.Count} blueprints, {playerInv.potionIngredients.Count} ingredients");
+        Debug.LogWarning($"AFTER synced - stash: {stash.candyCount} candy, {stash.items.Count} blueprints, {stash.ingredients.Count} ingredients");
     }
 
     void CreateUIItem(Transform gridContainer, string type, string id, int count, Sprite sprite)
