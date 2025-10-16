@@ -23,6 +23,18 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         transform.SetParent(canvas.transform);
         canvasGroup.alpha = 0.6f;
         canvasGroup.blocksRaycasts = false;
+
+        // re-enable visuals in case they were hidden
+        CollectibleUIItem item = GetComponent<CollectibleUIItem>();
+        if (item != null)
+        {
+            if (item.itemSpriteImage != null)
+                item.itemSpriteImage.enabled = true;
+            if (item.iconImage != null)
+                item.iconImage.enabled = true;
+            if (item.stackText != null && item.stackCount > 1)
+                item.stackText.gameObject.SetActive(true);
+        }
     }
 
     public void OnDrag(PointerEventData eventData)

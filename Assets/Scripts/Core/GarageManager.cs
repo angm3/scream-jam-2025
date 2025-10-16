@@ -1,7 +1,8 @@
-using UnityEngine;
-using UnityEngine.UI;
+using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class GarageManager : MonoBehaviour
 {
@@ -19,6 +20,8 @@ public class GarageManager : MonoBehaviour
 
     [Header("Sprites")]
     public Sprite candySprite;
+    public List<SpriteMapping> blueprintSprites;
+    public List<SpriteMapping> ingredientSprites;
 
     [Header("Properties")]
     [SerializeField] public int inventorySize = 15;
@@ -26,7 +29,17 @@ public class GarageManager : MonoBehaviour
     [SerializeField] public int ingredientsSize = 1;
     [SerializeField] public int bikeUpgradesSize = 3;
 
+    public List<string> requiredIngredients = new List<string> { "batwing" };
+    public List<InventorySlot> ingredientSlots; // drag all ingredient slots here
 
+    private bool hasAllIngredients = false;
+
+    [System.Serializable]
+    public class SpriteMapping
+    {
+        public string id;
+        public Sprite sprite;
+    }
 
     // Data to UI
     // - LoadPlayerInventory
@@ -48,12 +61,47 @@ public class GarageManager : MonoBehaviour
 
         CreateEmptySlots(inventoryGridContainer, inventorySize);
         CreateEmptySlots(stashGridContainer, stashSize);
-        CreateEmptySlots(bikeUpgradesGridContainer, bikeUpgradesSize);
+        //CreateEmptySlots(bikeUpgradesGridContainer, bikeUpgradesSize);
         // TODO, hard coded for now in the editor
         //CreateEmptySlots(ingredientsGridContainer, ingredientsSize);
 
+        GameManager.Instance.currentPlayerInventory.candyCount = 12;
+        GameManager.Instance.currentPlayerInventory.blueprints.Add("slingshot");
+        GameManager.Instance.currentPlayerInventory.blueprints.Add("fasttires");
+        GameManager.Instance.currentPlayerInventory.potionIngredients.Add("batwing");
+
         LoadPlayerInventory();
+        LoadEquippedUpgrades();
         LoadStash();
+    }
+
+    void Update()
+    {
+        hasAllIngredients = HasAllIngredients();
+
+        if (hasAllIngredients)
+        {
+            // TODO you win?
+        }
+    }
+
+    Sprite GetSpriteForItem(string type, string id)
+    {
+        if (type == "candy") return candySprite;
+
+        if (type == "blueprint")
+        {
+            var mapping = blueprintSprites.Find(x => x.id == id);
+            return mapping?.sprite;
+        }
+
+        if (type == "potion_ingredient")
+        { 
+            var mapping = ingredientSprites.Find(x => x.id == id);
+            return mapping?.sprite;
+        }
+
+        return null;
     }
 
     void CreateEmptySlots(Transform grid, int count)
@@ -88,6 +136,30 @@ public class GarageManager : MonoBehaviour
         }
 
         // TODO items and ingredients
+
+        foreach (var bp in playerInv.blueprints)
+        {
+            //Collectible bpItem = bp as Collectible;
+            //string id = bpItem != null ? bpItem.id : "";
+            string id = bp.ToString();
+            // dont spawn items that are equipped
+            if (GameManager.Instance.equippedBikeUpgrades.Contains(id))
+            { 
+                continue;
+            }
+
+            Sprite sprite = GetSpriteForItem("blueprint", id);
+            CreateUIItem(inventoryGridContainer, "blueprint", id, 1, sprite);
+        }
+
+        foreach (var ing in playerInv.potionIngredients)
+        {
+            //Collectible ingItem = ing as Collectible;
+            //string id = ingItem != null ? ingItem.id : "";
+            string id = ing.ToString();
+            Sprite sprite = GetSpriteForItem("potion_ingredient", id);
+            CreateUIItem(inventoryGridContainer, "potion_ingredient", id, 1, sprite);
+        }
     }
 
     void LoadStash()
@@ -108,6 +180,32 @@ public class GarageManager : MonoBehaviour
         }
 
         // TODO items and ingredients
+        foreach (var bp in stash.items)
+        {
+            //Collectible bpItem = bp as Collectible;
+            //string id = bpItem != null ? bpItem.id : "";
+            string id = bp.ToString();
+            Sprite sprite = GetSpriteForItem("blueprint", id);
+            CreateUIItem(stashGridContainer, "blueprint", id, 1, sprite);
+        }
+
+        foreach (var ing in stash.ingredients)
+        {
+            //Collectible ingItem = ing as Collectible;
+            //string id = ingItem != null ? ingItem.id : "";
+            string id = ing.ToString();
+            Sprite sprite = GetSpriteForItem("potion_ingredient", id);
+            CreateUIItem(stashGridContainer, "potion_ingredient", id, 1, sprite);
+        }
+    }
+
+    void LoadEquippedUpgrades()
+    {
+        foreach (string upgradeId in GameManager.Instance.equippedBikeUpgrades)
+        {
+            Sprite sprite = GetSpriteForItem("blueprint", upgradeId);
+            CreateUIItem(bikeUpgradesGridContainer, "blueprint", upgradeId, 1, sprite);
+        }
     }
 
     void SyncUIToData()
@@ -115,24 +213,43 @@ public class GarageManager : MonoBehaviour
         Inventory playerInv = GameManager.Instance.currentPlayerInventory;
         Stash stash = GameManager.Instance.stash;
 
-        Debug.Log($"BEFORE sync - inv candy: {playerInv.candyCount}, stash candy: {stash.candyCount}");
+        Debug.Log($"BEFORE synced - inv: {playerInv.candyCount} candy, {playerInv.blueprints.Count} blueprints, {playerInv.potionIngredients.Count} ingredients");
+        Debug.Log($"BEFORE synced - stash: {stash.candyCount} candy, {stash.items.Count} blueprints, {stash.ingredients.Count} ingredients");
 
         playerInv.candyCount = 0;
+        playerInv.blueprints.Clear();
+        playerInv.potionIngredients.Clear();
         stash.candyCount = 0;
-        // TODO clear other stuff
+        stash.items.Clear();
+        stash.ingredients.Clear();
 
         // Read from Inventory grid
         foreach (Transform slot in inventoryGridContainer)
         {
             foreach (Transform child in slot)
             { 
+                //candy
                 CollectibleUIItem item = child.GetComponent<CollectibleUIItem>();
+                if (item == null) continue;
+
                 if (item != null && item.collectibleType == "candy")
                 {
                     playerInv.candyCount += item.stackCount;
                 }
 
-                // TODO: add items and ingredient handling
+                //items
+                else if (item.collectibleType == "blueprint")
+                {
+                    Blueprint bp = new Blueprint(item.collectibleId);
+                    playerInv.blueprints.Add(bp);
+                }
+
+                //ingredients
+                else if (item.collectibleType == "potion_ingredient")
+                { 
+                    PotionIngredient ing = new PotionIngredient(item.collectibleId);
+                    playerInv.potionIngredients.Add(ing);
+                }
             }
         }
 
@@ -141,17 +258,48 @@ public class GarageManager : MonoBehaviour
         {
             foreach (Transform child in slot)
             {
+                //candy
                 CollectibleUIItem item = child.GetComponent<CollectibleUIItem>();
+                if (item == null) continue;
+
                 if (item != null && item.collectibleType == "candy")
                 { 
                     stash.candyCount += item.stackCount;
                 }
 
-                // TODO: add items and ingredient handling
+                //items
+                else if (item.collectibleType == "blueprint")
+                {
+                    Blueprint bp = new Blueprint(item.collectibleId);
+                    stash.items.Add(bp);
+                }
+
+                //ingredients
+                else if (item.collectibleType == "potion_ingredient")
+                {
+                    PotionIngredient ing = new PotionIngredient(item.collectibleId);
+                    stash.ingredients.Add(ing);
+                }
             }
         }
 
-        Debug.Log($"AFTER sync - inv candy: {playerInv.candyCount}, stash candy: {stash.candyCount}");
+        // Read from bike upgrade slots
+        // read from bike upgrade slots
+        GameManager.Instance.equippedBikeUpgrades.Clear();
+        foreach (Transform slot in bikeUpgradesGridContainer)
+        {
+            foreach (Transform child in slot)
+            {
+                CollectibleUIItem item = child.GetComponent<CollectibleUIItem>();
+                if (item != null)
+                {
+                    GameManager.Instance.equippedBikeUpgrades.Add(item.collectibleId);
+                }
+            }
+        }
+
+        Debug.Log($"AFTER synced - inv: {playerInv.candyCount} candy, {playerInv.blueprints.Count} blueprints, {playerInv.potionIngredients.Count} ingredients");
+        Debug.Log($"AFTER synced - stash: {stash.candyCount} candy, {stash.items.Count} blueprints, {stash.ingredients.Count} ingredients");
     }
 
     void CreateUIItem(Transform gridContainer, string type, string id, int count, Sprite sprite)
@@ -186,6 +334,35 @@ public class GarageManager : MonoBehaviour
             item.stackText.gameObject.SetActive(count > 1);
             item.stackText.text = count.ToString();
         }
+    }
+
+    public bool HasAllIngredients()
+    {
+        foreach (string requiredId in requiredIngredients)
+        {
+            bool found = false;
+
+            foreach (var slot in ingredientSlots)
+            {
+                if (slot.slotId != requiredId) continue;
+
+                // check if this slot has an item
+                foreach (Transform child in slot.transform)
+                {
+                    if (child.GetComponent<CollectibleUIItem>() != null)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (found) break;
+            }
+
+            if (!found) return false;
+        }
+
+        return true;
     }
 
     public void OnStartRunClicked()

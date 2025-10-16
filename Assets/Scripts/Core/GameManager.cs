@@ -1,3 +1,5 @@
+using NUnit.Framework;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -8,10 +10,9 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     public Stash stash;
-    
 
     public Inventory currentPlayerInventory;
-
+    public List<string> equippedBikeUpgrades = new List<string>();
     public Texture2D cursorCrosshair;
     public Vector2 hotSpot = Vector2.zero;
     public CursorMode cursorMode = CursorMode.Auto;
@@ -36,8 +37,8 @@ public class GameManager : MonoBehaviour
             Cursor.SetCursor(cursorCrosshair, hotSpot, cursorMode);
 
             // TESTING
-            currentPlayerInventory.candyCount = 6;
-            stash.candyCount = 118;
+            //currentPlayerInventory.candyCount = 6;
+            //stash.candyCount = 118;
         }
     }
 
