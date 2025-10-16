@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -50,6 +51,11 @@ public class GameManager : MonoBehaviour
             //currentPlayerInventory.candyCount = 6;
             //stash.candyCount = 118;
         }
+    }
+
+    private void Start()
+    {
+        SceneManager.LoadScene("UI", LoadSceneMode.Additive);
     }
 
     public void HandleSuccessfulExtraction()
