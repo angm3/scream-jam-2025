@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BikerTheyThemController : MonoBehaviour
@@ -133,6 +134,7 @@ public class BikerTheyThemController : MonoBehaviour
         {
             collider.material = tireFriction;
         }
+        
     }
 
     // Update is called once per frame
@@ -244,6 +246,21 @@ public class BikerTheyThemController : MonoBehaviour
         return inventory.candyCount > 0;
     }
 
+    void EnableSlingshot()
+    {
+        // Logic to enable slingshot
+        Debug.Log("Slingshot Enabled");
+        gameObject.GetComponentInChildren<Slingshot>().EnableSlingshot();
+    }
+
+    void EnableSpeedBoost()
+    {
+        // Logic to enable speed boost
+        Debug.Log("Speed Boost Enabled");
+        // e.g., temporarily increase max speed or acceleration
+        maxSpeed *= 1.5f;
+    }
+    
     void PlayerDeath(PlayerDeathEvent e)
     {
         Debug.Log("On PlayerDeath");

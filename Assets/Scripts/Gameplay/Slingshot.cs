@@ -5,6 +5,8 @@ public class Slingshot : MonoBehaviour
     public StateMachine<Slingshot> stateMachine;
     public GameObject projectilePrefab;
 
+    public bool enabled;
+
     void Start()
     {
         stateMachine = new StateMachine<Slingshot>();
@@ -13,15 +15,23 @@ public class Slingshot : MonoBehaviour
         if (hasEnoughInventory)
         {
             stateMachine.ChangeState(new SlingshotCanShootState(this, stateMachine));
-        } else
+        }
+        else
         {
             stateMachine.ChangeState(new SlingshotEmptyState(this, stateMachine));
         }
+        
+        this.enabled = false;
     }
 
     void Update()
     {
         stateMachine.Update();
+    }
+    
+    public void EnableSlingshot()
+    {
+        this.enabled = true;
     }
 }
 
@@ -37,7 +47,7 @@ public class SlingshotCanShootState : State<Slingshot>
 
     public override void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && owner.enabled)
         {
             owner.stateMachine.ChangeState(new SlingshotShootingState(owner, stateMachine));
         }
