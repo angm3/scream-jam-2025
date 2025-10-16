@@ -53,7 +53,7 @@ public class ExtractionPoint : MonoBehaviour
             float progress = elapsed / extractionTime;
 
             // Optional: Show progress
-            Debug.Log($"Extracting... {progress * 100:F0}%");
+            //Debug.Log($"Extracting... {progress * 100:F0}%");
             GeneralInfo.Instance.SetInfo($"Extracting... {progress * 100:F0}%");
 
             yield return null;

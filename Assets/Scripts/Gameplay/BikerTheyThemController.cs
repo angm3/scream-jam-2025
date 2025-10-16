@@ -211,25 +211,25 @@ public class BikerTheyThemController : MonoBehaviour
 
     void TakeDamage(PlayerDamageEvent e)
     {
-        Debug.Log("Took damage: " + e.playerDamage.ToString());
+        //Debug.Log("Took damage: " + e.playerDamage.ToString());
         playerSugar.DrainSugar(e.playerDamage);
     }
     
     void BumpPlayer(PlayerBumpEvent e)
     {
-        Debug.Log("Bumped baby!");
+        //Debug.Log("Bumped baby!");
         rb.AddForce(e.direction * e.mag, ForceMode.Acceleration);
     }
 
     void GetCollectible(PlayerAddInventoryEvent e)
     {
-        Debug.Log("Adding to inventory: " + e.item.type.ToString());
+        //Debug.Log("Adding to inventory: " + e.item.type.ToString());
         inventory.AddToInventory(e.item);
     }
 
     public void ConsumeCandy()
     {
-        Debug.Log("in ConsumeCandy");
+        //Debug.Log("in ConsumeCandy");
         inventory.RemoveCandyFromInventory(1);
         playerSugar.AddSugar(candyHealthIncrease);
     }
@@ -238,7 +238,7 @@ public class BikerTheyThemController : MonoBehaviour
     {
         AudioManager.Instance.PlaySFX("bell_ring", 1f, 0.45f);
         // Implement bell ringing logic here (e.g., alert nearby NPCs)
-        Debug.Log("Ding Dong!");
+        //Debug.Log("Ding Dong!");
     }
 
     public bool CanUseCandy()
@@ -256,14 +256,14 @@ public class BikerTheyThemController : MonoBehaviour
     void EnableSpeedBoost()
     {
         // Logic to enable speed boost
-        Debug.Log("Speed Boost Enabled");
+        //Debug.Log("Speed Boost Enabled");
         // e.g., temporarily increase max speed or acceleration
         maxSpeed *= 1.5f;
     }
     
     void PlayerDeath(PlayerDeathEvent e)
     {
-        Debug.Log("On PlayerDeath");
+        //Debug.Log("On PlayerDeath");
         Instantiate(tombstoneRef.AddComponent<Tombstone>(), transform.position, Quaternion.Euler(90, 0, 0));
         inventory.DropInventory();
         gameObject.SetActive(false);
@@ -272,7 +272,7 @@ public class BikerTheyThemController : MonoBehaviour
     }
 
     void resetVelocityAtEndOfDrift() {
-        Debug.Log("Reset velocity at end of drift.");
+        //Debug.Log("Reset velocity at end of drift.");
         rb.linearVelocity = transform.forward * Mathf.Max(minSpeedForDrift * 0.6f, rb.linearVelocity.magnitude * 0.8f);
         drift_rotate_counter = 0;
         post_drift_timer = 0f;
@@ -301,11 +301,11 @@ public class BikerTheyThemController : MonoBehaviour
         }
         if (meetsThreshold)
         {
-            Debug.Log("Reached speed effect threshold");
+            //Debug.Log("Reached speed effect threshold");
             // TODO: apply light effect here
         } else
         {
-            Debug.Log("Player speed below threshold");
+            //Debug.Log("Player speed below threshold");
         }
 
         //Debug.Log("Linear Velocity: " + rb.linearVelocity.ToString());
@@ -329,11 +329,11 @@ public class BikerTheyThemController : MonoBehaviour
                 if(checkIfVelocityIsForward())
                 {
                     rb.AddForce(-transform.forward * brake_force, ForceMode.Acceleration);
-                    Debug.Log("Deccelerating");
+                    //Debug.Log("Deccelerating");
                 }
                 else {
                     rb.AddForce(-transform.forward * backward_force, ForceMode.Acceleration);
-                    Debug.Log("Backing Up");
+                    //Debug.Log("Backing Up");
                 }
             }
         }
@@ -404,7 +404,7 @@ public class BikerTheyThemController : MonoBehaviour
                     stateMachine.ChangeState(new DriftingState(this, stateMachine));
                     transform.Rotate(0f, 0f, -transform.eulerAngles.z); // Force bike to be upright
                     forwardAtStartOfDrift = transform.forward;          // Capture forward direction (drift forces act opposite this)
-                    Debug.Log("Drift: New Drift State.");
+                    //Debug.Log("Drift: New Drift State.");
                     drift_rotate_counter = 0;
                 }
                 // If the bike is at the minimum drift speed...
@@ -436,7 +436,7 @@ public class BikerTheyThemController : MonoBehaviour
 
                     }
 
-                    Debug.Log("Drift Euler Angles: " + transform.eulerAngles);
+                    //Debug.Log("Drift Euler Angles: " + transform.eulerAngles);
                 }
                 // If bike is below minimum drifitng speed, kill the drift and force an idle state
                 else
@@ -535,14 +535,14 @@ public class BikerTheyThemController : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.P))
         {
-            Debug.Log("P hit");
+            //Debug.Log("P hit");
             EventBus.Publish(new EnemyDamageEvent(25));
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if (jump_cooldown_timer > jump_cooldown)
             {
-                Debug.Log("Jump Start");
+                //Debug.Log("Jump Start");
                 //rb.AddForce(-Physics.gravity * 30f, ForceMode.Acceleration);
                 jump_timer = 0;
                 jump_started = true;
@@ -553,7 +553,7 @@ public class BikerTheyThemController : MonoBehaviour
         {
             if (jump_started)
             {
-                Debug.Log("Jump End!");
+                //Debug.Log("Jump End!");
                 rb.AddForce(-Physics.gravity * Mathf.Min(Mathf.Max(jump_timer, 0.4f * max_jump_timer) / max_jump_timer, 1f) * max_jump_multiplier, ForceMode.Acceleration);
                 //jump_timer = 0;
                 jump_started = false;
@@ -586,7 +586,7 @@ public class IdleState : State<BikerTheyThemController>
 
     public override void Enter()
     {
-        Debug.Log("Drift: Entered idle state");
+        //Debug.Log("Drift: Entered idle state");
     }
 
     public override void Update()
@@ -602,12 +602,12 @@ public class AcceleratingState : State<BikerTheyThemController>
 
     public override void Enter()
     {
-        Debug.Log("Drift: Entered accelerating state");
+        //Debug.Log("Drift: Entered accelerating state");
     }
 
     public override void Update()
     {
-        Debug.Log("Draining sugar: " + owner.playerSugar.decayRate.ToString());
+        //Debug.Log("Draining sugar: " + owner.playerSugar.decayRate.ToString());
         // drain sugar
         owner.playerSugar.DrainSugar(owner.playerSugar.decayRate * Time.deltaTime);
         if (Input.GetKeyUp(KeyCode.W))
@@ -652,12 +652,12 @@ public class DriftingState : State<BikerTheyThemController>
 
     public override void Enter()
     {
-        Debug.Log("Drift: Entered drifting state");
+        //Debug.Log("Drift: Entered drifting state");
     }
 
     public override void Update()
     {
-        Debug.Log("Draining sugar: " + (owner.playerSugar.decayRate*decay_multiplier).ToString());
+        //Debug.Log("Draining sugar: " + (owner.playerSugar.decayRate*decay_multiplier).ToString());
         // drain sugar
         owner.playerSugar.DrainSugar(owner.playerSugar.decayRate * decay_multiplier * Time.deltaTime);
         if (Input.GetKeyUp(KeyCode.S) || Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))

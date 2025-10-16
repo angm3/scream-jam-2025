@@ -27,10 +27,10 @@ public class GeneralInfo : MonoBehaviour
     void Start()
     {
 
-        general_info_text = GameObject.Find("GeneralInfo").GetComponent<TMP_Text>();
+        GetReferenceToText();
         if (general_info_text == null)
         {
-            Debug.LogError("GeneralInfo: Could not find GeneralInfo text component");
+            Debug.Log("GeneralInfo: Could not find GeneralInfo text component");
         }
         else
         {
@@ -50,12 +50,14 @@ public class GeneralInfo : MonoBehaviour
 
     public void GetReferenceToText()
     {
+        Debug.Log("Getting reference to GeneralInfo text component");
+        Debug.Log(GameObject.Find("GeneralInfo"));
         general_info_text = GameObject.Find("GeneralInfo").GetComponent<TMP_Text>();
     }
 
     public void SetInfo(string text)
     {
-        Debug.Log(text);
+        //Debug.Log(text);
         if (general_info_text == null)
         {
             GetReferenceToText();
@@ -89,7 +91,7 @@ public class GeneralInfoSetState : State<GeneralInfo>
 
     public override void Enter()
     {
-        Debug.Log("info entered set state");
+        //Debug.Log("info entered set state");
         owner.ClearInfo();
         owner.SetTransparency(0f);
         timer = 0f;
@@ -97,7 +99,7 @@ public class GeneralInfoSetState : State<GeneralInfo>
 
     public override void Update()
     {
-        Debug.Log("info set state......");
+        //Debug.Log("info set state......");
         // fade in text
         float  alpha = Mathf.Clamp01(timer / fade_in_time);
         owner.SetTransparency(alpha);
@@ -119,12 +121,12 @@ public class GeneralInfoIdleState : State<GeneralInfo>
 
     public override void Enter()
     {
-        Debug.Log("info entered idle state");
+        //Debug.Log("info entered idle state");
     }
 
     public override void Update()
     {
-        Debug.Log("info idle state......");
+        //Debug.Log("info idle state......");
     }
 }
 
@@ -138,14 +140,14 @@ public class GeneralInfoCooldownState : State<GeneralInfo>
 
     public override void Enter()
     {
-        Debug.Log("cooldown info state");
+        //Debug.Log("cooldown info state");
         timer = 0f;
         owner.SetTransparency(1f);
     }
 
     public override void Update()
     {
-        Debug.Log("coooooooling");
+        //Debug.Log("coooooooling");
         timer += Time.deltaTime;
         owner.SetTransparency(1f - Mathf.Clamp01(timer / cooldown));
         if (timer >= cooldown)

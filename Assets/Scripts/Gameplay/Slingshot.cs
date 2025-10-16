@@ -11,7 +11,7 @@ public class Slingshot : MonoBehaviour
     {
         stateMachine = new StateMachine<Slingshot>();
         bool hasEnoughInventory = GameManager.Instance.GetPlayer().GetComponent<BikerTheyThemController>().CanUseCandy();
-        Debug.Log("Slingshot: Constructor - hasEnoughInventory=" + hasEnoughInventory.ToString());
+        //Debug.Log("Slingshot: Constructor - hasEnoughInventory=" + hasEnoughInventory.ToString());
         if (hasEnoughInventory)
         {
             stateMachine.ChangeState(new SlingshotCanShootState(this, stateMachine));
@@ -42,7 +42,7 @@ public class SlingshotCanShootState : State<Slingshot>
 
     public override void Enter()
     {
-        Debug.Log("Slingshot is ready to shoot");
+        //Debug.Log("Slingshot is ready to shoot");
     }
 
     public override void Update()
@@ -64,7 +64,7 @@ public class SlingshotShootingState : State<Slingshot>
     public override void Enter()
     {
         hold_for_timer = 0f;
-        Debug.Log("Slingshot: enter shooting state");
+        //Debug.Log("Slingshot: enter shooting state");
     }
     
     void ShootProjectile(Vector3 dir)
@@ -106,7 +106,7 @@ public class SlingshotEmptyState : State<Slingshot>
 
     public override void Enter()
     {
-        Debug.Log("Slingshot is empty");
+        //Debug.Log("Slingshot is empty");
     }
 
     public override void Update()
@@ -114,7 +114,7 @@ public class SlingshotEmptyState : State<Slingshot>
         bool hasEnoughInventory = GameManager.Instance.GetPlayer().GetComponent<BikerTheyThemController>().CanUseCandy();
         if (hasEnoughInventory)
         {
-            Debug.Log("Slingshot: Empty Update - has enough inventory");
+            //Debug.Log("Slingshot: Empty Update - has enough inventory");
             owner.stateMachine.ChangeState(new SlingshotCanShootState(owner, stateMachine));
         }
     }
@@ -139,11 +139,11 @@ public class SlingshotCooldownState : State<Slingshot>
         // Debug.Log("Slingshot: Update - hasEnoughInventory=" + hasEnoughInventory.ToString());
         if (cooldown_time_counter >= cooldown_timer && hasEnoughInventory)
         {
-            Debug.Log("Slingshot: cooldown Update - switching to can shoot state.");
+            //Debug.Log("Slingshot: cooldown Update - switching to can shoot state.");
             owner.stateMachine.ChangeState(new SlingshotCanShootState(owner, stateMachine));
         } else if (!hasEnoughInventory) // need cooldown conditions?
         {
-            Debug.Log("Slingshot: cooldown Update - switching to empty state"); 
+            //Debug.Log("Slingshot: cooldown Update - switching to empty state"); 
             owner.stateMachine.ChangeState(new SlingshotEmptyState(owner, stateMachine));
         }
     }

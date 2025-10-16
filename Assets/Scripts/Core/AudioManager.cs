@@ -110,7 +110,7 @@ public class AudioManager : MonoBehaviour
 
     public void PlayMusic(string name, bool loop = true)
     {
-        Debug.Log($"AudioManager: PlayMusic '{name}'");
+        //Debug.Log($"AudioManager: PlayMusic '{name}'");
         if (soundDictionary.TryGetValue(name, out AudioClip clip))
             PlayMusic(clip, loop);
         else

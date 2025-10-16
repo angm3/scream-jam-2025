@@ -35,7 +35,7 @@ public class CameraTracking : MonoBehaviour
             }
             else {
                 driftTimer += Time.deltaTime;
-                Debug.Log("Camera Drift Timer: " + driftTimer);
+                //Debug.Log("Camera Drift Timer: " + driftTimer);
                 if(driftTimer > driftFixTime) {
                     inDrift = false;
                     driftTimer = 0f;
@@ -44,7 +44,7 @@ public class CameraTracking : MonoBehaviour
             //desiredPos = transform.position;
         }
         else {
-            Debug.Log("Camera Velocity Method");
+            //Debug.Log("Camera Velocity Method");
             desiredPos = GameManager.Instance.GetPlayer().transform.position - dir * 3f + Vector3.up * 2.0f;
         }
         

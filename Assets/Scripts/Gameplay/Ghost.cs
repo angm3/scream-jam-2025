@@ -16,7 +16,7 @@ public class Ghost : Monster<Ghost>
         maxHealth = 100;
         currentHealth = 100;
         healthbar = GetComponentInChildren<Healthbar>();
-        Debug.Log(healthbar);
+        //Debug.Log(healthbar);
 
         // Set/Add a Rigidbody if it doesn't exist
         Rigidbody rb = gameObject.GetComponent<Rigidbody>();
@@ -47,18 +47,18 @@ public class Ghost : Monster<Ghost>
 
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Collison detected in ghost");
+        //Debug.Log("Collison detected in ghost");
 
         if (other.gameObject.CompareTag("Player"))
         {
             if (stateMachine.CurrentState is GhostAttackingState)
             {
-                Debug.Log("Player hit by ghost");
+                //Debug.Log("Player hit by ghost");
                 EventBus.Publish(new PlayerDamageEvent(playerDamage));
             }
             else if (stateMachine.CurrentState is GhostChasingState || stateMachine.CurrentState is GhostIdleState)
             {
-                Debug.Log("Ghost hit by player");
+                //Debug.Log("Ghost hit by player");
                 if (other.gameObject.GetComponent<BikerTheyThemController>().checkSpeedEffectThreshold())
                 {
                     TakeDamage(new EnemyDamageEvent(playerHitDamage));
@@ -70,7 +70,7 @@ public class Ghost : Monster<Ghost>
 
         if (other.gameObject.CompareTag("Projectile"))
         {
-            Debug.Log("Ghost hit by projectile");
+            //Debug.Log("Ghost hit by projectile");
             TakeDamage(new EnemyDamageEvent(projectileHitDamage));
             currentHealth -= projectileHitDamage;
             healthbar.UpdateHealthBar(maxHealth, currentHealth);
@@ -79,7 +79,7 @@ public class Ghost : Monster<Ghost>
 
         if (currentHealth <= 0)
         {
-            Debug.Log("Ghost has no health, dying");
+            //Debug.Log("Ghost has no health, dying");
             stateMachine.ChangeState(new GhostDyingState(this, stateMachine));
         }
     }
@@ -119,7 +119,7 @@ public class GhostIdleState : MonsterIdleState<Ghost>
 
     public override void Enter()
     {
-        Debug.Log("Entered Ghost Idle");
+        //Debug.Log("Entered Ghost Idle");
 
         owner.SetColorOfLight(new Color(1f, 1f, 0f, 1f));
         bobPhase = Random.Range(0f, 2f * Mathf.PI);
@@ -156,7 +156,7 @@ public class GhostChasingState : MonsterChasingState<Ghost>
     public override void Enter()
     {
 
-        Debug.Log("Ghost is chasing");
+        //Debug.Log("Ghost is chasing");
         owner.SetColorOfLight(new Color(255f / 255f, 154f / 255f, 0f, 255f));
         
         attack_cooldown_timer = 3f;
@@ -250,7 +250,7 @@ public class GhostAttackingState : MonsterAttackingState<Ghost>
 
     public override void Enter()
     {
-        Debug.Log("Ghost is attacking");
+        //Debug.Log("Ghost is attacking");
         owner.SetColorOfLight(new Color(255f / 255f, 0f / 255f, 0f, 255f));
         is_projecting = true;
 
@@ -340,7 +340,7 @@ public class GhostDyingState : MonsterDyingState<Ghost>
 
     public override void Enter()
     {
-        Debug.Log("Ghost is dying");
+        //Debug.Log("Ghost is dying");
         elapsed = 0f;
         startScale = owner.transform.localScale;
         initialPosition = owner.transform.position;

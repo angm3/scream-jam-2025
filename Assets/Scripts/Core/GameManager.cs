@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour
 
     public void HandleSuccessfulExtraction()
     {
-        Debug.Log("Extraction Successful");
+        //Debug.Log("Extraction Successful");
         ReturnToGarage();
     }
     
@@ -60,12 +60,14 @@ public class GameManager : MonoBehaviour
         // Later: transfer candy from stash to inventory based on UI selection
 
         Debug.Log("New run started!");
-        Debug.Log("Playing run music");
-        if (GeneralInfo.Instance != null)
-        {
-            GeneralInfo.Instance.GetReferenceToText();
-        }
+        //Debug.Log("Playing run music");
+        //if (GeneralInfo.Instance != null)
+        //{
+        //    GeneralInfo.Instance.GetReferenceToText();
+        //}
         AudioManager.Instance.PlayMusic("music_run");
+        
+        Debug.Log("In start new run");
         
         for (int i = 0; i < equippedBikeUpgrades.Count; i++)
         {
@@ -76,13 +78,13 @@ public class GameManager : MonoBehaviour
     // Add your game management logic here
     public void StartGame()
     {
-        Debug.Log("Game Started!");
+        //"Game Started!");
         // ...
     }
 
     public void EndGame()
     {
-        Debug.Log("Game Over!");
+        //Debug.Log("Game Over!");
         Application.Quit();
     }
 
@@ -94,10 +96,10 @@ public class GameManager : MonoBehaviour
 
     public void TransferInventoryToStash()
     {
-        Debug.Log("Transfer inventory to stash");
+        //Debug.Log("Transfer inventory to stash");
         if (player_ref == null)
         {
-            Debug.LogWarning("No player registered, cannot transfer inventory");
+            //Debug.LogWarning("No player registered, cannot transfer inventory");
             return;
         }
 
@@ -125,7 +127,7 @@ public class GameManager : MonoBehaviour
             stash.StashIngredient(playerInventory, ingredient);
         }
 
-        Debug.Log($"Transferred inventory to stash. Stash now has {stash.candyCount} candy, {stash.items.Count} blueprints, {stash.ingredients.Count} ingredients");
+        //Debug.Log($"Transferred inventory to stash. Stash now has {stash.candyCount} candy, {stash.items.Count} blueprints, {stash.ingredients.Count} ingredients");
         
     }
 

@@ -53,7 +53,7 @@ public class CollectibleCollectedState : State<Collectible>
     public override void Enter()
     {
         // on enter collected state, trigger inventory add and destroy self.
-        Debug.Log("Collectible collected");
+        //Debug.Log("Collectible collected");
         EventBus.Publish(new PlayerAddInventoryEvent(this.owner));
         //Object.Destroy(this.owner.gameObject);
         

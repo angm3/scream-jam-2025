@@ -22,13 +22,13 @@ public class PlayerUI : MonoBehaviour
 
     void OnInventoryChanged(InventoryChangedEvent e)
     {
-        Debug.Log("Inventory change event fired");
+        //Debug.Log("Inventory change event fired");
         UpdateCandyCounter();
     }
 
     public void UpdateCandyCounter()
     {
-        Debug.Log("Updating candy counter UI");
+        //Debug.Log("Updating candy counter UI");
         Inventory inv = GameManager.Instance.currentPlayerInventory;
         if (inv != null && candyCounterText != null)
         {
