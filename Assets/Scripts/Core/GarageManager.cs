@@ -65,10 +65,10 @@ public class GarageManager : MonoBehaviour
         // TODO, hard coded for now in the editor
         //CreateEmptySlots(ingredientsGridContainer, ingredientsSize);
 
-        GameManager.Instance.currentPlayerInventory.candyCount = 12;
-        GameManager.Instance.currentPlayerInventory.blueprints.Add("slingshot");
-        GameManager.Instance.currentPlayerInventory.blueprints.Add("fasttires");
-        GameManager.Instance.currentPlayerInventory.potionIngredients.Add("batwing");
+        //GameManager.Instance.currentPlayerInventory.candyCount = 12;
+        //GameManager.Instance.currentPlayerInventory.blueprints.Add("slingshot");
+        //GameManager.Instance.currentPlayerInventory.blueprints.Add("fasttires");
+        //GameManager.Instance.currentPlayerInventory.potionIngredients.Add("batwing");
 
         LoadPlayerInventory();
         LoadEquippedUpgrades();
