@@ -5227,7 +5227,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6939653607986938436, guid: 542446945f7d67a488507280d840eac1, type: 3}
       propertyPath: collect_text
-      value: Picked up Slingshot!
+      value: Picked up the Slingshot!
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -9068,11 +9068,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 2015573340}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 351, y: 228}
-  m_SizeDelta: {x: 200, y: 50}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0.42100003, y: 0.933}
+  m_AnchorMax: {x: 0.5524792, y: 1}
+  m_AnchoredPosition: {x: 0.45529175, y: 0}
+  m_SizeDelta: {x: 1.9513016, y: 2.0161}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &706946623
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9105,10 +9105,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: 'Candy: 0'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 484e8e63a0d5416408f255d1ed8abd79, type: 2}
+  m_sharedMaterial: {fileID: 2552482927492825325, guid: 484e8e63a0d5416408f255d1ed8abd79, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -9132,10 +9132,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
+  m_fontSize: 61.95
   m_fontSizeBase: 36
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
@@ -9170,7 +9170,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 18.968506, y: 0, z: 0, w: 0}
+  m_margin: {x: 5.0705566, y: 0, z: 1.1434326, w: -1.1436157}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -15001,18 +15001,18 @@ RectTransform:
   m_GameObject: {fileID: 1196029106}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 3, y: 3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1246110704}
   - {fileID: 834912999}
   m_Father: {fileID: 2015573340}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -403, y: 231}
-  m_SizeDelta: {x: 160, y: 20}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0.025, y: 0.026851851}
+  m_AnchorMax: {x: 0.2703334, y: 0.08414815}
+  m_AnchoredPosition: {x: -4, y: -2}
+  m_SizeDelta: {x: -312, y: -42}
+  m_Pivot: {x: 0, y: 0}
 --- !u!114 &1196029108
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15968,11 +15968,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 416485d0aad37d544b37c598c3875475, type: 2}
     - target: {fileID: 6939653607986938436, guid: 542446945f7d67a488507280d840eac1, type: 3}
       propertyPath: id
-      value: fast_wheel
+      value: fasttires
       objectReference: {fileID: 0}
     - target: {fileID: 6939653607986938436, guid: 542446945f7d67a488507280d840eac1, type: 3}
       propertyPath: collect_text
-      value: Picked up Speed Wheels!
+      value: Picked up Fast Tires!
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -18271,10 +18271,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 2015573340}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -185}
-  m_SizeDelta: {x: 500, y: 50}
+  m_AnchorMin: {x: 0.372, y: 0.3122963}
+  m_AnchorMax: {x: 0.628, y: 0.34837037}
+  m_AnchoredPosition: {x: 0, y: -1.5}
+  m_SizeDelta: {x: 6, y: 11}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1504103816
 MonoBehaviour:
