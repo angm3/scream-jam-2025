@@ -8003,6 +8003,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Slingshot
   projectilePrefab: {fileID: 8152012528407012584, guid: 698f40b656c2cf846ac2f15b3005871e, type: 3}
+  enabled: 0
 --- !u!4 &610402307 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6384345484031634408, guid: e52ade343d56eb04781671f320afafd3, type: 3}
@@ -15124,7 +15125,7 @@ MonoBehaviour:
   fullColor: {r: 0, g: 1, b: 0, a: 1}
   midColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   lowColor: {r: 1, g: 0, b: 0, a: 1}
-  vignetteMaterial: {fileID: 0}
+  vignetteMaterial: {fileID: 2100000, guid: 3f385d9129ca1394ca2ea7699450b0fa, type: 2}
   lowHealthThreshold: 30
   pulseSpeed: 2
   minRadius: 0.25
