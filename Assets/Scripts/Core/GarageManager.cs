@@ -372,9 +372,8 @@ public class GarageManager : MonoBehaviour
         // Temporarily do the sync from ui here
         // later we'll want to do it when we close the stash screen to interact with elements in the garage scene
         SyncUIToData();
-
-        GameManager.Instance.StartNewRun();
         SceneController.Instance.LoadScene("SampleScene", includeUI: true);
+        GameManager.Instance.StartNewRun();
     }
 }
 

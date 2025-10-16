@@ -19,6 +19,8 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        
+        AudioManager.Instance.PlaySFX("drag_start",  0.5f, 0.3f);
         originalParent = transform.parent;
         transform.SetParent(canvas.transform);
         canvasGroup.alpha = 0.6f;
@@ -44,6 +46,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        AudioManager.Instance.PlaySFX("drag_end", 0.5f, 0.3f);
         canvasGroup.alpha = 1f;
         canvasGroup.blocksRaycasts = true;
 

@@ -61,6 +61,10 @@ public class GameManager : MonoBehaviour
 
         Debug.Log("New run started!");
         Debug.Log("Playing run music");
+        if (GeneralInfo.Instance != null)
+        {
+            GeneralInfo.Instance.GetReferenceToText();
+        }
         AudioManager.Instance.PlayMusic("music_run");
     }
 

@@ -486,6 +486,10 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: fcac219d3730334409182b446d292b82, type: 3}
   - name: ghost_death
     clip: {fileID: 8300000, guid: ab303fe092796ea48bd402f149022d86, type: 3}
+  - name: drag_start
+    clip: {fileID: 8300000, guid: d275efa667873944fb50d0d3f4832660, type: 3}
+  - name: drag_end
+    clip: {fileID: 8300000, guid: 8cf0af0c11564c04890226b91dc9d9a5, type: 3}
 --- !u!4 &1303328689
 Transform:
   m_ObjectHideFlags: 0
@@ -553,6 +557,7 @@ MonoBehaviour:
     maxCandyCount: 15
     maxCandyStackSize: 5
     maxInventorySlots: 15
+  equippedBikeUpgrades: []
   cursorCrosshair: {fileID: 2800000, guid: a7cd2185d7b9982469a4bbedc41eff51, type: 3}
   hotSpot: {x: 0, y: 0}
   cursorMode: 0

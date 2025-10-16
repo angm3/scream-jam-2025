@@ -23,8 +23,9 @@ public class MainMenuManager : MonoBehaviour
 
     private void OnStartGame()
     {
-        GameManager.Instance.StartNewRun();
+
         SceneController.Instance.LoadScene("SampleScene", includeUI: true);
+        GameManager.Instance.StartNewRun();
     }
 
     private void OnSettings()

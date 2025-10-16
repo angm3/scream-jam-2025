@@ -48,9 +48,18 @@ public class GeneralInfo : MonoBehaviour
         stateMachine.Update();
     }
 
+    public void GetReferenceToText()
+    {
+        general_info_text = GameObject.Find("GeneralInfo").GetComponent<TMP_Text>();
+    }
+
     public void SetInfo(string text)
     {
         Debug.Log(text);
+        if (general_info_text == null)
+        {
+            GetReferenceToText();
+        }
         general_info_text.text = text;
         stateMachine.ChangeState(new GeneralInfoCooldownState(this, stateMachine));
     }
