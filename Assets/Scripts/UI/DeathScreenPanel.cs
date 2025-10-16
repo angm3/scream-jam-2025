@@ -17,7 +17,7 @@ public class DeathScreenPanel : MonoBehaviour
     {
         // trigger load to garage
         SceneController.Instance.LoadScene("Garage");
-        UIManager.Instance.SetDeathScreenPanelInactive();
+        UIManager.Instance.HideDeathPanel();
     }
 
     private void OnExitGameBtnClick()

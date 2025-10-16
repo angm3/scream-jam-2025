@@ -31,10 +31,19 @@ public class SceneController : MonoBehaviour
         LoadScene("MainMenu");
     }
 
+
+
     // Simple single scene load
     public void LoadScene(string sceneName, bool includeUI = false)
     {
+        Debug.LogWarning("Loading Scene");
+        //if (!SceneManager.GetSceneByName("UI").isLoaded)
+        //{
+        //    Debug.LogWarning("Loading UI Scene");
+        //    SceneManager.LoadScene("UI", LoadSceneMode.Additive);
+        //}
         SceneManager.LoadScene(sceneName);
+        
         //StartCoroutine(LoadSceneAsync(sceneName, includeUI));
     }
 
