@@ -1,11 +1,29 @@
+using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
     // script to handle showing and hiding specific ui panels in the UI scene
     public static UIManager Instance { get; private set; }
 
-    public static DeathScreenPanel deathScreenPanel;
+    //public static DeathScreenPanel deathScreenPanel;
+    private GameObject pauseMenu;
+    private GameObject infoPanel;
+    private GameObject deathPanel;
+    private GameObject victoryPanel;
+
+    [Header("Pause Menu Buttons")]
+    public Button pauseResumeButton;
+    public Button pauseGameInfoButton;
+    public Button pauseExitButton;
+
+    [Header("Info Panel Buttons")]
+    public Button infoContinueButton;
+
+    [Header("Victory Screen Buttons")]
+    public Button victoryExitButton;
+    public Button victoryKeepPlayingButton;
 
     private void Awake()
     {
@@ -15,19 +33,109 @@ public class UIManager : MonoBehaviour
             return;
         }
         Instance = this;
-        deathScreenPanel = GetComponent<DeathScreenPanel>();
+        //deathScreenPanel = GetComponent<DeathScreenPanel>();
         DontDestroyOnLoad(gameObject); // Persist across scenes
     }
 
-    public void SetDeathScreenPanelActive()
+    void Start()
     {
-        deathScreenPanel.gameObject.SetActive(true);
+        HideAllMenus();
     }
 
-    public void SetDeathScreenPanelInactive()
+    void Update()
     {
-        deathScreenPanel.gameObject.SetActive(false);
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            TogglePauseMenu();
+        }
+    }
+    public void ShowPauseMenu()
+    {
+        pauseMenu.SetActive(true);
+        Time.timeScale = 0f;
+    }
+
+    public void HidePauseMenu()
+    {
+        pauseMenu.SetActive(false);
+        Time.timeScale = 1f;
+    }
+
+    public void TogglePauseMenu()
+    {
+        if (pauseMenu.activeSelf)
+            HidePauseMenu();
+        else
+            ShowPauseMenu();
+    }
+
+    public void ShowInfoPanel()
+    {
+        infoPanel.SetActive(true);
+        Time.timeScale = 0f;
+    }
+
+    public void HideInfoPanel()
+    {
+        infoPanel.SetActive(false);
+        Time.timeScale = 1f;
+    }
+
+    public void ShowVictoryScreen()
+    {
+        victoryPanel.SetActive(true);
+        Time.timeScale = 0f;
+    }
+
+    public void ShowDeathPanel()
+    { 
+        deathPanel.SetActive(true);
+        Time.timeScale = 0f;
+    }
+
+    public void HideDeathPanel()
+    { 
+        deathPanel.SetActive(false);
+        Time .timeScale = 1f;
+    }
+
+    void HideAllMenus()
+    {
+        pauseMenu.SetActive(false);
+        infoPanel.SetActive(false);
+        victoryPanel.SetActive(false);
+        deathPanel.SetActive(false);
+    }
+
+    void QuitGame()
+    {
+        Time.timeScale = 1f;
+        Application.Quit();
+    }
+
+    public void RegisterUI(UISceneInitializer uiInit)
+    { 
+        pauseMenu = uiInit.pauseMenu;
+        infoPanel = uiInit.infoPanel;
+        deathPanel = uiInit.deathPanel;
+        victoryPanel = uiInit.victoryPanel;
+
+        pauseResumeButton = uiInit.pauseResumeButton;
+        pauseGameInfoButton = uiInit.pauseGameInfoButton;
+        pauseExitButton = uiInit.pauseExitButton;
+        infoContinueButton = uiInit.infoContinueButton;
+        victoryKeepPlayingButton = uiInit.victoryKeepPlayingButton;
+        victoryExitButton = uiInit.victoryExitButton;
+
+        // TODO make more specific method calls for these
+        pauseResumeButton.onClick.AddListener(HidePauseMenu);
+        pauseGameInfoButton.onClick.AddListener(ShowInfoPanel);
+        pauseExitButton.onClick.AddListener(QuitGame);
+        victoryExitButton.onClick.AddListener(QuitGame);
+        infoContinueButton.onClick.AddListener(HideInfoPanel);
+
+        HideAllMenus();
+        //ShowInfoPanel();
     }
     
-
 }
