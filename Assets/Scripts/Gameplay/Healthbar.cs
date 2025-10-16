@@ -22,6 +22,6 @@ public class Healthbar : MonoBehaviour
     private void Update()
     {
         transform.rotation = Quaternion.LookRotation(transform.position - cam.transform.position);
-        _healthbarSprite.fillAmount = Mathf.MoveTowards(_healthbarSprite.fillAmount, target, reduceSpeed * Time.deltaTime);
+        //_healthbarSprite.fillAmount = Mathf.MoveTowards(_healthbarSprite.fillAmount, target, reduceSpeed * Time.deltaTime);
     }
 }

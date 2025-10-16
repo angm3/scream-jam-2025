@@ -62,6 +62,7 @@ public class Ghost : Monster<Ghost>
                 if (other.gameObject.GetComponent<BikerTheyThemController>().checkSpeedEffectThreshold())
                 {
                     TakeDamage(new EnemyDamageEvent(playerHitDamage));
+                    currentHealth -= playerHitDamage;
                     healthbar.UpdateHealthBar(maxHealth, currentHealth);
                 }
             }
@@ -71,6 +72,7 @@ public class Ghost : Monster<Ghost>
         {
             Debug.Log("Ghost hit by projectile");
             TakeDamage(new EnemyDamageEvent(projectileHitDamage));
+            currentHealth -= projectileHitDamage;
             healthbar.UpdateHealthBar(maxHealth, currentHealth);
             
         }
@@ -85,6 +87,11 @@ public class Ghost : Monster<Ghost>
     public void TakeDamage(EnemyDamageEvent e)
     {
         Debug.Log("Ghost took damage: " + e.enemyDamage.ToString());
+
+        // generate a random number from 1 to 5 inclusive 
+        int randomNumber = Random.Range(1, 6);
+        string soundName = "ghost_" + randomNumber.ToString();
+        AudioManager.Instance.PlaySFX(soundName);
         currentHealth -= e.enemyDamage;
     }
 
@@ -108,6 +115,7 @@ public class GhostIdleState : MonsterIdleState<Ghost>
     public GhostIdleState(Ghost owner, StateMachine<Ghost> sm) : base(owner, sm) { }
 
     float bobPhase;
+    public float ghostChaseRadius = 20f;
 
     public override void Enter()
     {
@@ -127,7 +135,7 @@ public class GhostIdleState : MonsterIdleState<Ghost>
         owner.transform.position = new Vector3(owner.transform.position.x, owner.transform.position.y + Mathf.Sin(bobPhase +Time.time * bobSpeed) * bobHeight * Time.deltaTime, owner.transform.position.z);
 
 
-        if ((GameManager.Instance.GetPlayer().transform.position - this.owner.gameObject.transform.position).magnitude < 10f)
+        if ((GameManager.Instance.GetPlayer().transform.position - this.owner.gameObject.transform.position).magnitude < ghostChaseRadius)
         {
             stateMachine.ChangeState(new GhostChasingState(owner, stateMachine));
         }
@@ -336,6 +344,7 @@ public class GhostDyingState : MonsterDyingState<Ghost>
         elapsed = 0f;
         startScale = owner.transform.localScale;
         initialPosition = owner.transform.position;
+        AudioManager.Instance.PlaySFX("ghost_death");
     }
 
     public override void Update()
