@@ -473,7 +473,19 @@ MonoBehaviour:
   - name: music_run
     clip: {fileID: 8300000, guid: d432652710513bd4abb1bc5ee869dbb9, type: 3}
   - name: bell_ring
-    clip: {fileID: 8300000, guid: fca57018e60f3fc419f28233408c15ba, type: 3}
+    clip: {fileID: 8300000, guid: b4e941b6913452240a4958cb801582ca, type: 3}
+  - name: ghost_1
+    clip: {fileID: 8300000, guid: 52f730a7e0c30224a82c88ca8bd4559a, type: 3}
+  - name: ghost_2
+    clip: {fileID: 8300000, guid: 92dca2f052375d645adf6caa7344690c, type: 3}
+  - name: ghost_3
+    clip: {fileID: 8300000, guid: acd45dff23ef15446aee86ae035845d7, type: 3}
+  - name: ghost_4
+    clip: {fileID: 8300000, guid: 33bf9217a5fe2534fba0d37f51d57983, type: 3}
+  - name: ghost_5
+    clip: {fileID: 8300000, guid: fcac219d3730334409182b446d292b82, type: 3}
+  - name: ghost_death
+    clip: {fileID: 8300000, guid: ab303fe092796ea48bd402f149022d86, type: 3}
 --- !u!4 &1303328689
 Transform:
   m_ObjectHideFlags: 0

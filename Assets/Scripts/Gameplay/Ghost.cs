@@ -85,6 +85,11 @@ public class Ghost : Monster<Ghost>
     public void TakeDamage(EnemyDamageEvent e)
     {
         Debug.Log("Ghost took damage: " + e.enemyDamage.ToString());
+
+        // generate a random number from 1 to 5 inclusive 
+        int randomNumber = Random.Range(1, 6);
+        string soundName = "ghost_" + randomNumber.ToString();
+        AudioManager.Instance.PlaySFX(soundName);
         currentHealth -= e.enemyDamage;
     }
 
@@ -336,6 +341,7 @@ public class GhostDyingState : MonsterDyingState<Ghost>
         elapsed = 0f;
         startScale = owner.transform.localScale;
         initialPosition = owner.transform.position;
+        AudioManager.Instance.PlaySFX("ghost_death");
     }
 
     public override void Update()
