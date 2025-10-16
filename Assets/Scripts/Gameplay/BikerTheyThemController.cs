@@ -135,6 +135,16 @@ public class BikerTheyThemController : MonoBehaviour
             collider.material = tireFriction;
         }
         
+        
+        if (GameManager.Instance.equippedBikeUpgrades.Contains("slingshot"))
+        {
+            EnableSlingshot();
+        }
+        if (GameManager.Instance.equippedBikeUpgrades.Contains("fasttires"))
+        {
+            EnableSpeedBoost();
+        }
+        
     }
 
     // Update is called once per frame
