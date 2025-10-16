@@ -45,7 +45,7 @@ public class CameraTracking : MonoBehaviour
         }
         else {
             //Debug.Log("Camera Velocity Method");
-            desiredPos = GameManager.Instance.GetPlayer().transform.position - dir * 3f + Vector3.up * 2.0f;
+            desiredPos = GameManager.Instance.GetPlayer().transform.position - dir * 4.5f + Vector3.up * 3.0f;
         }
         
         // smooth camera movement

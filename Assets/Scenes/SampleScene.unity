@@ -17,16 +17,16 @@ RenderSettings:
   m_Fog: 0
   m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FogMode: 3
-  m_FogDensity: 0.03
+  m_FogDensity: 0.007
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
+  m_AmbientSkyColor: {r: 0.039215688, g: 0.039215688, b: 0.0627451, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
-  m_AmbientMode: 0
+  m_AmbientMode: 3
   m_SubtractiveShadowColor: {r: 1, g: 1, b: 1, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 89e66e2b679ea7c4ebbd6cd1caaef586, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -5935,7 +5935,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 59
+  field of view: 35
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -7702,8 +7702,8 @@ Light:
   m_Enabled: 1
   serializedVersion: 11
   m_Type: 1
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.03
+  m_Color: {r: 0.11764706, g: 0.16862746, b: 0.35686275, a: 1}
+  m_Intensity: 0.05
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -7742,12 +7742,12 @@ Light:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingLayerMask: 1
-  m_Lightmapping: 2
+  m_Lightmapping: 4
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
-  m_ColorTemperature: 8108
-  m_UseColorTemperature: 1
+  m_ColorTemperature: 3517
+  m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
@@ -13382,7 +13382,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8424651106092298047, guid: b47e6867656433549996a2fa9585c39a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -14.026879
+      value: -13.85
       objectReference: {fileID: 0}
     - target: {fileID: 8424651106092298047, guid: b47e6867656433549996a2fa9585c39a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -18157,7 +18157,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4598233610582347083, guid: c956ae5c64f00104ab47d47df5be2191, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -14.03422
+      value: -13.7
       objectReference: {fileID: 0}
     - target: {fileID: 4598233610582347083, guid: c956ae5c64f00104ab47d47df5be2191, type: 3}
       propertyPath: m_LocalPosition.z
@@ -29173,7 +29173,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 698129317364806646, guid: 7673ab2b3c984234fa3f8e56ffb912b4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -13.96743
+      value: -13.5
       objectReference: {fileID: 0}
     - target: {fileID: 698129317364806646, guid: 7673ab2b3c984234fa3f8e56ffb912b4, type: 3}
       propertyPath: m_LocalPosition.z
