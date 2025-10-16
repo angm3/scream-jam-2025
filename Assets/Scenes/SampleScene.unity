@@ -7488,7 +7488,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5470196984239491522, guid: 542446945f7d67a488507280d840eac1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 53.44
+      value: 197.8
       objectReference: {fileID: 0}
     - target: {fileID: 5470196984239491522, guid: 542446945f7d67a488507280d840eac1, type: 3}
       propertyPath: m_LocalPosition.y
@@ -7496,7 +7496,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5470196984239491522, guid: 542446945f7d67a488507280d840eac1, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 182.12
+      value: 27.5
       objectReference: {fileID: 0}
     - target: {fileID: 5470196984239491522, guid: 542446945f7d67a488507280d840eac1, type: 3}
       propertyPath: m_LocalRotation.w
@@ -12583,7 +12583,7 @@ GameObject:
   - component: {fileID: 706946624}
   - component: {fileID: 706946623}
   m_Layer: 5
-  m_Name: CandyCount
+  m_Name: CandyCountText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -22018,15 +22018,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5470196984239491522, guid: 542446945f7d67a488507280d840eac1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 59.324085
+      value: 219.9
       objectReference: {fileID: 0}
     - target: {fileID: 5470196984239491522, guid: 542446945f7d67a488507280d840eac1, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -14.019121
+      value: -13.7
       objectReference: {fileID: 0}
     - target: {fileID: 5470196984239491522, guid: 542446945f7d67a488507280d840eac1, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 162.73357
+      value: 43.5
       objectReference: {fileID: 0}
     - target: {fileID: 5470196984239491522, guid: 542446945f7d67a488507280d840eac1, type: 3}
       propertyPath: m_LocalRotation.w
@@ -29957,7 +29957,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f825a7e6473a7746b90214a1c397119, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerUI
-  candyCounterText: {fileID: 706946624}
+  candyCounterText: {fileID: 0}
 --- !u!1001 &1737050398
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -36481,15 +36481,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2491222704460087966, guid: d0ec3306765ba7246aea498751776fda, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 10.07
+      value: 216
       objectReference: {fileID: 0}
     - target: {fileID: 2491222704460087966, guid: d0ec3306765ba7246aea498751776fda, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -13.31
+      value: -14.13
       objectReference: {fileID: 0}
     - target: {fileID: 2491222704460087966, guid: d0ec3306765ba7246aea498751776fda, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 227.14
+      value: 30.7
       objectReference: {fileID: 0}
     - target: {fileID: 2491222704460087966, guid: d0ec3306765ba7246aea498751776fda, type: 3}
       propertyPath: m_LocalRotation.w

@@ -50,8 +50,8 @@ public class GeneralInfo : MonoBehaviour
 
     public void GetReferenceToText()
     {
-        Debug.Log("Getting reference to GeneralInfo text component");
-        Debug.Log(GameObject.Find("GeneralInfo"));
+        //Debug.Log("Getting reference to GeneralInfo text component");
+        //Debug.Log(GameObject.Find("GeneralInfo"));
         general_info_text = GameObject.Find("GeneralInfo").GetComponent<TMP_Text>();
     }
 
