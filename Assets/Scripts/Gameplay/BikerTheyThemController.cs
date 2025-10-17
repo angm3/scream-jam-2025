@@ -1,5 +1,6 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using System.Collections;
 
 public class BikerTheyThemController : MonoBehaviour
 {
@@ -54,6 +55,7 @@ public class BikerTheyThemController : MonoBehaviour
     float post_drift_timer = 0f;        // Time initialized to zero
     float post_drift_time_lock = 0.2f;  // Time to "lock" player from turning left or right after a drift stops...a small time lock helps with stability
     int drift_rotate_counter = 0;       // Counter that ensures the bike is not rotated beyond some yaw limit
+    float straightDuration = 0.6f;
     Vector3 forwardAtStartOfDrift = Vector3.zero;
 
     // Jump Parameters/Variables
@@ -168,7 +170,7 @@ public class BikerTheyThemController : MonoBehaviour
             // switch states to accelerating
             if (stateMachine.CurrentState is DriftingState)
             {
-                resetVelocityAtEndOfDrift();
+                StartCoroutine(resetVelocityAtEndOfDrift());;
             }
             stateMachine.ChangeState(new AcceleratingState(this, stateMachine));
         }
@@ -179,7 +181,7 @@ public class BikerTheyThemController : MonoBehaviour
             // switch states to idle
             if (stateMachine.CurrentState is DriftingState)
             {
-                resetVelocityAtEndOfDrift();
+                StartCoroutine(resetVelocityAtEndOfDrift());;
             }
             stateMachine.ChangeState(new IdleState(this, stateMachine));
         }
@@ -187,7 +189,7 @@ public class BikerTheyThemController : MonoBehaviour
         // If in drift state AND A and D are not pressed OR S is not pressed, kill the drift and force an idle state
         if (((!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D)) || !Input.GetKey(KeyCode.S)) && stateMachine.CurrentState is DriftingState)
         {
-            resetVelocityAtEndOfDrift();
+            StartCoroutine(resetVelocityAtEndOfDrift());;
             stateMachine.ChangeState(new IdleState(this, stateMachine));
         }
 
@@ -309,12 +311,31 @@ public class BikerTheyThemController : MonoBehaviour
         UIManager.Instance.ShowDeathPanel();
     }
 
-    void resetVelocityAtEndOfDrift() {
-        //Debug.Log("Reset velocity at end of drift.");
-        rb.linearVelocity = transform.forward * Mathf.Max(minSpeedForDrift * 0.6f, rb.linearVelocity.magnitude * 0.8f);
+    IEnumerator resetVelocityAtEndOfDrift() {
+        // Desired Velocity vector
+        float desiredSpeed = Mathf.Max(minSpeedForDrift * 0.6f, rb.linearVelocity.magnitude * 0.8f);
+
+        Vector3 startVel = rb.linearVelocity;
+        Vector3 startDir = startVel.normalized;
+        Vector3 targetDir = transform.forward.normalized;
+
+        float straightTimer = 0f;
+        while(straightTimer < straightDuration)
+        {
+            straightTimer += Time.fixedDeltaTime;
+            float blend = Mathf.SmoothStep(0f, 1f, straightTimer / straightDuration);
+
+            Vector3 newDir = Vector3.Slerp(startDir, targetDir, blend);
+
+            rb.linearVelocity = newDir * desiredSpeed;
+            yield return null;
+        }
+
+        rb.linearVelocity = transform.forward * desiredSpeed;
         drift_rotate_counter = 0;
         post_drift_timer = 0f;
     }
+
 
     public void HandleMovement()
     {
@@ -388,7 +409,7 @@ public class BikerTheyThemController : MonoBehaviour
             // If below the minimum drift speed and in a drifing state, kill the drift and force an idle state
             if (rb.linearVelocity.magnitude < minSpeedForDrift && stateMachine.CurrentState is DriftingState)
             {
-                resetVelocityAtEndOfDrift();
+                StartCoroutine(resetVelocityAtEndOfDrift());
                 stateMachine.ChangeState(new IdleState(this, stateMachine));
                 return;
             }
@@ -479,7 +500,7 @@ public class BikerTheyThemController : MonoBehaviour
                 // If bike is below minimum drifitng speed, kill the drift and force an idle state
                 else
                 {
-                    resetVelocityAtEndOfDrift();
+                    StartCoroutine(resetVelocityAtEndOfDrift());;
                     stateMachine.ChangeState(new IdleState(this, stateMachine));
                 }
 
