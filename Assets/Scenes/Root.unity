@@ -492,6 +492,20 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 8cf0af0c11564c04890226b91dc9d9a5, type: 3}
   - name: music_menu
     clip: {fileID: 8300000, guid: 73cf8c0161d0f0f4e97bb5e1d52a96ef, type: 3}
+  - name: cat_1
+    clip: {fileID: 8300000, guid: a9e7154fc7842244587f2c95e3065fab, type: 3}
+  - name: cat_2
+    clip: {fileID: 8300000, guid: 3b4dd6446d88d624090cdd22ef5dc030, type: 3}
+  - name: cat_3
+    clip: {fileID: 8300000, guid: ddc4287638a054b40a8374bef1494bfc, type: 3}
+  - name: cat_4
+    clip: {fileID: 8300000, guid: 46d304dcdf7d15241b55bb8205e020e1, type: 3}
+  - name: cat_5
+    clip: {fileID: 8300000, guid: 051bf280d74392047b2d8bce34e9e9c4, type: 3}
+  - name: cat_6
+    clip: {fileID: 8300000, guid: e24afaf713c5d42489a1857e252377d7, type: 3}
+  - name: cat_7
+    clip: {fileID: 8300000, guid: 8519a8b1263b32e4f977101fa402f605, type: 3}
 --- !u!4 &1303328689
 Transform:
   m_ObjectHideFlags: 0
