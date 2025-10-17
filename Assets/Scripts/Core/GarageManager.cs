@@ -81,7 +81,6 @@ public class GarageManager : MonoBehaviour
 
         if (hasAllIngredients)
         {
-            // TODO you win?
             UIManager.Instance.ShowVictoryScreen();
         }
     }

@@ -29,6 +29,8 @@ public class UIManager : MonoBehaviour
     public Button deathBackToGarageButton;
     public Button deathExitButton;
 
+    public bool playerClicked = false;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -87,8 +89,15 @@ public class UIManager : MonoBehaviour
 
     public void ShowVictoryScreen()
     {
-        victoryPanel.SetActive(true);
-        Time.timeScale = 0f;
+        if (playerClicked)
+        { 
+            victoryPanel.SetActive(true);
+        }
+    }
+
+    public void HideVictoryScreen()
+    {
+        victoryPanel.SetActive(false);
     }
 
     public void ShowDeathPanel()
@@ -142,7 +151,7 @@ public class UIManager : MonoBehaviour
         infoContinueButton.onClick.AddListener(HideInfoPanel);
         deathBackToGarageButton.onClick.AddListener(OnDeathBackToGarage);
         deathExitButton.onClick.AddListener(QuitGame);
-
+        victoryKeepPlayingButton.onClick.AddListener(HideVictoryScreen);
 
         HideAllMenus();
         //ShowInfoPanel();
