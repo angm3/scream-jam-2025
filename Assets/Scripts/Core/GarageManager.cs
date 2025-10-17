@@ -157,7 +157,9 @@ public class GarageManager : MonoBehaviour
         {
             //Collectible ingItem = ing as Collectible;
             //string id = ingItem != null ? ingItem.id : "";
+            Debug.LogWarning($"Loading inventory item {ing}");
             string id = ing.ToString();
+            Debug.LogWarning($"Loading inventory item {id}");
             Sprite sprite = GetSpriteForItem("potion_ingredient", id);
             CreateUIItem(inventoryGridContainer, "potion_ingredient", id, 1, sprite);
         }

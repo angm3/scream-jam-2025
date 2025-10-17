@@ -68,7 +68,7 @@ public class Inventory
 				blueprints.Add(item.id);
 				break;
 			case "potion_ingredient":
-				potionIngredients.Add(item);
+				potionIngredients.Add(item.id);
 				break;
 
 		}

@@ -14,6 +14,12 @@ public class Blueprint : Collectible
     public void Awake()
     {
         Debug.Log("Blueprint Awake");
+
+        if (GameManager.Instance.currentPlayerInventory.blueprints.Contains(this.id))
+        {
+            Destroy(this.gameObject);
+        }
+        
         stateMachine = new StateMachine<Collectible>();
         stateMachine.ChangeState(new CollectibleIdleState(this, stateMachine));
     }

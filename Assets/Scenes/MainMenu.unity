@@ -692,7 +692,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Game Title
+  m_text: NecroCycle
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 484e8e63a0d5416408f255d1ed8abd79, type: 2}
   m_sharedMaterial: {fileID: 2552482927492825325, guid: 484e8e63a0d5416408f255d1ed8abd79, type: 2}
