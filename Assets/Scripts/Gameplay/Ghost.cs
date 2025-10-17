@@ -115,7 +115,7 @@ public class GhostIdleState : MonsterIdleState<Ghost>
     public GhostIdleState(Ghost owner, StateMachine<Ghost> sm) : base(owner, sm) { }
 
     float bobPhase;
-    public float ghostChaseRadius = 20f;
+    public float ghostChaseRadius = 30f;
 
     public override void Enter()
     {
