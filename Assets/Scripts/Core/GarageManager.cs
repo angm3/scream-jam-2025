@@ -33,6 +33,8 @@ public class GarageManager : MonoBehaviour
     public List<InventorySlot> ingredientSlots; // drag all ingredient slots here
 
     private bool hasAllIngredients = false;
+    
+    public bool playerClickedContinue = false;
 
     [System.Serializable]
     public class SpriteMapping
@@ -79,7 +81,7 @@ public class GarageManager : MonoBehaviour
     {
         hasAllIngredients = HasAllIngredients();
 
-        if (hasAllIngredients)
+        if (hasAllIngredients && !playerClickedContinue)
         {
             UIManager.Instance.ShowVictoryScreen();
         }

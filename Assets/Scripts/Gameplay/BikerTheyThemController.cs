@@ -137,7 +137,7 @@ public class BikerTheyThemController : MonoBehaviour
             collider.material = tireFriction;
         }
 
-        EnableSlingshot();
+        
         if (GameManager.Instance.equippedBikeUpgrades.Contains("slingshot"))
         {
             EnableSlingshot();

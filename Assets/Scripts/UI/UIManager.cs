@@ -28,8 +28,9 @@ public class UIManager : MonoBehaviour
     [Header("Death Screen Buttons")]
     public Button deathBackToGarageButton;
     public Button deathExitButton;
+    
+    public bool soundNotPlayed;
 
-    public bool playerClicked = false;
 
     private void Awake()
     {
@@ -41,6 +42,8 @@ public class UIManager : MonoBehaviour
         Instance = this;
         //deathScreenPanel = GetComponent<DeathScreenPanel>();
         DontDestroyOnLoad(gameObject); // Persist across scenes
+        
+        soundNotPlayed = true;
     }
 
     void Start()
@@ -89,14 +92,21 @@ public class UIManager : MonoBehaviour
 
     public void ShowVictoryScreen()
     {
-        if (playerClicked)
-        { 
-            victoryPanel.SetActive(true);
+        
+        Debug.Log("Showing victory screen");
+        if (soundNotPlayed)
+        {
+            Debug.Log("Playing victory sound");
+            AudioManager.Instance.PlaySFX("cashew_meow");
+            soundNotPlayed = false;
         }
+        victoryPanel.SetActive(true);
+
     }
 
     public void HideVictoryScreen()
     {
+        GameObject.Find("GarageManager").GetComponent<GarageManager>().playerClickedContinue = true;
         victoryPanel.SetActive(false);
     }
 

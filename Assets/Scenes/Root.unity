@@ -506,6 +506,8 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: e24afaf713c5d42489a1857e252377d7, type: 3}
   - name: cat_7
     clip: {fileID: 8300000, guid: 8519a8b1263b32e4f977101fa402f605, type: 3}
+  - name: cashew_meow
+    clip: {fileID: 8300000, guid: 4dca0fb7f3b426f41a46f3afba8f1a40, type: 3}
 --- !u!4 &1303328689
 Transform:
   m_ObjectHideFlags: 0
@@ -622,6 +624,7 @@ MonoBehaviour:
   victoryKeepPlayingButton: {fileID: 0}
   deathBackToGarageButton: {fileID: 0}
   deathExitButton: {fileID: 0}
+  soundNotPlayed: 0
 --- !u!4 &1708630641
 Transform:
   m_ObjectHideFlags: 0
