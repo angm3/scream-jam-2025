@@ -17,7 +17,7 @@ public class Inventory
 
 	public Inventory()
 	{
-		candyCount = 0;
+		candyCount = 10;
 		blueprints = new ArrayList();
 		potionIngredients = new ArrayList();
 		maxCandyCount = 15; // tweak as needed

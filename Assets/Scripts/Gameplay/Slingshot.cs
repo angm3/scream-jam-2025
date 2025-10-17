@@ -71,8 +71,11 @@ public class SlingshotShootingState : State<Slingshot>
     {
         GameObject projectile = GameObject.Instantiate(owner.projectilePrefab, owner.transform.position, Quaternion.identity);
         Rigidbody rb = projectile.GetComponent<Rigidbody>();
-        rb.linearVelocity = dir * Mathf.Min(30f, 5f + hold_for_timer * 20f);
-
+        
+        // removing hold for timer effect on velocity for now
+        //rb.linearVelocity = dir * Mathf.Min(30f, 5f + hold_for_timer * 20f);
+        rb.linearVelocity = dir * 30f;
+        
         rb.angularVelocity = Random.insideUnitSphere * 10f;
 
         GameManager.Instance.GetPlayer().GetComponent<BikerTheyThemController>().ConsumeCandy();
